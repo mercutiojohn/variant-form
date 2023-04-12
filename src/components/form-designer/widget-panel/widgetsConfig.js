@@ -107,6 +107,7 @@ export const basicFields = [
       label: '',
       labelAlign: '',
       type: 'text',
+      defaultValue: '',
       placeholder: '',
       columnWidth: '200px',
       size: '',
