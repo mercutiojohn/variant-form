@@ -23,7 +23,7 @@
   import UserTree from './user'
 
   export default {
-    name: "test-widget",
+    name: "user-choose-widget",
     componentName: 'FieldWidget',  //必须固定为FieldWidget，用于接收父级组件的broadcast事件
     mixins: [emitter, fieldMixin, i18n],
     props: {

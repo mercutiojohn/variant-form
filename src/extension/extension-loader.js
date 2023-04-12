@@ -22,9 +22,9 @@ import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
 import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
-// Test 测试
-import {testSchema} from "@/extension/samples/extension-schema"
-import TestWidget from '@/extension/samples/test/test-widget'
+// UserChoose 人员选择
+import {userChooseSchema} from "@/extension/samples/extension-schema"
+import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
 
 export const loadExtension = function () {
 
@@ -123,9 +123,9 @@ export const loadExtension = function () {
   /* 字段组件加载完毕 end */
   
   /* 字段组件加载测试 start */
-  addCustomWidgetSchema(testSchema)  //加载组件Json Schema
+  addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
-  Vue.component(TestWidget.name, TestWidget)  //注册组件
+  Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('test-testName', 'test-testName-editor',
       PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
