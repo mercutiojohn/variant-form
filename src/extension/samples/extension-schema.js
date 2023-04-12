@@ -34,3 +34,23 @@ export const alertSchema = {
     customClass: '',
   }
 }
+
+export const testSchema = {
+  type: 'test',
+  icon: 'test',
+  formItemFlag: false,
+  options: {
+    name: '',
+    title: 'Good things are coming...',
+    type: 'info',
+    description: '',
+    closable: true,
+    closeText: '',
+    center: true,
+    showIcon: false,
+    effect: 'light',
+    hidden: false,
+    onClose: '',
+    customClass: '',
+  }
+}
