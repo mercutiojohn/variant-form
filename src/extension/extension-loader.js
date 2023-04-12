@@ -8,21 +8,20 @@ import * as PERegister from '@/components/form-designer/setting-panel/propertyRe
 import * as PEFactory from '@/components/form-designer/setting-panel/property-editor-factory'
 
 import {registerCWGenerator} from '@/utils/sfc-generator'
-import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
-
 import {registerFWGenerator} from '@/utils/sfc-generator'
-import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 /* Container 容器组件 */
 // Card 卡片
 import {cardSchema} from "@/extension/samples/extension-schema"
 import CardWidget from '@/extension/samples/card/card-widget'
 import CardItem from '@/extension/samples/card/card-item'
+import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 /* Widget 字段组件 */
 // Alert 提示
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
+import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 // Test 测试
 import {testSchema} from "@/extension/samples/extension-schema"
 import TestWidget from '@/extension/samples/test/test-widget'
@@ -85,9 +84,9 @@ export const loadExtension = function () {
     {label: 'info', value: 'info'},
     {label: 'error', value: 'error'},
   ]
-  // PERegister.registerCPEditor('alert-type', 'alert-type-editor',
-  //     PEFactory.createSelectEditor('type', 'extension.setting.alertType',
-  //         {optionItems: typeOptions}))
+//   PERegister.registerCPEditor('alert-type', 'alert-type-editor',
+//       PEFactory.createSelectEditor('type', 'extension.setting.alertType',
+//           {optionItems: typeOptions}))
   /* type属性映射已存在，无须再注册，故只需注册属性编辑器即可！！ */
   Vue.component('alert-type-editor',
       PEFactory.createSelectEditor('type', 'extension.setting.alertType',
@@ -128,50 +127,8 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   Vue.component(TestWidget.name, TestWidget)  //注册组件
   /* -------------------------------------------------- */
-  PERegister.registerCPEditor('alert-title', 'alert-title-editor',
-      PEFactory.createInputTextEditor('title', 'extension.setting.alertTitle'))
+  PERegister.registerCPEditor('test-testName', 'test-testName-editor',
+      PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
 
-//   let typeOptions = [
-//     {label: 'success', value: 'success'},
-//     {label: 'warning', value: 'warning'},
-//     {label: 'info', value: 'info'},
-//     {label: 'error', value: 'error'},
-//   ]
-  // PERegister.registerCPEditor('alert-type', 'alert-type-editor',
-  //     PEFactory.createSelectEditor('type', 'extension.setting.alertType',
-  //         {optionItems: typeOptions}))
-  /* type属性映射已存在，无须再注册，故只需注册属性编辑器即可！！ */
-  Vue.component('alert-type-editor',
-      PEFactory.createSelectEditor('type', 'extension.setting.alertType',
-          {optionItems: typeOptions}))
-
-  PERegister.registerCPEditor('test-description', 'test-description-editor',
-      PEFactory.createInputTextEditor('description', 'extension.setting.description'))
-
-  PERegister.registerCPEditor('test-closable', 'test-closable-editor',
-      PEFactory.createBooleanEditor('closable', 'extension.setting.closable'))
-
-  PERegister.registerCPEditor('test-closeText', 'test-closeText-editor',
-      PEFactory.createInputTextEditor('closeText', 'extension.setting.closeText'))
-
-  PERegister.registerCPEditor('test-center', 'test-center-editor',
-      PEFactory.createBooleanEditor('center', 'extension.setting.center'))
-
-  PERegister.registerCPEditor('test-showIcon', 'test-showIcon-editor',
-      PEFactory.createBooleanEditor('showIcon', 'extension.setting.showIcon'))
-
-//   let effectOptions = [
-//     {label: 'light', value: 'light'},
-//     {label: 'dark', value: 'dark'},
-//   ]
-  PERegister.registerCPEditor('test-effect', 'test-effect-editor',
-      PEFactory.createRadioButtonGroupEditor('effect', 'extension.setting.effect',
-          {optionItems: effectOptions}))
-
-  PERegister.registerEPEditor('test-onClose', 'test-onClose-editor',
-      PEFactory.createEventHandlerEditor('onClose', []))
-  /* -------------------------------------------------- */
-  registerFWGenerator('test', alertTemplateGenerator)  //注册字段组件的代码生成器
-  /* -------------------------------------------------- */
   /* 字段组件加载测试完毕 end */
 }

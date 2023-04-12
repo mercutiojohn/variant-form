@@ -6,6 +6,7 @@
               :description="field.options.description" :closable="field.options.closable"
               :center="field.options.center" :close-text="field.options.closeText"
               :show-icon="field.options.showIcon" :effect="field.options.effect" @close="handleCloseCustomEvent"></el-alert>
+              {{field.options.testName}}
   </static-content-wrapper>
 </template>
 
@@ -16,7 +17,7 @@
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin"
 
   export default {
-    name: "alert-widget",
+    name: "test-widget",
     componentName: 'FieldWidget',  //必须固定为FieldWidget，用于接收父级组件的broadcast事件
     mixins: [emitter, fieldMixin, i18n],
     props: {
