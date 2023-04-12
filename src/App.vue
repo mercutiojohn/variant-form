@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VFormDesigner ref="vfDesignerRef" :designer-config="designerConfig" :global-dsv="globalDsv">
+    <VFormDesigner ref="vfDesignerRef" :designer-config="designerConfig" :global-dsv="globalDsv" :template-data="getTemplateData()">
       <template #customToolButtons>
         <!-- <el-button type="normal" @click="printFormJson">测试按钮</el-button> -->
         <el-button type="normal" @click="insertFormJson">外部导入</el-button>
@@ -47,7 +47,7 @@ export default {
       globalDsv: {
         testApiHost: 'http://www.test.com/api',
         testPort: 8080,
-      },
+      }
     }
   },
   methods: {
@@ -60,6 +60,10 @@ export default {
     },
     getFieldList() {
       console.log(this.$refs.vfDesignerRef.getFieldWidgets())
+    },
+    getTemplateData() {
+      let jsonObj = require('./assets/templates.json')
+      return jsonObj
     }
   }
 }
