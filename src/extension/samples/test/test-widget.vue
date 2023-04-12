@@ -1,20 +1,27 @@
 <template>
-  <static-content-wrapper :designer="designer" :field="field" :design-state="designState"
-                          :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
-                          :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-alert ref="fieldEditor" :title="field.options.title" :type="field.options.type"
+  <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
+                     :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
+                     :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
+    <!-- <el-alert ref="fieldEditor" :title="field.options.title" :type="field.options.type"
               :description="field.options.description" :closable="field.options.closable"
               :center="field.options.center" :close-text="field.options.closeText"
-              :show-icon="field.options.showIcon" :effect="field.options.effect" @close="handleCloseCustomEvent"></el-alert>
-              {{field.options.testName}}
-  </static-content-wrapper>
+              :show-icon="field.options.showIcon" :effect="field.options.effect" @close="handleCloseCustomEvent"></el-alert> -->
+              <!-- {{field.options.testName}} -->
+    <userTree 
+      v-model="fieldModel"
+      :options="field.options"
+      showCheckbox
+    ></userTree>
+  </form-item-wrapper>
 </template>
 
 <script>
-  import StaticContentWrapper from '@/components/form-designer/form-widget/field-widget/static-content-wrapper'
+  import FormItemWrapper from '@/components/form-designer/form-widget/field-widget/form-item-wrapper'
   import emitter from '@/utils/emitter'
   import i18n from "@/utils/i18n"
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin"
+
+  import UserTree from './user'
 
   export default {
     name: "test-widget",
@@ -47,12 +54,22 @@
 
     },
     components: {
-      StaticContentWrapper,
+      FormItemWrapper,
+      UserTree
     },
     created() {
+      this.initFieldModel()
       this.registerToRefList()
       this.initEventHandler()
+      this.buildFieldRules()
+
+      this.handleOnCreated()
     },
+
+    mounted() {
+      this.handleOnMounted()
+    },
+
     beforeDestroy() {
       this.unregisterFromRefList()
     },
@@ -64,6 +81,13 @@
         }
       }
 
+    },
+    data() {
+      return {
+        oldFieldValue: null, //field组件change之前的值
+        fieldModel: null,
+        rules: [],
+      }
     }
   }
 </script>
