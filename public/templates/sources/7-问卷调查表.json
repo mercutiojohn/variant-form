@@ -1,0 +1,573 @@
+{
+  "widgetList": [
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext111193",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "VForm问卷调查表",
+        "customClass": [],
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext111193"
+    },
+    {
+      "type": "divider",
+      "icon": "divider",
+      "formItemFlag": false,
+      "options": {
+        "name": "divider102346",
+        "label": "",
+        "columnWidth": "200px",
+        "direction": "horizontal",
+        "contentPosition": "center",
+        "hidden": false,
+        "customClass": [],
+        "onCreated": "",
+        "onMounted": ""
+      },
+      "id": "divider102346"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext94178",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "1. 您是从什么渠道了解到VForm？（竖排）",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext94178"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio63396",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": "",
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "block",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "label": "掘金",
+            "value": 1
+          },
+          {
+            "label": "知乎",
+            "value": 2
+          },
+          {
+            "label": "搜索引擎",
+            "value": 3
+          },
+          {
+            "value": 4,
+            "label": "其他"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": [],
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio63396"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext46881",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "2. 您在产品开发中承担什么角色？（横排）",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext46881"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio113860",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": null,
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "产品经理"
+          },
+          {
+            "value": "2",
+            "label": "研发经理"
+          },
+          {
+            "value": "3",
+            "label": "架构师"
+          },
+          {
+            "value": "4",
+            "label": "前端开发"
+          },
+          {
+            "value": "5",
+            "label": "后端开发"
+          },
+          {
+            "value": "6",
+            "label": "其他"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio113860"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext96809",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "3. 您主要在什么场景中使用VForm？（多选）",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext96809"
+    },
+    {
+      "type": "checkbox",
+      "icon": "checkbox-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "checkbox102067",
+        "label": "checkbox",
+        "labelAlign": "",
+        "defaultValue": [],
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "工作流引擎/流程管理"
+          },
+          {
+            "value": "2",
+            "label": "低代码开发平台"
+          },
+          {
+            "value": "3",
+            "label": "动态表单生成"
+          },
+          {
+            "value": "4",
+            "label": "可视化表单设计"
+          },
+          {
+            "value": "5",
+            "label": "数据收集/问卷调查"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "checkbox102067"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext44888",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "4. 您对VForm现有的功能是否满意？",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext44888"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio74071",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": null,
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "非常满意"
+          },
+          {
+            "value": "2",
+            "label": "一般"
+          },
+          {
+            "value": "3",
+            "label": "不满意"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio74071"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext36206",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "5. 您对VForm的文档指南是否满意？",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext36206"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio88180",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": null,
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "非常满意"
+          },
+          {
+            "value": "2",
+            "label": "一般"
+          },
+          {
+            "value": "3",
+            "label": "不满意"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio88180"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext26511",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "6. 您希望VForm的版本更新周期？",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext26511"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio71802",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": null,
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "一周一次"
+          },
+          {
+            "value": "2",
+            "label": "半月一次"
+          },
+          {
+            "value": "3",
+            "label": "一月一次"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio71802"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext63406",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "7. 您是否愿意向其他人推荐VForm？",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext63406"
+    },
+    {
+      "type": "radio",
+      "icon": "radio-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "radio92444",
+        "label": "radio",
+        "labelAlign": "",
+        "defaultValue": null,
+        "columnWidth": "200px",
+        "size": "",
+        "displayStyle": "inline",
+        "buttonStyle": false,
+        "border": false,
+        "labelWidth": null,
+        "labelHidden": true,
+        "disabled": false,
+        "hidden": false,
+        "optionItems": [
+          {
+            "value": "1",
+            "label": "非常愿意"
+          },
+          {
+            "value": "2",
+            "label": "有合适的机会愿意推荐"
+          },
+          {
+            "value": "3",
+            "label": "不愿意"
+          }
+        ],
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "onCreated": "",
+        "onMounted": "",
+        "onChange": "",
+        "onValidate": ""
+      },
+      "id": "radio92444"
+    },
+    {
+      "type": "static-text",
+      "icon": "static-text",
+      "formItemFlag": false,
+      "options": {
+        "name": "statictext85090",
+        "columnWidth": "200px",
+        "hidden": false,
+        "textContent": "8. 您认为VForm应该尽快完善哪些功能？",
+        "customClass": "",
+        "onCreated": "",
+        "onMounted": "",
+        "label": "static-text"
+      },
+      "id": "statictext85090"
+    },
+    {
+      "type": "input",
+      "icon": "text-field",
+      "formItemFlag": true,
+      "options": {
+        "name": "input81576",
+        "label": "input",
+        "labelAlign": "",
+        "type": "text",
+        "defaultValue": "",
+        "placeholder": "请留下您的宝贵建议",
+        "columnWidth": "200px",
+        "size": "",
+        "labelWidth": null,
+        "labelHidden": true,
+        "readonly": false,
+        "disabled": false,
+        "hidden": false,
+        "clearable": true,
+        "showPassword": false,
+        "required": false,
+        "validation": "",
+        "validationHint": "",
+        "customClass": "",
+        "labelIconClass": null,
+        "labelIconPosition": "rear",
+        "labelTooltip": null,
+        "minLength": null,
+        "maxLength": null,
+        "showWordLimit": false,
+        "prefixIcon": "",
+        "suffixIcon": "",
+        "appendButton": false,
+        "appendButtonDisabled": false,
+        "buttonIcon": "el-icon-search",
+        "onCreated": "",
+        "onMounted": "",
+        "onInput": "",
+        "onChange": "",
+        "onFocus": "",
+        "onBlur": "",
+        "onValidate": ""
+      },
+      "id": "input81576"
+    }
+  ],
+  "formConfig": {
+    "modelName": "formData",
+    "refName": "vForm",
+    "rulesName": "rules",
+    "labelWidth": 150,
+    "labelPosition": "left",
+    "size": "",
+    "labelAlign": "label-right-align",
+    "cssCode": "",
+    "customClass": [],
+    "functions": "",
+    "layoutType": "PC",
+    "onFormCreated": "",
+    "onFormMounted": "",
+    "onFormDataChange": "",
+    "onFormValidate": ""
+  }
+}
