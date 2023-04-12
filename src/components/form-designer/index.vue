@@ -79,6 +79,7 @@
   import i18n, { changeLocale } from "@/utils/i18n"
   import axios from "axios"
   import SvgIcon from '@/components/svg-icon'
+  import {formTemplates} from './widget-panel/templatesConfig'
 
   export default {
     name: "VFormDesigner",
@@ -138,6 +139,11 @@
         default: () => ({})
       },
 
+      /* 模板列表 */
+      templateData: {
+        type: Object,
+        default: () => formTemplates
+      }
     },
     data() {
       return {
@@ -163,6 +169,7 @@
       return {
         serverFieldList: this.fieldList,
         getDesignerConfig: () => this.designerConfig,
+        getTemplateData: () => this.templateData,
         getBannedWidgets: () => this.bannedWidgets,
       }
     },
