@@ -2,15 +2,14 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <!-- <el-alert ref="fieldEditor" :title="field.options.title" :type="field.options.type"
-              :description="field.options.description" :closable="field.options.closable"
-              :center="field.options.center" :close-text="field.options.closeText"
-              :show-icon="field.options.showIcon" :effect="field.options.effect" @close="handleCloseCustomEvent"></el-alert> -->
-              <!-- {{field.options.testName}} -->
     <userTree 
       v-model="fieldModel"
       :options="field.options"
       showCheckbox
+      @focus="handleFocusCustomEvent" 
+      @blur="handleBlurCustomEvent" 
+      @input="handleInputCustomEvent"
+      @change="handleChangeEvent"
     ></userTree>
   </form-item-wrapper>
 </template>

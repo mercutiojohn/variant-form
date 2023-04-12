@@ -19,7 +19,12 @@
       class="hide-spin-button"
       :type="inputType"
       :show-password="options.showPassword"
-      :prefix-icon="options.prefixIcon" :suffix-icon="options.suffixIcon"  
+      :prefix-icon="options.prefixIcon"
+      :suffix-icon="options.suffixIcon"
+      @focus="handleFocusCustomEvent"
+      @blur="handleBlurCustomEvent"
+      @input="handleInputCustomEvent"
+      @change="handleChangeEvent"
     >
       <!-- <el-button
         @click.native="search"
@@ -137,6 +142,19 @@ export default {
       this.$emit('input', this.value)
       // 关闭弹窗
       this.editVisible = false;
+    },
+    handleFocusCustomEvent(event){
+      this.$emit('handleFocusCustomEvent',event)
+    },
+    handleBlurCustomEvent(event){
+      this.$emit('handleBlurCustomEvent',event)
+    },
+    handleInputCustomEvent(value){
+      this.$emit('handleInputCustomEvent',value)
+    },
+    handleChangeEvent(value){
+      this.$emit('handleChangeEvent',value)
+ 
     }
   },
   mounted: function () {
