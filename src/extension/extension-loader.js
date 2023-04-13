@@ -156,14 +156,13 @@ export const loadExtension = function () {
 //   PERegister.registerCPEditor('subForm-cardWidth', 'subForm-cardWidth-editor',
 //       PEFactory.createInputTextEditor('cardWidth', 'extension.setting.cardWidth'))
 
-//   let shadowOptions = [
-//     {label: 'never', value: 'never'},
-//     {label: 'hover', value: 'hover'},
-//     {label: 'always', value: 'always'},
-//   ]
-//   PERegister.registerCPEditor('subForm-shadow', 'subForm-shadow-editor',
-//       PEFactory.createSelectEditor('shadow', 'extension.setting.cardShadow',
-//           {optionItems: shadowOptions}))
+  let actionColumnPositionOptions = [
+    {label: '居左', value: 'left'},
+    {label: '居右', value: 'right'}
+  ]
+  PERegister.registerCPEditor('actionColumnPosition', 'subForm-actionColumnPosition-editor',
+  PEFactory.createRadioButtonGroupEditor('actionColumnPosition', 'designer.setting.actionColumnPosition',
+          {optionItems: actionColumnPositionOptions}))
   /* -------------------------------------------------- */
 //   registerCWGenerator('subForm', cardTemplateGenerator)  //注册容器组件的代码生成器
   /* -------------------------------------------------- */

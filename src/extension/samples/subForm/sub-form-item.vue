@@ -1,44 +1,27 @@
 <template>
   <container-item-wrapper :widget="widget">
-    <el-card :key="widget.id" class="card-container" :class="[!!widget.options.folded ? 'folded' : '', customClass]"
-             :shadow="widget.options.shadow" :style="{width: widget.options.cardWidth + '!important' || ''}"
-             :ref="widget.id" v-show="!widget.options.hidden">
+    <!-- <el-card class="card-container" 
+      :shadow="widget.options.shadow" 
+    >
       <div slot="header" class="clear-fix">
         <span>{{widget.options.label}}</span>
         <i v-if="widget.options.showFold" class="float-right"
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']" @click="toggleCard"></i>
       </div>
-      <template v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
-        <template v-for="(subWidget, swIdx) in widget.widgetList">
-          <template v-if="'container' === subWidget.category">
-            <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
-                       :index-of-parent-list="swIdx" :parent-widget="widget">
-              <!-- 递归传递插槽！！！ -->
-              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
-                <slot :name="slot" v-bind="scope"/>
-              </template>
-            </component>
-          </template>
-          <template v-else>
-            <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
-                       :index-of-parent-list="swIdx" :parent-widget="widget">
-              <!-- 递归传递插槽！！！ -->
-              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
-                <slot :name="slot" v-bind="scope"/>
-              </template>
-            </component>
-          </template>
-        </template>
-      </template>
-    </el-card>
+    </el-card> -->
 
     <el-table
+      :key="widget.id" 
       :data="columnForm.tableCreatorTableColumnList"
       :row-class-name="rowTableCreatorTableColumnIndex"
       @selection-change="handleTableCreatorTableColumnSelectionChange"
+      v-show="!widget.options.hidden"
+      :ref="widget.id"
       row-key="uuid"
       ref="tableCreatorTableColumn"
       class="column-table"
+      :class="[!!widget.options.folded ? 'folded' : '', customClass]"
+      :style="{width: widget.options.cardWidth + '!important' || ''}"
       highlight-current-row
       border
     >
@@ -57,7 +40,7 @@
       <!-- <el-table-column label="uuid" align="center" prop="uuid" width="60" class-name="allowDrag" /> -->
       <el-table-column label="字段名" prop="name">
         <template slot-scope="scope">
-          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
+          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
           >
           <!-- :rules="[
             validString(1, 255),
@@ -66,7 +49,7 @@
               message:'不符合数据库表字段格式规范'
             }]" -->
             <el-input v-model="scope.row.name" placeholder="" />
-          </CommonFormItem>
+          </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="字段描述" prop="comment">
@@ -76,24 +59,48 @@
       </el-table-column>
       <el-table-column label="数据类型" prop="type"> <!-- width="200"  -->
         <template slot-scope="scope">
-          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
+          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
             <el-select v-model="scope.row.type" placeholder="">
               <el-option v-for="dict in options.tableDataTypeOptions" :key="dict.code" :label="dict.name" :value="dict.code" />
             </el-select>
-          </CommonFormItem>
+          </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="长度" prop="length" width="200" align="center">
         <template slot-scope="scope">
-          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
+          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
             <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" /> <!-- :placeholder="ifLengthDisabledType(scope.row.type)?'':'请输入字段长度'"  -->
-          </CommonFormItem>
+          </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="非空" prop="isNull" width="70" align="center">
         <template slot-scope="scope">
           <!-- <el-input v-model="scope.row.isNull" placeholder="请输入是否为空" /> -->
           <el-checkbox true-label="1" v-model="scope.row.isNull"></el-checkbox>
+        </template>
+      </el-table-column>
+      <el-table-column label="test" prop="test" width="70" align="center">
+        <template slot-scope="scope" v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
+          <template v-for="(subWidget, swIdx) in widget.widgetList">
+            <template v-if="'container' === subWidget.category">
+              <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
+                        :index-of-parent-list="swIdx" :parent-widget="widget">
+                <!-- 递归传递插槽！！！ -->
+                <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                  <slot :name="slot" v-bind="scope"/>
+                </template>
+              </component>
+            </template>
+            <template v-else>
+              <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
+                        :index-of-parent-list="swIdx" :parent-widget="widget">
+                <!-- 递归传递插槽！！！ -->
+                <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                  <slot :name="slot" v-bind="scope"/>
+                </template>
+              </component>
+            </template>
+          </template>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
@@ -181,6 +188,22 @@
         obj.updateBy = ''
         obj.uuid = this.uuid(8,16)
         this.columnForm.tableCreatorTableColumnList.splice(index, 0, obj)
+      },
+      /** 建表工具-列信息添加按钮操作 */
+      handleAddTableCreatorTableColumn () {
+        let obj = {}
+        obj.name = ''
+        obj.comment = ''
+        obj.type = ''
+        obj.length = ''
+        obj.isNull = ''
+        obj.createBy = ''
+        obj.updateTime = ''
+        obj.createTime = ''
+        obj.groupId = ''
+        obj.updateBy = ''
+        obj.uuid = this.uuid(8,16)
+        this.columnForm.tableCreatorTableColumnList.push(obj)
       },
       deleteRow (index) {
         this.columnForm.tableCreatorTableColumnList.splice(index - 1, 1)

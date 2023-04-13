@@ -17,20 +17,42 @@ export const cardSchema = {
   }
 }
 
+// export const subFormSchema = {
+//   type: 'sub-form',
+//   icon: 'sub-form',
+//   category: 'container',
+//   widgetList: [],
+//   options: {
+//     name: '',
+//     label: '子表单',
+//     hidden: false,
+//     folded: false,
+//     showFold: true,
+//     cardWidth: '100%',
+//     shadow: 'never',
+//     customClass: '',
+//   }
+// }
+
+/* ref */
 export const subFormSchema = {
   type: 'sub-form',
   icon: 'sub-form',
   category: 'container',
   widgetList: [],
   options: {
-    name: '',
-    label: '子表单',
-    hidden: false,
-    folded: false,
-    showFold: true,
-    cardWidth: '100%',
-    shadow: 'never',
-    customClass: '',
+    name: "",
+    showBlankRow: !0,
+    showRowNumber: !0,
+    labelAlign: "label-center-align",
+    hidden: !1,
+    disabled: !1,
+    actionColumnPosition: "left",
+    customClass: "",
+    onSubFormRowAdd: "",
+    onSubFormRowInsert: "",
+    onSubFormRowDelete: "",
+    onSubFormRowChange: ""
   }
 }
 
@@ -100,25 +122,3 @@ export const userChooseSchema = {
     onAppendButtonClick: '',
   }
 }
-
-/* ref */
-// export const subFormSchema = {
-//   type: 'sub-form',
-//   icon: 'sub-form',
-//   category: 'container',
-//   widgetList: [],
-//   options: {
-//     name: "",
-//     showBlankRow: !0,
-//     showRowNumber: !0,
-//     labelAlign: "label-center-align",
-//     hidden: !1,
-//     disabled: !1,
-//     actionColumnPosition: "left",
-//     customClass: "",
-//     onSubFormRowAdd: "",
-//     onSubFormRowInsert: "",
-//     onSubFormRowDelete: "",
-//     onSubFormRowChange: ""
-//   }
-// }

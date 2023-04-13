@@ -1,12 +1,14 @@
 <template>
-  <container-wrapper :designer="designer" :widget="widget" :parent-widget="parentWidget" :parent-list="parentList"
-                     :index-of-parent-list="indexOfParentList">
-    <el-card 
-      :key="widget.id" class="card-container" 
-      @click.native.stop="selectWidget(widget)"
+  <container-wrapper 
+    :designer="designer" 
+    :widget="widget"
+    :parent-widget="parentWidget" 
+    :parent-list="parentList"
+    :index-of-parent-list="indexOfParentList"
+  >
+    <!-- <el-card 
+      class="card-container" 
       :shadow="widget.options.shadow" 
-      :style="{width: widget.options.cardWidth + '!important' || ''}"
-      :class="[selected ? 'selected' : '', !!widget.options.folded ? 'folded' : '', customClass]"
     >
       <div slot="header" class="clear-fix">
         <span>{{widget.options.label}}</span>
@@ -14,37 +16,63 @@
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']"
            @click="toggleCard"></i>
       </div>
-      <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
-                 handle=".drag-handler"
-                 @add="(evt) => onContainerDragAdd(evt, widget.widgetList)"
-                 @update="onContainerDragUpdate" :move="checkContainerMove">
-        <transition-group name="fade" tag="div" class="form-widget-list">
-          <template v-for="(subWidget, swIdx) in widget.widgetList">
-            <template v-if="'container' === subWidget.category">
-              <component :is="subWidget.type + '-widget'" :widget="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
-                         :index-of-parent-list="swIdx" :parent-widget="widget"></component>
-            </template>
-            <template v-else>
-              <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
-                         :index-of-parent-list="swIdx" :parent-widget="widget" :design-state="true"></component>
-            </template>
-          </template>
-        </transition-group>
-      </draggable>
-    </el-card>
+    </el-card> -->
 
-    <el-table
+    <div
+      class="sub-form-container"
+      :class="{ selected: selected }"
+      @click.stop="selectWidget(widget)"
+    >
+      <el-form label-position="top">
+        <draggable
+          :list="widget.widgetList"
+          handle=".drag-handler"
+          @add="onSubFormDragAdd"
+          @end="onSubFormDragEnd"
+          @update="onContainerDragUpdate"
+          group="dragGroup"
+          ghost-class="ghost"
+          animation="200"
+        >
+          <transition-group class="sub-form-table" name="fade" tag="div">
+            <div
+              v-for="(t, n) in widget.widgetList"
+              :key="t.id + 'tc'"
+              class="sub-form-table-column"
+              :style="{ width: t.options.columnWidth }"
+            >
+              <component
+                :key="t.id"
+                :is="t.type + '-widget'"
+                tag="component"
+                :field="t"
+                :designer="designer"
+                :parent-list="widget.widgetList"
+                :index-of-parent-list="n"
+                :parent-widget="widget"
+                :design-state="true"
+                :sub-form-item-flag="true"
+              ></component>
+            </div>
+          </transition-group>
+        </draggable>
+      </el-form>
+    </div>
+
+    <!-- <el-table
+      :key="widget.id"
+      @click.native.stop="selectWidget(widget)"
       :data="columnForm.tableCreatorTableColumnList"
       :row-class-name="rowTableCreatorTableColumnIndex"
       @selection-change="handleTableCreatorTableColumnSelectionChange"
       row-key="uuid"
       ref="tableCreatorTableColumn"
       class="column-table"
+      :style="{width: widget.options.cardWidth + '!important' || ''}"
+      :class="[selected ? 'selected' : '', !!widget.options.folded ? 'folded' : '', customClass]"
       highlight-current-row
       border
     >
-      <!--  height="calc(100vh - 220px)" -->
-      <!-- <el-table-column type="selection" width="50" align="center" /> -->
       <el-table-column label="" align="center" width="40" class-name="allowDrag">
         <template>
           <div class="drag-line-box">
@@ -55,17 +83,10 @@
         </template>
       </el-table-column>
       <el-table-column label="序号" align="center" prop="index" width="60" class-name="allowDrag" />
-      <!-- <el-table-column label="uuid" align="center" prop="uuid" width="60" class-name="allowDrag" /> -->
       <el-table-column label="字段名" prop="name">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
           >
-          <!-- :rules="[
-            validString(1, 255),
-            {
-              pattern:/(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)/,
-              message:'不符合数据库表字段格式规范'
-            }]" -->
             <el-input v-model="scope.row.name" placeholder="" />
           </el-form-item>
         </template>
@@ -75,7 +96,7 @@
           <el-input v-model="scope.row.comment" placeholder="" />
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" prop="type"> <!-- width="200"  -->
+      <el-table-column label="数据类型" prop="type">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
             <el-select v-model="scope.row.type" placeholder="">
@@ -87,15 +108,33 @@
       <el-table-column label="长度" prop="length" width="200" align="center">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
-            <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" /> <!-- :placeholder="ifLengthDisabledType(scope.row.type)?'':'请输入字段长度'"  -->
+            <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" />
           </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="非空" prop="isNull" width="70" align="center">
         <template slot-scope="scope">
-          <!-- <el-input v-model="scope.row.isNull" placeholder="请输入是否为空" /> -->
           <el-checkbox true-label="1" v-model="scope.row.isNull"></el-checkbox>
         </template>
+      </el-table-column>
+      <el-table-column label="test" prop="test" width="70" align="center">
+        <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
+                  handle=".drag-handler"
+                  @add="(evt) => onContainerDragAdd(evt, widget.widgetList)"
+                  @update="onContainerDragUpdate" :move="checkContainerMove">
+          <transition-group name="fade" tag="div" class="form-widget-list">
+            <template v-for="(subWidget, swIdx) in widget.widgetList">
+              <template v-if="'container' === subWidget.category">
+                <component :is="subWidget.type + '-widget'" :widget="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
+                          :index-of-parent-list="swIdx" :parent-widget="widget"></component>
+              </template>
+              <template v-else>
+                <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
+                          :index-of-parent-list="swIdx" :parent-widget="widget" :design-state="true"></component>
+              </template>
+            </template>
+          </transition-group>
+        </draggable>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
         <template slot-scope="scope">
@@ -110,9 +149,9 @@
     </el-table>
     <div class="add-block">
       <el-button type="text" icon="el-icon-plus" size="mini" @click="handleAddTableCreatorTableColumn">添加行</el-button>
-      <!-- <el-button type="normal" icon="el-icon-plus" size="mini" @click="initDefaultFields">添加默认字段</el-button> -->
-      <!-- <el-button type="normal" icon="el-icon-delete" size="mini" @click="handleDeleteTableCreatorTableColumn">删除</el-button> -->
-    </div>
+      <el-button type="normal" icon="el-icon-plus" size="mini" @click="initDefaultFields">添加默认字段</el-button>
+      <el-button type="normal" icon="el-icon-delete" size="mini" @click="handleDeleteTableCreatorTableColumn">删除</el-button>
+    </div> -->
   </container-wrapper>
 </template>
 
@@ -165,25 +204,17 @@
       }
     },
     methods: {
-      /**
-       * 检查接收哪些组件拖放，如不接受某些组件拖放，则根据组件类型判断后返回false
-       * @param evt
-       * @returns {boolean}
-       */
-      checkContainerMove(evt) {
-        return true
+      onSubFormDragAdd(e, t) {
+        const newIndex = e.newIndex;
+        if (t[newIndex]) {
+          this.designer.setSelected(t[newIndex]);
+        }
+        this.designer.emitHistoryChange();
+        console.log("test", "onSubFormDragAdd");
+        this.designer.emitEvent("field-selected", this.widget);
       },
-
-      toggleCard() {
-        this.widget.options.folded = !this.widget.options.folded
-      },
-
-      /**
-       * 设置折叠/打开状态
-       * @param folded
-       */
-      setFolded(folded) {
-        this.widget.options.folded = !!folded
+      onSubFormDragEnd(e) {
+        console.log("sub form drag end: ", e);
       },
       // ------------------------subform-----------------------------
       /** 复选框选中数据 */
@@ -290,11 +321,18 @@
 .float-right {
   float: right;
 }
-.add-block{
-  padding: 5px;
-  border: 1px solid #EBEEF5;
-  border-top: none;
-  display: flex;
-  justify-content: center;
+// ---
+.sub-form-container .sub-form-table {
+    min-height: 68px;
+}
+.sub-form-container {
+    padding: 8px;
+    border: 1px dashed #369;
+}
+.sub-form-container.selected {
+    outline: 2px solid #409eff!important;
+}
+.sub-form-container .sub-form-table div.sub-form-table-column {
+  display: inline-block;
 }
 </style>
