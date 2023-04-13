@@ -141,7 +141,7 @@
 
       /* 模板列表 */
       templateData: {
-        type: Object,
+        type: Array,
         default: () => formTemplates
       }
     },
