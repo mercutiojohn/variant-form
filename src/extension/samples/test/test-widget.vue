@@ -1,27 +1,31 @@
 <template>
-  <static-content-wrapper :designer="designer" :field="field" :design-state="designState" :display-style="field.options.displayStyle"
+  <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-button ref="fieldEditor" :type="field.options.type" :size="field.options.size"
-               :plain="field.options.plain" :round="field.options.round"
-               :circle="field.options.circle" :icon="field.options.icon"
-               :disabled="field.options.disabled"
-               @click.native="handleButtonWidgetClick">
-      {{field.options.label}}</el-button>
-  </static-content-wrapper>
+    <userTree 
+      v-model="fieldModel"
+      :options="field.options"
+      showCheckbox
+      @focus="handleFocusCustomEvent" 
+      @blur="handleBlurCustomEvent" 
+      @input="handleInputCustomEvent"
+      @change="handleChangeEvent"
+    ></userTree>
+  </form-item-wrapper>
 </template>
 
 <script>
-  import StaticContentWrapper from './static-content-wrapper'
+  import FormItemWrapper from '@/components/form-designer/form-widget/field-widget/form-item-wrapper'
   import emitter from '@/utils/emitter'
-  import i18n, {translate} from "@/utils/i18n";
-  import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin";
+  import i18n from "@/utils/i18n"
+  import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin"
+
+  import UserTree from './user'
 
   export default {
-    name: "button-widget",
+    name: "test-widget",
     componentName: 'FieldWidget',  //必须固定为FieldWidget，用于接收父级组件的broadcast事件
     mixins: [emitter, fieldMixin, i18n],
-    inject: ['textAlert'],
     props: {
       field: Object,
       parentWidget: Object,
@@ -49,20 +53,14 @@
 
     },
     components: {
-      StaticContentWrapper,
+      FormItemWrapper,
+      UserTree
     },
-    computed: {
-
-    },
-    beforeCreate() {
-      /* 这里不能访问方法和属性！！ */
-    },
-
     created() {
-      /* 注意：子组件mounted在父组件created之后、父组件mounted之前触发，故子组件mounted需要用到的prop
-         需要在父组件created中初始化！！ */
+      this.initFieldModel()
       this.registerToRefList()
       this.initEventHandler()
+      this.buildFieldRules()
 
       this.handleOnCreated()
     },
@@ -74,15 +72,25 @@
     beforeDestroy() {
       this.unregisterFromRefList()
     },
-
     methods: {
+      handleCloseCustomEvent() {
+        if (!!this.field.options.onClose) {
+          let changeFn = new Function(this.field.options.onClose)
+          changeFn.call(this)
+        }
+      }
 
+    },
+    data() {
+      return {
+        oldFieldValue: null, //field组件change之前的值
+        fieldModel: null,
+        rules: [],
+      }
     }
-
   }
 </script>
 
 <style lang="scss" scoped>
-  @import "../../../../styles/global.scss"; //* static-content-wrapper已引入，还需要重复引入吗？ *//
 
 </style>

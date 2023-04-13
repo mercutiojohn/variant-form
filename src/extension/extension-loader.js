@@ -7,17 +7,28 @@ import {
 import * as PERegister from '@/components/form-designer/setting-panel/propertyRegister'
 import * as PEFactory from '@/components/form-designer/setting-panel/property-editor-factory'
 
+import {registerCWGenerator} from '@/utils/sfc-generator'
+import {registerFWGenerator} from '@/utils/sfc-generator'
+
+/* Container 容器组件 */
+// Card 卡片
 import {cardSchema} from "@/extension/samples/extension-schema"
 import CardWidget from '@/extension/samples/card/card-widget'
 import CardItem from '@/extension/samples/card/card-item'
-import {registerCWGenerator} from '@/utils/sfc-generator'
 import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
+/* Widget 字段组件 */
+// Alert 提示
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
-import {registerFWGenerator} from '@/utils/sfc-generator'
 import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
-
+// Test 测试
+import {testSchema} from "@/extension/samples/extension-schema"
+import TestWidget from '@/extension/samples/test/test-widget'
+import {tableSchema} from "@/extension/samples/extension-schema"
+import elTableWidget from '@/extension/samples/el-table/el-table-widget'
+import elTableItem from '@/extension/samples/el-table/el-table-item'
+import elTableEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableEdit-editor'
 export const loadExtension = function () {
 
   /**
@@ -32,6 +43,7 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   Vue.component(CardWidget.name, CardWidget)  //注册设计期的容器组件
   Vue.component(CardItem.name, CardItem)  //注册运行期的容器组件
+
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('card-folded', 'card-folded-editor',
       PEFactory.createBooleanEditor('folded', 'extension.setting.cardFolded'))
@@ -64,6 +76,7 @@ export const loadExtension = function () {
    * 5. 加载完毕。
    */
   addCustomWidgetSchema(alertSchema)  //加载组件Json Schema
+
   /* -------------------------------------------------- */
   Vue.component(AlertWidget.name, AlertWidget)  //注册组件
   /* -------------------------------------------------- */
@@ -76,9 +89,9 @@ export const loadExtension = function () {
     {label: 'info', value: 'info'},
     {label: 'error', value: 'error'},
   ]
-  // PERegister.registerCPEditor('alert-type', 'alert-type-editor',
-  //     PEFactory.createSelectEditor('type', 'extension.setting.alertType',
-  //         {optionItems: typeOptions}))
+//   PERegister.registerCPEditor('alert-type', 'alert-type-editor',
+//       PEFactory.createSelectEditor('type', 'extension.setting.alertType',
+//           {optionItems: typeOptions}))
   /* type属性映射已存在，无须再注册，故只需注册属性编辑器即可！！ */
   Vue.component('alert-type-editor',
       PEFactory.createSelectEditor('type', 'extension.setting.alertType',
@@ -113,4 +126,20 @@ export const loadExtension = function () {
   registerFWGenerator('alert', alertTemplateGenerator)  //注册字段组件的代码生成器
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
+  
+  /* 字段组件加载测试 start */
+  addCustomWidgetSchema(testSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(TestWidget.name, TestWidget)  //注册组件
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor('test-testName', 'test-testName-editor',
+      PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
+      
+    addCustomWidgetSchema(tableSchema)  //加载组件Json Schema
+    Vue.component(elTableWidget.name, elTableWidget)
+    Vue.component(elTableItem.name, elTableItem)
+    Vue.component(elTableEditEditor.name, elTableEditEditor)
+    PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
+    PEFactory.createInputTextEditor('tableEdit', 'extension.setting.tableEdit')) 
+  /* 字段组件加载测试完毕 end */
 }

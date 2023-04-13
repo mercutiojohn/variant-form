@@ -3,6 +3,7 @@ export default {
     widgetLabel: {
       card: '卡片',
       alert: '提示',
+      'el-table': '增删改查',
     },
 
     setting: {
@@ -19,6 +20,7 @@ export default {
       center: '文字居中',
       showIcon: '显示图标',
       effect: '显示效果',
+      tableEdit:'编辑'
 
     },
 
