@@ -12,8 +12,8 @@
   <el-container class="main-container full-height">
     <el-header class="main-header" v-if="showLink('headerShow')" >
       <div class="float-left main-title">
-        <!-- <img src="../../assets/vform-logo.png" @click="openHome"> -->
-        <!-- <span class="bold">VForm</span> -->
+        <!-- <img src="../../assets/vform-logo.png" @click="openHome">
+        <span class="bold">VForm</span> -->
          {{i18nt('application.productTitle')}}
         <span class="version-span">Ver {{vFormVersion}}</span></div>
       <div class="float-right external-link">
@@ -79,6 +79,7 @@
   import i18n, { changeLocale } from "@/utils/i18n"
   import axios from "axios"
   import SvgIcon from '@/components/svg-icon'
+  import {formTemplates} from './widget-panel/templatesConfig'
 
   export default {
     name: "VFormDesigner",
@@ -138,6 +139,11 @@
         default: () => ({})
       },
 
+      /* 模板列表 */
+      templateData: {
+        type: Array,
+        default: () => formTemplates
+      }
     },
     data() {
       return {
@@ -163,6 +169,7 @@
       return {
         serverFieldList: this.fieldList,
         getDesignerConfig: () => this.designerConfig,
+        getTemplateData: () => this.templateData,
         getBannedWidgets: () => this.bannedWidgets,
       }
     },

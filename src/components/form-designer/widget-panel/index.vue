@@ -90,7 +90,6 @@
 <script>
   import Draggable from 'vuedraggable'
   import {containers, basicFields, advancedFields, customFields} from "./widgetsConfig"
-  import {formTemplates} from './templatesConfig'
   import {traverseAllWidgets, addWindowResizeHandler} from "@/utils/util"
   import i18n from "@/utils/i18n"
   import axios from "axios"
@@ -115,7 +114,7 @@
     props: {
       designer: Object,
     },
-    inject: ['getBannedWidgets', 'getDesignerConfig'],
+    inject: ['getBannedWidgets', 'getDesignerConfig','getTemplateData'],
     data() {
       return {
         designerConfig: this.getDesignerConfig(),
@@ -133,7 +132,7 @@
         advancedFields,
         customFields,
 
-        formTemplates: formTemplates,
+        formTemplates: this.getTemplateData(),
         // ftImages: [
         //   {imgUrl: ftImg1},
         //   {imgUrl: ftImg2},

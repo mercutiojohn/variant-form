@@ -3,6 +3,7 @@ export default {
     widgetLabel: {
       card: 'Card',
       alert: 'Alert',
+      'user-choose': '人员选择',
     },
 
     setting: {
