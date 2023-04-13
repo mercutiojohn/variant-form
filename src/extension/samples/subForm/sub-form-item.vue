@@ -1,36 +1,35 @@
 <template>
-  <container-wrapper :designer="designer" :widget="widget" :parent-widget="parentWidget" :parent-list="parentList"
-                     :index-of-parent-list="indexOfParentList">
-    <el-card 
-      :key="widget.id" class="card-container" 
-      @click.native.stop="selectWidget(widget)"
-      :shadow="widget.options.shadow" 
-      :style="{width: widget.options.cardWidth + '!important' || ''}"
-      :class="[selected ? 'selected' : '', !!widget.options.folded ? 'folded' : '', customClass]"
-    >
+  <container-item-wrapper :widget="widget">
+    <el-card :key="widget.id" class="card-container" :class="[!!widget.options.folded ? 'folded' : '', customClass]"
+             :shadow="widget.options.shadow" :style="{width: widget.options.cardWidth + '!important' || ''}"
+             :ref="widget.id" v-show="!widget.options.hidden">
       <div slot="header" class="clear-fix">
         <span>{{widget.options.label}}</span>
         <i v-if="widget.options.showFold" class="float-right"
-           :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']"
-           @click="toggleCard"></i>
+           :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']" @click="toggleCard"></i>
       </div>
-      <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
-                 handle=".drag-handler"
-                 @add="(evt) => onContainerDragAdd(evt, widget.widgetList)"
-                 @update="onContainerDragUpdate" :move="checkContainerMove">
-        <transition-group name="fade" tag="div" class="form-widget-list">
-          <template v-for="(subWidget, swIdx) in widget.widgetList">
-            <template v-if="'container' === subWidget.category">
-              <component :is="subWidget.type + '-widget'" :widget="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
-                         :index-of-parent-list="swIdx" :parent-widget="widget"></component>
-            </template>
-            <template v-else>
-              <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
-                         :index-of-parent-list="swIdx" :parent-widget="widget" :design-state="true"></component>
-            </template>
+      <template v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
+        <template v-for="(subWidget, swIdx) in widget.widgetList">
+          <template v-if="'container' === subWidget.category">
+            <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
+                       :index-of-parent-list="swIdx" :parent-widget="widget">
+              <!-- 递归传递插槽！！！ -->
+              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                <slot :name="slot" v-bind="scope"/>
+              </template>
+            </component>
           </template>
-        </transition-group>
-      </draggable>
+          <template v-else>
+            <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
+                       :index-of-parent-list="swIdx" :parent-widget="widget">
+              <!-- 递归传递插槽！！！ -->
+              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                <slot :name="slot" v-bind="scope"/>
+              </template>
+            </component>
+          </template>
+        </template>
+      </template>
     </el-card>
 
     <el-table
@@ -58,7 +57,7 @@
       <!-- <el-table-column label="uuid" align="center" prop="uuid" width="60" class-name="allowDrag" /> -->
       <el-table-column label="字段名" prop="name">
         <template slot-scope="scope">
-          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
+          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
           >
           <!-- :rules="[
             validString(1, 255),
@@ -67,7 +66,7 @@
               message:'不符合数据库表字段格式规范'
             }]" -->
             <el-input v-model="scope.row.name" placeholder="" />
-          </el-form-item>
+          </CommonFormItem>
         </template>
       </el-table-column>
       <el-table-column label="字段描述" prop="comment">
@@ -77,18 +76,18 @@
       </el-table-column>
       <el-table-column label="数据类型" prop="type"> <!-- width="200"  -->
         <template slot-scope="scope">
-          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
+          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
             <el-select v-model="scope.row.type" placeholder="">
               <el-option v-for="dict in options.tableDataTypeOptions" :key="dict.code" :label="dict.name" :value="dict.code" />
             </el-select>
-          </el-form-item>
+          </CommonFormItem>
         </template>
       </el-table-column>
       <el-table-column label="长度" prop="length" width="200" align="center">
         <template slot-scope="scope">
-          <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
+          <CommonFormItem :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
             <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" /> <!-- :placeholder="ifLengthDisabledType(scope.row.type)?'':'请输入字段长度'"  -->
-          </el-form-item>
+          </CommonFormItem>
         </template>
       </el-table-column>
       <el-table-column label="非空" prop="isNull" width="70" align="center">
@@ -113,39 +112,30 @@
       <!-- <el-button type="normal" icon="el-icon-plus" size="mini" @click="initDefaultFields">添加默认字段</el-button> -->
       <!-- <el-button type="normal" icon="el-icon-delete" size="mini" @click="handleDeleteTableCreatorTableColumn">删除</el-button> -->
     </div>
-  </container-wrapper>
+  </container-item-wrapper>
 </template>
 
 <script>
+  import emitter from '@/utils/emitter'
   import i18n from "@/utils/i18n"
-  import containerMixin from "@/components/form-designer/form-widget/container-widget/containerMixin"
-  import Draggable from 'vuedraggable'
-  import ContainerWrapper from "@/components/form-designer/form-widget/container-widget/container-wrapper"
+  import refMixin from "@/components/form-render/refMixin"
+  import ContainerItemWrapper from '@/components/form-render/container-item/container-item-wrapper'
+  import containerItemMixin from "@/components/form-render/container-item/containerItemMixin"
   import FieldComponents from '@/components/form-designer/form-widget/field-widget/index'
-  import refMixinDesign from "@/components/form-designer/refMixinDesign"
 
   export default {
-    name: "sub-form-widget",
-    componentName: 'ContainerWidget',
-    mixins: [i18n, containerMixin, refMixinDesign],
-    inject: ['refList'],
+    name: "sub-form-item",
+    componentName: 'ContainerItem',
+    mixins: [emitter, i18n, refMixin, containerItemMixin],
     components: {
-      Draggable,
-      ContainerWrapper,
+      ContainerItemWrapper,
       ...FieldComponents,
     },
     props: {
       widget: Object,
-      parentWidget: Object,
-      parentList: Array,
-      indexOfParentList: Number,
-      designer: Object,
     },
+    inject: ['refList', 'sfRefList', 'globalModel'],
     computed: {
-      selected() {
-        return this.widget.id === this.designer.selectedId
-      },
-
       customClass() {
         return this.widget.options.customClass || ''
       },
@@ -153,6 +143,9 @@
     },
     created() {
       this.initRefList()
+    },
+    beforeDestroy() {
+      this.unregisterFromRefList()
     },
     data() {
       return {
@@ -165,25 +158,8 @@
       }
     },
     methods: {
-      /**
-       * 检查接收哪些组件拖放，如不接受某些组件拖放，则根据组件类型判断后返回false
-       * @param evt
-       * @returns {boolean}
-       */
-      checkContainerMove(evt) {
-        return true
-      },
-
       toggleCard() {
         this.widget.options.folded = !this.widget.options.folded
-      },
-
-      /**
-       * 设置折叠/打开状态
-       * @param folded
-       */
-      setFolded(folded) {
-        this.widget.options.folded = !!folded
       },
       // ------------------------subform-----------------------------
       /** 复选框选中数据 */
@@ -205,22 +181,6 @@
         obj.updateBy = ''
         obj.uuid = this.uuid(8,16)
         this.columnForm.tableCreatorTableColumnList.splice(index, 0, obj)
-      },
-      /** 建表工具-列信息添加按钮操作 */
-      handleAddTableCreatorTableColumn () {
-        let obj = {}
-        obj.name = ''
-        obj.comment = ''
-        obj.type = ''
-        obj.length = ''
-        obj.isNull = ''
-        obj.createBy = ''
-        obj.updateTime = ''
-        obj.createTime = ''
-        obj.groupId = ''
-        obj.updateBy = ''
-        obj.uuid = this.uuid(8,16)
-        this.columnForm.tableCreatorTableColumnList.push(obj)
       },
       deleteRow (index) {
         this.columnForm.tableCreatorTableColumnList.splice(index - 1, 1)
@@ -253,23 +213,11 @@
       rowTableCreatorTableColumnIndex ({ row, rowIndex }) {
         row.index = rowIndex + 1
       },
-    }
+    },
   }
 </script>
 
 <style lang="scss" scoped>
-.card-container.selected {
-  outline: 2px solid $--color-primary !important;
-}
-
-.card-container {
-  margin: 3px;
-
-  .form-widget-list {
-    min-height: 28px;
-  }
-}
-
 ::v-deep .el-card__header {
   padding: 10px 12px;
 }

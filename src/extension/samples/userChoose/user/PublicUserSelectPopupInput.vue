@@ -17,7 +17,6 @@
       :disabled="options.disabled" 
       :size="options.size" 
       class="hide-spin-button"
-      :type="inputType"
       :show-password="options.showPassword"
       :prefix-icon="options.prefixIcon"
       :suffix-icon="options.suffixIcon"

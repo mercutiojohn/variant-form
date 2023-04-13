@@ -25,10 +25,13 @@ import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generato
 // UserChoose 人员选择
 import {userChooseSchema} from "@/extension/samples/extension-schema"
 import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
+// import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 // subForm 子表
 import {subFormSchema} from "@/extension/samples/extension-schema"
 import SubFormWidget from '@/extension/samples/subForm/sub-form-widget'
+import SubFormItem from '@/extension/samples/subForm/sub-form-item'
+// import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 export const loadExtension = function () {
 
@@ -126,22 +129,43 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
   
-  /* 字段组件加载测试 start */
+  /* UserChoose 组件加载测试 start */
   addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('test-testName', 'test-testName-editor',
       PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
-
-  /* 字段组件加载测试完毕 end */
-
-  /* 字段组件加载测试 start */
-  addCustomWidgetSchema(subFormSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
-  Vue.component(SubFormWidget.name, SubFormWidget)  //注册组件
+  //  registerFWGenerator('userChoose', alertTemplateGenerator)  //注册字段组件的代码生成器
   /* -------------------------------------------------- */
-  PERegister.registerCPEditor('subform-testName', 'subform-testName-editor',
-      PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))  
-  /* 字段组件加载测试完毕 end */
+  /* UserChoose 组件加载测试完毕 end */
+
+  /* SubForm 容器组件加载完毕 end */
+  addContainerWidgetSchema(subFormSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(SubFormWidget.name, SubFormWidget)  //注册设计期的容器组件
+  Vue.component(SubFormItem.name, SubFormItem)  //注册运行期的容器组件
+  /* -------------------------------------------------- */
+//   PERegister.registerCPEditor('subForm-folded', 'subForm-folded-editor',
+//       PEFactory.createBooleanEditor('folded', 'extension.setting.cardFolded'))
+
+//   PERegister.registerCPEditor('subForm-showFold', 'subForm-showFold-editor',
+//       PEFactory.createBooleanEditor('showFold', 'extension.setting.cardShowFold'))
+
+//   PERegister.registerCPEditor('subForm-cardWidth', 'subForm-cardWidth-editor',
+//       PEFactory.createInputTextEditor('cardWidth', 'extension.setting.cardWidth'))
+
+//   let shadowOptions = [
+//     {label: 'never', value: 'never'},
+//     {label: 'hover', value: 'hover'},
+//     {label: 'always', value: 'always'},
+//   ]
+//   PERegister.registerCPEditor('subForm-shadow', 'subForm-shadow-editor',
+//       PEFactory.createSelectEditor('shadow', 'extension.setting.cardShadow',
+//           {optionItems: shadowOptions}))
+  /* -------------------------------------------------- */
+//   registerCWGenerator('subForm', cardTemplateGenerator)  //注册容器组件的代码生成器
+  /* -------------------------------------------------- */
+  /* SubForm 容器组件加载完毕 end */
 }

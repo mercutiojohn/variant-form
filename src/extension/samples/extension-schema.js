@@ -1,3 +1,5 @@
+// 容器组件
+
 export const cardSchema = {
   type: 'card',
   category: 'container',
@@ -14,6 +16,25 @@ export const cardSchema = {
     customClass: '',
   }
 }
+
+export const subFormSchema = {
+  type: 'sub-form',
+  icon: 'sub-form',
+  category: 'container',
+  widgetList: [],
+  options: {
+    name: '',
+    label: '子表单',
+    hidden: false,
+    folded: false,
+    showFold: true,
+    cardWidth: '100%',
+    shadow: 'never',
+    customClass: '',
+  }
+}
+
+// 原子组件
 
 export const alertSchema = {
   type: 'alert',
@@ -80,23 +101,24 @@ export const userChooseSchema = {
   }
 }
 
-export const subFormSchema = {
-  type: 'sub-form',
-  icon: 'sub-form',
-  formItemFlag: false,
-  options: {
-    name: '',
-    testName: '',
-    title: 'Good things are coming...',
-    type: 'info',
-    description: '',
-    closable: true,
-    closeText: '',
-    center: true,
-    showIcon: false,
-    effect: 'light',
-    hidden: false,
-    onClose: '',
-    customClass: '',
-  }
-}
+/* ref */
+// export const subFormSchema = {
+//   type: 'sub-form',
+//   icon: 'sub-form',
+//   category: 'container',
+//   widgetList: [],
+//   options: {
+//     name: "",
+//     showBlankRow: !0,
+//     showRowNumber: !0,
+//     labelAlign: "label-center-align",
+//     hidden: !1,
+//     disabled: !1,
+//     actionColumnPosition: "left",
+//     customClass: "",
+//     onSubFormRowAdd: "",
+//     onSubFormRowInsert: "",
+//     onSubFormRowDelete: "",
+//     onSubFormRowChange: ""
+//   }
+// }
