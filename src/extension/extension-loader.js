@@ -26,6 +26,10 @@ import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generato
 import {userChooseSchema} from "@/extension/samples/extension-schema"
 import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
 
+// subForm 子表
+import {subFormSchema} from "@/extension/samples/extension-schema"
+import SubFormWidget from '@/extension/samples/subForm/sub-form-widget'
+
 export const loadExtension = function () {
 
   /**
@@ -130,5 +134,14 @@ export const loadExtension = function () {
   PERegister.registerCPEditor('test-testName', 'test-testName-editor',
       PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
 
+  /* 字段组件加载测试完毕 end */
+
+  /* 字段组件加载测试 start */
+  addCustomWidgetSchema(subFormSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(SubFormWidget.name, SubFormWidget)  //注册组件
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor('subform-testName', 'subform-testName-editor',
+      PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))  
   /* 字段组件加载测试完毕 end */
 }

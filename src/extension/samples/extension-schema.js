@@ -79,3 +79,24 @@ export const userChooseSchema = {
     onAppendButtonClick: '',
   }
 }
+
+export const subFormSchema = {
+  type: 'sub-form',
+  icon: 'sub-form',
+  formItemFlag: false,
+  options: {
+    name: '',
+    testName: '',
+    title: 'Good things are coming...',
+    type: 'info',
+    description: '',
+    closable: true,
+    closeText: '',
+    center: true,
+    showIcon: false,
+    effect: 'light',
+    hidden: false,
+    onClose: '',
+    customClass: '',
+  }
+}
