@@ -22,13 +22,23 @@ import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
 import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
-// Test 测试
-import {testSchema} from "@/extension/samples/extension-schema"
-import TestWidget from '@/extension/samples/test/test-widget'
+// UserChoose 人员选择
+import {userChooseSchema} from "@/extension/samples/extension-schema"
+import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
+// import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+
+// subForm 子表
+import {subFormSchema} from "@/extension/samples/extension-schema"
+import SubFormWidget from '@/extension/samples/subForm/sub-form-widget'
+import SubFormItem from '@/extension/samples/subForm/sub-form-item'
+// import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+
+// DataTable 增删改查
 import {tableSchema} from "@/extension/samples/extension-schema"
 import elTableWidget from '@/extension/samples/el-table/el-table-widget'
 import elTableItem from '@/extension/samples/el-table/el-table-item'
 import elTableEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableEdit-editor'
+
 export const loadExtension = function () {
 
   /**
@@ -127,19 +137,51 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
   
-  /* 字段组件加载测试 start */
-  addCustomWidgetSchema(testSchema)  //加载组件Json Schema
+  /* UserChoose 组件加载测试 start */
+  addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
-  Vue.component(TestWidget.name, TestWidget)  //注册组件
+  Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('test-testName', 'test-testName-editor',
       PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
-      
-    addCustomWidgetSchema(tableSchema)  //加载组件Json Schema
-    Vue.component(elTableWidget.name, elTableWidget)
-    Vue.component(elTableItem.name, elTableItem)
-    Vue.component(elTableEditEditor.name, elTableEditEditor)
-    PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
-    PEFactory.createInputTextEditor('tableEdit', 'extension.setting.tableEdit')) 
-  /* 字段组件加载测试完毕 end */
+  /* -------------------------------------------------- */
+  //  registerFWGenerator('userChoose', alertTemplateGenerator)  //注册字段组件的代码生成器
+  /* -------------------------------------------------- */
+  /* UserChoose 组件加载测试完毕 end */
+
+  /* SubForm 容器组件加载 start */
+  addContainerWidgetSchema(subFormSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(SubFormWidget.name, SubFormWidget)  //注册设计期的容器组件
+  Vue.component(SubFormItem.name, SubFormItem)  //注册运行期的容器组件
+  /* -------------------------------------------------- */
+//   PERegister.registerCPEditor('subForm-folded', 'subForm-folded-editor',
+//       PEFactory.createBooleanEditor('folded', 'extension.setting.cardFolded'))
+
+//   PERegister.registerCPEditor('subForm-showFold', 'subForm-showFold-editor',
+//       PEFactory.createBooleanEditor('showFold', 'extension.setting.cardShowFold'))
+
+//   PERegister.registerCPEditor('subForm-cardWidth', 'subForm-cardWidth-editor',
+//       PEFactory.createInputTextEditor('cardWidth', 'extension.setting.cardWidth'))
+
+  let actionColumnPositionOptions = [
+    {label: '居左', value: 'left'},
+    {label: '居右', value: 'right'}
+  ]
+  PERegister.registerCPEditor('actionColumnPosition', 'subForm-actionColumnPosition-editor',
+  PEFactory.createRadioButtonGroupEditor('actionColumnPosition', 'designer.setting.actionColumnPosition',
+          {optionItems: actionColumnPositionOptions}))
+  /* -------------------------------------------------- */
+//   registerCWGenerator('subForm', cardTemplateGenerator)  //注册容器组件的代码生成器
+  /* -------------------------------------------------- */
+  /* SubForm 容器组件加载完毕 end */
+
+  /* 表格组件加载 start */
+  addCustomWidgetSchema(tableSchema)  //加载组件Json Schema
+  Vue.component(elTableWidget.name, elTableWidget)
+  Vue.component(elTableItem.name, elTableItem)
+  Vue.component(elTableEditEditor.name, elTableEditEditor)
+  PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
+  PEFactory.createInputTextEditor('tableEdit', 'extension.setting.tableEdit')) 
+  /* 表格组件加载 end */
 }
