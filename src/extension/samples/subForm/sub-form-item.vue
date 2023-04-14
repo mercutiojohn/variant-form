@@ -9,7 +9,7 @@
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']" @click="toggleCard"></i>
       </div>
     </el-card> -->
-    {{widget}}
+    <!-- {{widget}} -->
     <el-table
       :key="widget.id" 
       :data="columnForm.tableCreatorTableColumnList"
@@ -80,7 +80,7 @@
         getFieldCellClass(widget, field),
       ]" -->
       <el-table-column 
-          label="a"
+          :label="subWidget.label"
           prop="test" 
           width="70" 
           align="center"
