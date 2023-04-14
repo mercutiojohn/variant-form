@@ -9,7 +9,6 @@
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']" @click="toggleCard"></i>
       </div>
     </el-card> -->
-
     <el-table
       :key="widget.id" 
       :data="columnForm.tableCreatorTableColumnList"
@@ -36,28 +35,22 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="序号" align="center" prop="index" width="60" class-name="allowDrag" />
+      <!-- <el-table-column label="序号" align="center" prop="index" width="60" class-name="allowDrag" /> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" width="60" class-name="allowDrag" /> -->
-      <el-table-column label="字段名" prop="name">
+      <!-- <el-table-column label="字段名" prop="name">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" required style="margin-bottom:0"
           >
-          <!-- :rules="[
-            validString(1, 255),
-            {
-              pattern:/(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)/,
-              message:'不符合数据库表字段格式规范'
-            }]" -->
             <el-input v-model="scope.row.name" placeholder="" />
           </el-form-item>
         </template>
-      </el-table-column>
-      <el-table-column label="字段描述" prop="comment">
+      </el-table-column> -->
+      <!-- <el-table-column label="字段描述" prop="comment">
         <template slot-scope="scope">
           <el-input v-model="scope.row.comment" placeholder="" />
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" prop="type"> <!-- width="200"  -->
+      <el-table-column label="数据类型" prop="type">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.type'" required style="margin-bottom:0">
             <el-select v-model="scope.row.type" placeholder="">
@@ -69,23 +62,58 @@
       <el-table-column label="长度" prop="length" width="200" align="center">
         <template slot-scope="scope">
           <el-form-item :prop="'tableCreatorTableColumnList.' + scope.$index + '.name'" :required="!ifLengthDisabledType(scope.row.type)" style="margin-bottom:0">
-            <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" /> <!-- :placeholder="ifLengthDisabledType(scope.row.type)?'':'请输入字段长度'"  -->
+            <el-input-number :controls="false" :min="1" v-model="scope.row.length" :disabled="ifLengthDisabledType(scope.row.type)" />
           </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="非空" prop="isNull" width="70" align="center">
         <template slot-scope="scope">
-          <!-- <el-input v-model="scope.row.isNull" placeholder="请输入是否为空" /> -->
           <el-checkbox true-label="1" v-model="scope.row.isNull"></el-checkbox>
         </template>
-      </el-table-column>
-      <el-table-column label="test" prop="test" width="70" align="center">
+      </el-table-column> -->
+
+      <!-- :label="field.options.label"  -->
+      <!-- v-if="!!widget.widgetList && (widget.widgetList.length > 0)" -->
+      <!-- :class="[
+        getFieldAlign(widget, field),
+        getFieldCellClass(widget, field),
+      ]" -->
+      <el-table-column 
+          :label="subWidget.label"
+          prop="test" 
+          width="70" 
+          align="center"
+          v-for="(subWidget, swIdx) in widget.widgetList"
+          :key="widget.id + 'td' + swIdx.id"
+          class="field-cell"
+          :style="{ width: subWidget.options.columnWidth }"
+        >
+          <template slot-scope="scope" v-if="'container' === subWidget.category">
+            <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
+                      :index-of-parent-list="swIdx" :parent-widget="widget">
+              <!-- 递归传递插槽！！！ -->
+              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                <slot :name="slot" v-bind="scope"/>
+              </template>
+            </component>
+          </template>
+          <template v-else>
+            <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
+                      :index-of-parent-list="swIdx" :parent-widget="widget">
+              <!-- 递归传递插槽！！！ -->
+              <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+                <slot :name="slot" v-bind="scope"/>
+              </template>
+            </component>
+          </template>
+        </el-table-column>
+      <!-- <el-table-column label="test" prop="test" width="70" align="center">
         <template slot-scope="scope" v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
           <template v-for="(subWidget, swIdx) in widget.widgetList">
             <template v-if="'container' === subWidget.category">
               <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
                         :index-of-parent-list="swIdx" :parent-widget="widget">
-                <!-- 递归传递插槽！！！ -->
+                <!- 递归传递插槽！！！ ->
                 <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
                   <slot :name="slot" v-bind="scope"/>
                 </template>
@@ -94,7 +122,7 @@
             <template v-else>
               <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
                         :index-of-parent-list="swIdx" :parent-widget="widget">
-                <!-- 递归传递插槽！！！ -->
+                <!- 递归传递插槽！！！ ->
                 <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
                   <slot :name="slot" v-bind="scope"/>
                 </template>
@@ -102,7 +130,7 @@
             </template>
           </template>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
@@ -140,8 +168,32 @@
     },
     props: {
       widget: Object,
+      parentWidget: Object,
+      parentList: Array,
+      indexOfParentList: Number,
+      designer: Object,
+
+      designState: {
+        type: Boolean,
+        default: false,
+      },
+
+      subFormRowIndex: {
+        /* 子表单组件行索引，从0开始计数 */ type: Number,
+        default: -1,
+      },
+      subFormColIndex: {
+        /* 子表单组件列索引，从0开始计数 */ type: Number,
+        default: -1,
+      },
+      subFormRowId: {
+        /* 子表单组件行Id，唯一id且不可变 */ type: String,
+        default: "",
+      },
     },
     inject: ['refList', 'sfRefList', 'globalModel'],
+    // inject: ["refList", "sfRefList", "globalModel", "getReadMode"],
+    // provide: ['getSubFormName','getSubFormFieldFlag'],
     computed: {
       customClass() {
         return this.widget.options.customClass || ''
