@@ -159,9 +159,9 @@ export default {
       preview: '预览',
       importJson: '导入JSON',
       exportJson: '导出JSON',
-      exportCode: '导出代码',
+      exportCode: '导出JSON-Vue',
       generateCode: '生成代码',
-      generateSFC: '生成SFC',
+      generateSFC: '生成原生Vue',
     },
 
     setting: {
