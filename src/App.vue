@@ -19,6 +19,23 @@ export default {
   components: {
     VFormDesigner,
   },
+  provide () {
+    return {
+      testApi: this.testApi,
+      // 通用请求
+      request: window.axios,
+      // d2调用
+      mapState: this.testApi,
+      mapActions: this.testApi,
+      mapMutations: this.testApi,
+      // 通用增删改查
+      addRecord: this.testApi,
+      delRecordById: this.testApi,
+      updateRecord: this.testApi,
+      queryListCond: this.testApi,
+      getRecordById: this.testApi
+    }
+  },
   data() {
     return {
       designerConfig: {
@@ -64,6 +81,9 @@ export default {
     getTemplateData() {
       let jsonObj = require('./assets/templates.json')
       return jsonObj
+    },
+    testApi () {
+      this.$message.success('外部API方法测试')
     }
   }
 }
