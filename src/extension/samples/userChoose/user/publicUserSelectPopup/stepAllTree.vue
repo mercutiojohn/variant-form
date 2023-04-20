@@ -20,10 +20,11 @@
 </template>
 
 <script>
-import { getPersonData, getParentId } from "../../api/transferunit";
-import { PersonTreeData } from "../../api/tree";
+// import { getPersonData, getParentId } from "../../api/transferunit";
+// import { PersonTreeData } from "../../api/tree";
 export default {
   name: "stepAllTree",
+  inject:['getPersonData','getParentId','PersonTreeData'],
   data() {
     return {
       data: [],
@@ -62,10 +63,10 @@ export default {
   },
   computed: {},
   methods: {
-    getParentId() {
+    getParentIdx() {
       var _this = this;
 
-      getParentId({
+      this.getParentId({
         groupId: _this.groupId,
       }).then((response) => {
         if (response.data != "" && response.data != undefined) {
@@ -82,10 +83,10 @@ export default {
       //   this.toGroupId=this.newGroupId
       // }
       this.toGroupId = "000000";
-      getPersonData({ groupId: this.toGroupId }).then((res) => {
+      this.getPersonData({ groupId: this.toGroupId }).then((res) => {
         this.data = res.data;
         this.data[0].parentid = "0";
-        this.data = PersonTreeData(this.data);
+        this.data = this.PersonTreeData(this.data);
         // console.log(this.data[0])
         //console.log(this.selectUser,'++++')
         // if (this.selectUser.length > 0) {
@@ -172,7 +173,7 @@ export default {
   },
   mounted: function () {
     this.getTreeData();
-    //this.getParentId();
+    //this.getParentIdx();
   },
   watch: {
     filterText(val) {

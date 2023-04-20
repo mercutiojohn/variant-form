@@ -16,10 +16,11 @@
 </template>
 
 <script>
-import { getGroupUserTree } from '../../api/transferunit'
-import { treeData } from '../../api/tree'
+// import { getGroupUserTree } from '../../api/transferunit'
+// import { treeData } from '../../api/tree'
 export default {
   name: 'stepGroupTree',
+  inject:['getGroupUserTree','treeData'],
   data() {
     return {
       data: [],
@@ -46,8 +47,8 @@ export default {
   },
   methods:{
     getTreeData() {
-      getGroupUserTree({groupId:this.newOperator}).then(res => {
-        this.data = treeData(res.data)
+      this.getGroupUserTree({groupId:this.newOperator}).then(res => {
+        this.data = this.treeData(res.data)
       })
     },
     //节点选中状态发生变化时的回调
