@@ -13,7 +13,10 @@
 
 <script>
 import VFormDesigner from './components/form-designer/index.vue'
-
+import VFormDesigner from './components/form-designer/index.vue'
+// 人员选择API
+import { getGroupUserTree, getPersonData, getParentId } from '@/api/sys/transferunit'
+import { treeData, PersonTreeData } from '@/api/sys/tree'
 export default {
   name: 'App',
   components: {
@@ -33,7 +36,13 @@ export default {
       delRecordById: this.testApi,
       updateRecord: this.testApi,
       queryListCond: this.testApi,
-      getRecordById: this.testApi
+      getRecordById: this.testApi,
+      // 人员选择API
+      PersonTreeData,
+      treeData,
+      getParentId,
+      getPersonData,
+      getGroupUserTree
     }
   },
   data() {
