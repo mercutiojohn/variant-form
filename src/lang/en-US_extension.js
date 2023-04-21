@@ -11,7 +11,6 @@ export default {
       cardShowFold: 'Show Fold',
       cardWidth: 'Width Of Card',
       cardShadow: 'Shadow',
-
       alertTitle: 'Title',
       alertType: 'Type',
       description: 'Description',
@@ -20,7 +19,7 @@ export default {
       center: 'Center',
       showIcon: 'Show Icon',
       effect: 'Effect',
-
+      formId:'Bind Form'
     },
 
   }
