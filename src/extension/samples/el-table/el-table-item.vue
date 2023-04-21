@@ -13,7 +13,7 @@
 
     <div :key="widget.id" class="table-container"
     v-show="!widget.options.hidden">
-         <anji-crud ref="listPage" :option="crudOption">
+         <anji-crud ref="listPage" :option="newCrudOption" :formId="formId">
           </anji-crud>
     </div>
 
@@ -52,6 +52,10 @@
       parentList: Array,
       indexOfParentList: Number,
       designer: Object,
+      designState: {
+        type: Boolean,
+        default: false
+      },
     },
     data() {
       return {
@@ -110,7 +114,17 @@
               click: () => {
                 return this.$refs.listPage.handleDeleteBatch();
               }
-            }
+            },
+            {
+              label: "新增",
+              type: "primary",
+              permission: "resultsetManage:add",
+              icon: "el-icon-add",
+              plain: false,
+              click: () => {
+                return this.$refs.listPage.handleOpenEditView("add");
+              }
+            },
           ],
           // 表格行按钮
           rowButtons: [
@@ -118,14 +132,14 @@
               label: "编辑",
               permission: "resultsetManage:update",
               click: row => {
-                return this.operateDataset("edit", row);
+                return this.$refs.listPage.handleOpenEditView("edit",row);
               }
             },
-            {
-              label: "数据预览",
-              permission: "resultsetManage:query",
-              click: this.dataView
-            },
+            // {
+            //   label: "数据预览",
+            //   permission: "resultsetManage:query",
+            //   click: this.dataView
+            // },
             {
               label: "删除",
               permission: "resultsetManage:delete",
@@ -302,13 +316,34 @@
       // customClass() {
       //   return this.widget.options.customClass || ''
       // },
-
+      newCrudOption(){
+        this.crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
+        this.crudOption.columns=this.widget.options.crudOption.columns
+        this.crudOption.itemId=this.widget.options.crudOption.itemId
+        // this.crudOption=this.widget.options.crudOption
+        console.log(this.crudOption);
+        return this.crudOption
+      },
+      formId(){
+        
+        return  this.widget.options.formId
+      }
     },
     watch: {
       //
     },
     created() {
-      this.initRefList()
+      // this.crudOption=this.widget.options.crudOption
+      this.crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
+      this.crudOption.columns=this.widget.options.crudOption.columns
+      this.formId=this.widget.options.formId
+      console.log(this.formId);
+      
+      this.field=this.widget
+      // this.initFieldModel()
+      // this.registerToRefList()
+      // this.initEventHandler()
+      // this.initRefList()
       this.handleOnCreated()
     },
     mounted() {

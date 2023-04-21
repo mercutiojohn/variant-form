@@ -38,7 +38,7 @@ import {tableSchema} from "@/extension/samples/extension-schema"
 import elTableWidget from '@/extension/samples/el-table/el-table-widget'
 import elTableItem from '@/extension/samples/el-table/el-table-item'
 import elTableEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableEdit-editor'
-
+import elTableButtonEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableButtonEdit-editor'
 export const loadExtension = function () {
 
   /**
@@ -181,7 +181,12 @@ export const loadExtension = function () {
   Vue.component(elTableWidget.name, elTableWidget)
   Vue.component(elTableItem.name, elTableItem)
   Vue.component(elTableEditEditor.name, elTableEditEditor)
+  Vue.component(elTableButtonEditEditor.name, elTableButtonEditEditor)
   PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
-  PEFactory.createInputTextEditor('tableEdit', 'extension.setting.tableEdit')) 
+  PEFactory.createEventHandlerEditor('tableEdit', [])) 
+  PERegister.registerCPEditor('tableButtonEdit', 'tableButtonEdit-editor',
+  PEFactory.createEventHandlerEditor('tableButtonEdit', [])) 
+  PERegister.registerCPEditor('el-table-formId', 'el-table-formId-editor',
+  PEFactory.createInputTextEditor('formId', 'extension.setting.formId')) 
   /* 表格组件加载 end */
 }

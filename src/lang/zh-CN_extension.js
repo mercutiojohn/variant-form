@@ -12,7 +12,6 @@ export default {
       cardShowFold: '显示折叠按钮',
       cardWidth: '卡片宽度',
       cardShadow: '显示阴影',
-
       alertTitle: '标题',
       alertType: '类型',
       description: '辅助性文字',
@@ -21,8 +20,7 @@ export default {
       center: '文字居中',
       showIcon: '显示图标',
       effect: '显示效果',
-      tableEdit:'编辑'
-
+      formId:'绑定表单'
     },
 
   }

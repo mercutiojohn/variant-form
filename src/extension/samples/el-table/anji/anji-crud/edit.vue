@@ -7,6 +7,7 @@
     :visible.sync="showDialog"
     :fullscreen="dialogFullScreen"
     @close="handleCloseDialog('close')"
+    :append-to-body="true"
   >
     <template v-slot:title>
       {{ option.title + "--" + modelType }}
@@ -25,13 +26,16 @@
     <component
       :is="'EditForm'"
       ref="mainForm"
+      v-if="false"
       v-model="saveForm"
       :option="option"
       :model-type="modelType"
       :show-dialog="showDialog"
       @changeRowColNum="handleSetRowColNum"
     />
-
+    <VFormRender ref="preForm" :key="itemId" :form-json="formJson" :form-data="testFormData" :preview-state="true"
+    :option-data="testOptionData" :global-dsv="designerDsv">
+    </VFormRender>
     <!--关联表相关-->
     <template v-for="(item, index) in joinEntitys">
       <component
@@ -78,15 +82,17 @@
 </template>
 
 <script>
+import VFormRender from '@/components/form-render/index'
 import EditForm from "./edit-form";
 import EditTable from "./edit-table";
 import common from './mixins/common'
 export default {
   name: "EditDialog",
-  components: { EditForm, EditTable },
+  components: { EditForm, EditTable,VFormRender },
   mixins: [
     common,
   ],
+  inject: ['textAlert'],
   props: {
     visible: {
       type: [Boolean],
@@ -100,6 +106,9 @@ export default {
       default: () => {
         return {};
       }
+    },
+    itemId: {
+      default: ''
     },
     // 预处理详情接口数据
     handleDetailData: {
@@ -141,7 +150,10 @@ export default {
       showDialog: false, // 编辑详情弹框是否显示
       dialogFullScreen: false, // 弹出框全屏
       cardRowColNum: 2, // 主信息一行显示几列
-
+      testFormData:'',
+      formJson:'',
+      testOptionData:'',
+      designerDsv:'',
       // 提交表单的数据
       saveForm: {},
       // 已成功校验的关联表单个数
@@ -192,10 +204,29 @@ export default {
       if (newValue != null) {
         this.queryByPrimarykey(newValue);
       }
+    },
+    itemId(newValue, oldValue){
+      // console.log('this.itemId',this.itemId);
+      // let data= this.textAlert(newValue)
+      // console.log('aaaaaaaaaaaaa',data)
+      let data= this.textAlert(newValue)
+      data.then(res => {
+        console.log('aaaaaaaaaaaaa',res)
+        this.formJson=JSON.parse(res.pageJson)
+        console.log('aaaaaaaaaaaaa',this.formJson)
+        });
     }
   },
   mounted() {
     // 为主表的编辑表单，渲染上默认值
+    // this.textAlert(this.itemId)
+    if(this.itemId){
+      let data= this.textAlert(this.itemId)
+      data.then(res => {
+        console.log('aaaaaaaaaaaaa',res)
+        this.formJson=JSON.parse(res.pageJson)
+        });
+    }    
     this.initDefaultSaveForm();
   },
   methods: {

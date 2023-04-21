@@ -207,7 +207,11 @@
 </template>
 
 <script>
+  import common from './mixins/common'
 export default {
+  mixins: [
+    common,
+  ],
   components: {},
   props: {
     modelType: String, // add view edit

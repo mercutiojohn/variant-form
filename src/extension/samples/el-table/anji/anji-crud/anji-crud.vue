@@ -189,7 +189,7 @@
               :icon="item.icon"
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
-              @click="item.click(checkRecords)"
+              @click="item.click"
               style="font-size: 16px;"
               size="medium"
               >{{ handlegetLable(checkRecords, item.label) }}
@@ -216,7 +216,8 @@
                       :min-width="item.minWidth || 110"
                       :sortable="item.sortable"
                       :show-overflow-tooltip="true"
-                      align="center"
+                      :align="item.contentAlign"
+                      :header-align="item.headerAlign"
                     >
                       <template slot-scope="scope">
                         <div v-if="item.columnType == 'imgPreview'">
@@ -384,6 +385,7 @@
         :model-type="editDialogModelType"
         :visible="editDialogOpen"
         :row-data="editDialogRowData"
+        :itemId="itemId"
         @closeEvent="editDialogClosedEvent"
       >
         <template v-slot:customCard>
@@ -431,6 +433,7 @@ import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, R
 import common from './mixins/common'
 import queryform from './mixins/queryform'
 export default {
+  inject: ['listVformPages','openForm'],
   mixins: [
     common,
     queryform,
@@ -448,6 +451,9 @@ export default {
     ...FieldComponents,
   },
   props: {
+    formId:{
+
+    },
     option: {
       require: true,
       type: Object,
@@ -467,6 +473,7 @@ export default {
             delete: {},
             add: {}
           },
+          itemId:'',
           // 表格列
           columns: [],
           queryFormChange: (fileName, val) => {}
@@ -478,9 +485,9 @@ export default {
     return {
       // 查询表单提交的值
       queryParams: {
-        showMoreSearch: false, // 是否展开更多搜索条件
-        order: "",
-        sort: ""
+        // showMoreSearch: false, // 是否展开更多搜索条件
+        // order: "",
+        // sort: ""
       },
       params: {
             pageQueryData: {
@@ -495,6 +502,7 @@ export default {
       // total: 0, // 接口返回的总条数
 
       // 编辑详情弹框
+      itemId:'',
       editDialogOpen: false, // 新建时主动打开编辑弹框
       editDialogRowData: {}, // 编辑时的主键
       editDialogModelType: "view", // 编辑 查看
@@ -534,9 +542,10 @@ export default {
     },
     // 不包含树形控件的查询条件
     queryFormFieldExcludeTree() {
-      let treeFields = this.option.queryFormFields.filter(
+      //查询条件控制
+      let treeFields =this.option.queryFormFieldsFlag?(this.option.queryFormFields.filter(
         item => item["inputType"] != "anji-tree"
-      );
+      )):[]
       return treeFields;
     },
     // 主键的列名
@@ -565,6 +574,7 @@ export default {
     }
   },
   created() {
+    this.itemId=this.option.itemId
     // 为查询框中所有input加上默认值
     this.option.queryFormFields.forEach(item => {
       // 动态添加属性
@@ -593,7 +603,7 @@ export default {
     },
     // 切换更多搜索条件
     handleToggleMoreSearch() {
-      this.queryParams.showMoreSearch = !this.queryParams.showMoreSearch;
+      // this.queryParams.showMoreSearch = !this.queryParams.showMoreSearch;
     },
     // 列上排序切换
     handleSortChange(column) {
@@ -604,11 +614,11 @@ export default {
       }
       // console.log(column,'123321321321');
       
-      let sort = column.prop; // 列表查询默认排序列
-      let order = column.order == "ascending" ? "ASC" : "DESC";
-      this.queryParams["sort"] = sort;
-      this.queryParams["order"] = order;
-      this.handleQueryForm("query");
+      // let sort = column.prop; // 列表查询默认排序列
+      // let order = column.order == "ascending" ? "ASC" : "DESC";
+      // this.queryParams["sort"] = sort;
+      // this.queryParams["order"] = order;
+      // this.handleQueryForm("query");
     },
     // 查询按钮
     handleQueryForm(from) {
@@ -631,13 +641,13 @@ export default {
         }
       }
       // 默认的排序
-      if (
-        this.isBlank(this.queryParams["order"]) &&
-        this.isNotBlank(this.option.buttons.query.order)
-      ) {
-        this.queryParams["sort"] = this.option.buttons.query.sort;
-        this.queryParams["order"] = this.option.buttons.query.order;
-      }
+      // if (
+      //   this.isBlank(this.queryParams["order"]) &&
+      //   this.isNotBlank(this.option.buttons.query.order)
+      // ) {
+      //   this.queryParams["sort"] = this.option.buttons.query.sort;
+      //   this.queryParams["order"] = this.option.buttons.query.order;
+      // }
       this.params.pageQueryData.currentPage = 1;
 
       // 添加一些其他的查询参数
@@ -657,20 +667,25 @@ export default {
     // 列表查询
     async handleQueryPageList() {
       // 将特殊参数值urlcode处理
-      let params = this.urlEncodeObject(this.queryParams, "order,sort");
-      const { data } = await this.option.buttons.query.api({ pageQueryData: JSON.stringify(this.params.pageQueryData),condition: JSON.stringify(this.queryParams),});
+      // let params = this.urlEncodeObject(this.queryParams, "order,sort");
+      this.listVformPages(this.formId,{pageQueryData:this.params.pageQueryData,params: this.queryParams}).then(response => {
+        if (response.data.code != "200") return;
+        this.records = response.data.rows;
+        this.params.pageQueryData.total = response.data.total;
+      });
+      // const { data } = await this.option.buttons.query.api({ pageQueryData: JSON.stringify(this.params.pageQueryData),condition: JSON.stringify(this.queryParams),});
       // if (code != "200") return;
-      this.records = data.list;
-      this.params.pageQueryData.total = data.total;
+      // this.records = data.list;
+      // this.params.pageQueryData.total = data.total;
     },
     // 重置
     handleResetForm() {
-      const showMoreSearch = this.queryParams.showMoreSearch;
-      this.queryParams = {
-        order: "",
-        sort: "",
-        showMoreSearch
-      };
+      // const showMoreSearch = this.queryParams.showMoreSearch;
+      // this.queryParams = {
+      //   order: "",
+      //   sort: "",
+      //   showMoreSearch
+      // };
 
       // 查询条件表单只读模式下不重置默认值
       const queryFormFieldsOption = this.option.queryFormFields;
@@ -702,14 +717,31 @@ export default {
       }
     },
     // 编辑和查看操作
-    handleOpenEditView(modelType, row) {
+    handleOpenEditView(modelType,row) {
       if (modelType == "view" || modelType == "edit") {
-        this.editDialogRowData = row;
+        //是否打开内部弹框
+          if(this.option.dialogFlag){
+            console.log(row);
+            
+            this.editDialogRowData = row;
+            this.editDialogOpen = true;
+          }else{
+            console.log(row);
+            this.openForm(this.formId,row.task_id)
+          }       
       }
       this.editDialogModelType = modelType;
       if (modelType == "add") {
         // 新增模式，不需要查询数据详情，直接打开
-        this.editDialogOpen = true;
+        // console.log('row',this.option.itemId);       
+        // this.itemId=this.option.itemId
+        console.log("add");   
+        console.log(this.formId); 
+        if(this.option.dialogFlag){
+            this.editDialogOpen = true;
+          }else{
+            this.openForm(this.formId)
+          }  
       }
       const obj = {
         type: modelType,
