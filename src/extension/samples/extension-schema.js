@@ -7,7 +7,7 @@ export const cardSchema = {
   widgetList: [],
   options: {
     name: '',
-    label: 'card',
+    label: '卡片',
     hidden: false,
     folded: false,
     showFold: true,
@@ -64,12 +64,12 @@ export const alertSchema = {
   formItemFlag: false,
   options: {
     name: '',
-    title: 'Good things are coming...',
-    type: 'info',
+    title: '提示内容示例',
+    type: 'success',
     description: '',
     closable: true,
     closeText: '',
-    center: true,
+    center: false,
     showIcon: false,
     effect: 'light',
     hidden: false,
@@ -85,7 +85,7 @@ export const userChooseSchema = {
   options: { // 组件属性对象，每一个属性值对应一个属性编辑器
     name: '',
     testName: '',
-    label: '',
+    label: '人员选择',
     labelAlign: '',
     type: 'text',
     defaultValue: '',
