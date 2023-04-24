@@ -731,7 +731,7 @@ export function createDesigner(vueInstance) {
       let tempId = generateId()
       newWidget.id = newWidget.type.replace(/-/g, '') + tempId
       newWidget.options.name = newWidget.id
-      newWidget.options.label = newWidget.options.label || newWidget.type.toLowerCase()
+      newWidget.options.label = this.vueInstance.i18n2t(`designer.widgetLabel.${newWidget.type}`, `extension.widgetLabel.${newWidget.type}`) || newWidget.options.label || newWidget.type.toLowerCase()
 
       delete newWidget.displayName
       return newWidget
@@ -769,7 +769,7 @@ export function createDesigner(vueInstance) {
         let newTabPane = deepClone( this.getContainerByType('tab-pane') )
         newTabPane.id = 'tab-pane-' + generateId()
         newTabPane.options.name = 'tab1'
-        newTabPane.options.label = 'tab 1'
+        newTabPane.options.label = 'Tab 1'
         newCon.tabs.push(newTabPane)
       }
       //newCon.options.customClass = []
