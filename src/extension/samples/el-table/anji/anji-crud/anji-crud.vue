@@ -190,8 +190,7 @@
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
               @click="item.click"
-              style="font-size: 16px;"
-              size="medium"
+              size="mini"
               >{{ handlegetLable(checkRecords, item.label) }}
             </el-button>
           </div>
@@ -215,7 +214,7 @@
                       :label="fieldLabel(item)"
                       :min-width="item.minWidth || 110"
                       :sortable="item.sortable"
-                      :show-overflow-tooltip="true"
+                      show-overflow-tooltip
                       :align="item.contentAlign"
                       :header-align="item.headerAlign"
                     >
@@ -264,7 +263,7 @@
                     </el-table-column>
           </template>
             <!--多选-->
-            <el-table-column fixed type="selection" width="50" align="center" />
+            <el-table-column fixed v-if="selectionChange" type="selection" width="50" align="center" />
             <!--隐藏列-->
             <!-- <el-table-column v-if="tableExpandColumns.length > 0" type="expand">
               <template slot-scope="scope">
@@ -433,7 +432,7 @@ import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, R
 import common from './mixins/common'
 import queryform from './mixins/queryform'
 export default {
-  inject: ['listVformPages','openForm'],
+  inject: ['listVformPages','openForm','setFunction'],
   mixins: [
     common,
     queryform,
@@ -523,6 +522,18 @@ export default {
     }
   },
   computed: {
+    //多选列控制
+    selectionChange(){
+      console.log('dads',this.option.tableButtons);
+      
+      for (let index = 0; index < this.option.tableButtons.length; index++) {
+        if(this.option.tableButtons[index].id=='delete'){
+          return true
+          break;
+        }        
+      }
+      return false
+    },
     // 查询区隐藏
     queryFormTreeHide() {
       const flag =
@@ -798,6 +809,11 @@ export default {
         // 批量删除选中的行
         ids = this.checkRecords.map(item => item[this.primaryKeyFieldName]);
       }
+      console.log(ids);
+      console.log(this.setFunction)
+      console.log(this.listVformPages)
+      console.log(this.setFunction.delRecordByIds);
+      
       if(ids.length>0){
           this.$confirm("删除确认", "确认要删除吗?", {
           type: "warning",
@@ -805,18 +821,32 @@ export default {
           cancelButtonClass: "el-button--danger is-plain"
         })
           .then(() => {
-            this.option.buttons.delete.api({ids:ids}).then(res => {
-              // {code: "200", message: "操作成功", data: true}
-              this.checkRecords = [];
-              // 关闭弹出框时，如果有树，刷新下
-              // if (
-              //   this.hasTreeFieldInQueryForm &&
-              //   this.$refs.queryFormTree != null
-              // ) {
-              //   this.$refs.queryFormTree.queryData();
-              // }
+            let jsonIds=''
+            ids.forEach((item)=>{
+              jsonIds+=item+','
+            })
+            console.log(jsonIds);
+            jsonIds=jsonIds.substr(0,jsonIds.length-1) 
+            console.log(jsonIds);
+            // jsonIds=JSON.parse(jsonIds)
+            // console.log(jsonIds);
+            let delRecordByIds=this.setFunction.delRecordByIds
+            delRecordByIds(this.formId,{ids:jsonIds}).then(response => {
+
               this.handleQueryPageList();
-            });
+            })
+            // this.option.buttons.delete.api({ids:ids}).then(res => {
+            //   // {code: "200", message: "操作成功", data: true}
+            //   this.checkRecords = [];
+            //   // 关闭弹出框时，如果有树，刷新下
+            //   // if (
+            //   //   this.hasTreeFieldInQueryForm &&
+            //   //   this.$refs.queryFormTree != null
+            //   // ) {
+            //   //   this.$refs.queryFormTree.queryData();
+            //   // }
+            //   this.handleQueryPageList();
+            // });
           })
           .catch(e => {
             e;
@@ -1026,7 +1056,12 @@ export default {
   }
 };
 </script>
-
+<style scoped>
+ /deep/.el-tooltip>div{
+    text-overflow: ellipsis;
+    overflow: hidden;
+ }
+</style>
 <!-- <style scoped lang="scss">
 .right-container {
   display: flex;

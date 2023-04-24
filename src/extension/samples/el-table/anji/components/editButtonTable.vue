@@ -16,14 +16,28 @@
         </TableColumn>
         <TableColumn  prop="type" header-align="center" align="left" label="类型" >
             <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.type" ></el-input>
+                <el-select v-model="scope.row.type" placeholder="请选择">
+                  <el-option label="主要按钮" value='primary'></el-option>
+                  <el-option label="成功按钮" value='success'></el-option>
+                  <el-option label="信息按钮" value='info'></el-option>
+                  <el-option label="警告按钮" value='warning'></el-option>
+                  <el-option label="危险按钮" value='danger'></el-option>
+              </el-select>
             </template>
         </TableColumn>
-        <TableColumn  prop="itemId" header-align="center" align="left" label="绑定id" >
+        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="120" label="是否隐藏" >
+          <template slot-scope="scope"  >
+              <el-select v-model="scope.row.tableHide" placeholder="请选择">
+                  <el-option label="隐藏" :value='true'></el-option>
+                  <el-option label="显示" :value='false'></el-option>
+              </el-select>
+          </template>
+        </TableColumn>
+        <!-- <TableColumn  prop="itemId" header-align="center" align="left" label="绑定id" >
             <template slot-scope="scope"  >
                 <el-input  v-model="scope.row.itemId" ></el-input>
             </template>
-        </TableColumn>
+        </TableColumn> -->
       </Table>
       <div style="text-align: center;margin-top: 20px">
         <Button  size="medium" type="primary" @click="toSave">

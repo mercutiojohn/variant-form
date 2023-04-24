@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form-item label="编辑" label-width="150px">
+    <el-form-item label="表格列编辑" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
         编辑字段</el-button>
     </el-form-item>

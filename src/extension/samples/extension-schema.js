@@ -274,7 +274,8 @@ export const tableSchema = {
             click: row => {
               return 'handleOpenEditView("edit")'
               // return this.operateDataset("edit", row);
-            }
+            },
+            tableHide:false
           },
           // {
           //   label: "数据预览",
@@ -286,30 +287,35 @@ export const tableSchema = {
             permission: "resultsetManage:delete",
             click: row => {
               return this.$refs.listPage.handleDeleteBatch(row);
-            }
+            },
+            tableHide:false
           }
         ],
          // 表头按钮
          tableButtons: [
           {
+            id:'delete',
             label: "删除",
             type: "danger",
             permission: "resultsetManage:delete",
             icon: "el-icon-delete",
             plain: false,
-            click: 'handleDeleteBatch()'
-            
+            tableHide:false
+            // click: () => {
+            //   return this.$refs.listPage.handleDeleteBatch();
+            // }
           },
           {
+            id:'add',
             label: "新增",
             type: "primary",
             permission: "resultsetManage:add",
             icon: "el-icon-add",
             plain: false,
-            click: () => {
-              return 'handleOpenEditView("add")';
-            }
-            
+            tableHide:false
+            // click: () => {
+            //   return this.$refs.listPage.handleOpenEditView("add");
+            // }
           },
         ],
         itemId:'3',

@@ -144,13 +144,24 @@
         });
       },
       delDict(index,rows) {
-        if (index == 0) {
+        if (rows.length<=1) {
           this.$message.error("至少保留一条");
           return;
         }
+        if(rows[index].primaryKey){
+              this.$confirm("删除确认", "确认要删除吗,可能会影响部分功能?", {
+              type: "warning",
+              confirmButtonClass: "delete_sure",
+              cancelButtonClass: "el-button--danger is-plain"
+            }).then(() => {
+              rows.splice(index, 1);
+              })
+        }else{
+          rows.splice(index, 1);
+        }
         console.log(index,rows);
         
-        rows.splice(index, 1);
+
       },
       // 保存份号编辑
       toSave () {

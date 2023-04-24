@@ -13,7 +13,7 @@
 
     <div :key="widget.id" class="table-container"
     v-show="!widget.options.hidden">
-         <anji-crud ref="listPage" :option="newCrudOption" :formId="formId">
+         <anji-crud ref="listPage" :option="crudOption" :formId="formId">
           </anji-crud>
     </div>
 
@@ -35,10 +35,11 @@
   import refMixinDesign from "@/components/form-designer/refMixinDesign"
   import anjiCrud from './anji/anji-crud/anji-crud'
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin";
+  import common from './anji/anji-crud/mixins/common'
   export default {
     name: "el-table-item",
     componentName: 'ContainerWidget',
-    mixins: [i18n, containerMixin, refMixinDesign,fieldMixin],
+    mixins: [i18n, containerMixin, refMixinDesign,fieldMixin,common],
     inject: ['refList'],
     components: {
       ContainerWrapper,
@@ -46,7 +47,7 @@
       anjiCrud
     },
     props: {
-      field: Object,
+      // field: Object,
       widget: Object,
       parentWidget: Object,
       parentList: Array,
@@ -111,6 +112,7 @@
               permission: "resultsetManage:delete",
               icon: "el-icon-delete",
               plain: false,
+              id:'delete',
               click: () => {
                 return this.$refs.listPage.handleDeleteBatch();
               }
@@ -121,6 +123,7 @@
               permission: "resultsetManage:add",
               icon: "el-icon-add",
               plain: false,
+              id:'add',
               click: () => {
                 return this.$refs.listPage.handleOpenEditView("add");
               }
@@ -316,14 +319,19 @@
       // customClass() {
       //   return this.widget.options.customClass || ''
       // },
-      newCrudOption(){
-        this.crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
-        this.crudOption.columns=this.widget.options.crudOption.columns
-        this.crudOption.itemId=this.widget.options.crudOption.itemId
-        // this.crudOption=this.widget.options.crudOption
-        console.log(this.crudOption);
-        return this.crudOption
-      },
+      // newCrudOption(){
+      //   let crudOption={}
+      //   crudOption=this.deepClone(this.crudOption)
+      //   crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
+      //   crudOption.columns=this.widget.options.crudOption.columns
+      //   crudOption.itemId=this.widget.options.crudOption.itemId         
+      //   let tableButtons=this.getData(crudOption.tableButtons,this.widget.options.crudOption.tableButtons)
+      //   crudOption.tableButtons=tableButtons
+      //   let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
+      //   crudOption.rowButtons=rowButtons
+      //   console.log(this.crudOption);
+      //   return this.crudOption
+      // },
       formId(){
         
         return  this.widget.options.formId
@@ -333,12 +341,16 @@
       //
     },
     created() {
-      // this.crudOption=this.widget.options.crudOption
+      let crudOption={}
+      crudOption=this.deepClone(this.crudOption)
       this.crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
       this.crudOption.columns=this.widget.options.crudOption.columns
-      this.formId=this.widget.options.formId
-      console.log(this.formId);
-      
+      this.crudOption.itemId=this.widget.options.crudOption.itemId         
+      let tableButtons=this.getData(crudOption.tableButtons,this.widget.options.crudOption.tableButtons)
+      this.crudOption.tableButtons=tableButtons
+      let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
+      this.crudOption.rowButtons=rowButtons
+      console.log(this.crudOption);
       this.field=this.widget
       // this.initFieldModel()
       // this.registerToRefList()
@@ -351,7 +363,26 @@
       //
     },
     methods: {
-
+      getData(defaultData,queryData){
+        // console.log('2342',defaultData,queryData);
+        
+        let defaultDataId=[]
+        let finallyData=[]
+        defaultData.forEach((item)=>{
+          defaultDataId[item.id]=item
+        })
+        queryData.forEach((item)=>{
+          (defaultDataId[item.id])&&(item.click= defaultDataId[item.id].click)
+          //是否隐藏
+          if(!item.tableHide){
+            finallyData.push(item)
+          }
+        })
+        // console.log(this.crudOption.tableButtons);
+        
+        // console.log(finallyData);
+        return finallyData
+      }
 
     }
   }
