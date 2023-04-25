@@ -219,40 +219,40 @@ export default {
   },
   inject: ["refList", "sfRefList", "globalModel", "getReadMode"],
 
-  created: function () {
+  created  () {
     this.initRefList(),
     this.registerSubFormToRefList(),
     this.initRowIdData(!0),
     this.initFieldSchemaData(),
     this.initEventHandler();
   },
-  mounted: function () {
+  mounted  () {
     this.handleSubFormFirstRowAdd();
   },
-  beforeDestroy: function () {
+  beforeDestroy  () {
     this.unregisterFromRefList();
   },
   computed: {
-    isReadMode: function() {
+    isReadMode () {
       return this.getReadMode();
     },
-    leftActionColumn: function() {
+    leftActionColumn () {
       return "left" === (this.widget.options.actionColumnPosition || "left");
     },
-    widgetDisabled: function() {
+    widgetDisabled () {
       return !!this.widget.options.disabled;
     }
   },
   methods: {
-    getLabelAlign: function (e, t) {
+    getLabelAlign  (e, t) {
       return t.options.labelAlign || e.options.labelAlign;
     },
-    registerSubFormToRefList: function () {
+    registerSubFormToRefList  () {
       if ("sub-form" === this.widget.type) {
         this.sfRefList[this.widget.options.name] = this;
       }
     },
-    initRowIdData: function (e) {
+    initRowIdData  (e) {
       var t = this;
       if ("sub-form" === this.widget.type) {
         this.rowIdData.splice(0, this.rowIdData.length);
@@ -269,23 +269,23 @@ export default {
         }
       }
     },
-    addToRowIdData: function () {
+    addToRowIdData  () {
       this.rowIdData.push("id" + Object(r["f"])());
     },
-    insertToRowIdData: function (e) {
+    insertToRowIdData  (e) {
       this.rowIdData.splice(e, 0, "id" + Object(r["f"])());
     },
-    deleteFromRowIdData: function (e) {
+    deleteFromRowIdData  (e) {
       this.rowIdData.splice(e, 1);
     },
-    getRowIdData: function () {
+    getRowIdData  () {
       return this.rowIdData;
     },
-    getWidgetRefOfSubForm: function (e, t) {
+    getWidgetRefOfSubForm  (e, t) {
       var i = e + "@row" + this.rowIdData[t];
       return this.getWidgetRef(i);
     },
-    deleteSubFormRow: function (e) {
+    deleteSubFormRow  (e) {
       var t = this,
         i = this.formModel[this.widget.options.name] || [],
         n = this.rowIdData[e];
@@ -297,19 +297,19 @@ export default {
           t.handleSubFormRowChange(i);
         }));
     },
-    handleSubFormRowAdd: function (e, t) {
+    handleSubFormRowAdd  (e, t) {
       this.$emit("subFormRowAdd", e, t);
     },
-    handleSubFormRowChange: function (e) {
+    handleSubFormRowChange  (e) {
       this.$emit("subFormRowChange", e);
     },
-    disableSubForm: function () {
+    disableSubForm  () {
       this.$refs.formItem.disabled = !0;
     },
-    enableSubForm: function () {
+    enableSubForm  () {
       this.$refs.formItem.disabled = !1;
     },
-    initFieldSchemaData: function () {
+    initFieldSchemaData  () {
       var e = this;
       if ("sub-form" === this.widget.type) {
         var t = this.rowIdData.length;
@@ -384,6 +384,205 @@ export default {
     rowTableCreatorTableColumnIndex({ row, rowIndex }) {
       row.index = rowIndex + 1;
     },
+    getLabelAlign (e, t) {
+        return t.options.labelAlign || e.options.labelAlign
+    },
+    registerSubFormToRefList () {
+        "sub-form" === this.widget.type && (this.sfRefList[this.widget.options.name] = this)
+    },
+    initRowIdData (e) {
+        var t = this;
+        if ("sub-form" === this.widget.type) {
+            this.rowIdData.splice(0, this.rowIdData.length);
+            var i = this.formModel[this.widget.options.name];
+            i && i.length > 0 && (i.forEach((function() {
+                t.rowIdData.push("id" + Object(r["f"])())
+            }
+            )),
+            e && setTimeout((function() {
+                t.handleSubFormRowChange(i)
+            }
+            ), 800))
+        }
+    },
+    addToRowIdData () {
+        this.rowIdData.push("id" + Object(r["f"])())
+    },
+    insertToRowIdData (e) {
+        this.rowIdData.splice(e, 0, "id" + Object(r["f"])())
+    },
+    deleteFromRowIdData (e) {
+        this.rowIdData.splice(e, 1)
+    },
+    getRowIdData () {
+        return this.rowIdData
+    },
+    getWidgetRefOfSubForm (e, t) {
+        var i = e + "@row" + this.rowIdData[t];
+        return this.getWidgetRef(i)
+    },
+    initFieldSchemaData () {
+        var e = this;
+        if ("sub-form" === this.widget.type) {
+            var t = this.rowIdData.length;
+            if (this.fieldSchemaData.splice(0, this.fieldSchemaData.length),
+            t > 0)
+                for (var i = function(t) {
+                    var i = [];
+                    e.widget.widgetList.forEach((function(t) {
+                        i.push(e.cloneFieldSchema(t))
+                    }
+                    )),
+                    e.fieldSchemaData.push(i)
+                }, n = 0; n < t; n++)
+                    i(n)
+        }
+    },
+    addToFieldSchemaData (e) {
+        var t = this
+          , i = [];
+        this.widget.widgetList.forEach((function(e) {
+            i.push(t.cloneFieldSchema(e))
+        }
+        )),
+        void 0 === e ? this.fieldSchemaData.push(i) : this.fieldSchemaData.splice(e, 0, i)
+    },
+    deleteFromFieldSchemaData (e) {
+        this.fieldSchemaData.splice(e, 1)
+    },
+    cloneFieldSchema (e) {
+        var t = Object(r["d"])(e);
+        return t.id = e.type + Object(r["f"])(),
+        t
+    },
+    initEventHandler () {
+        var e = this;
+        "sub-form" === this.widget.type && this.$on("setFormData", (function(t) {
+            e.initRowIdData(!1),
+            e.initFieldSchemaData();
+            var i = t[e.widget.options.name] || [];
+            setTimeout((function() {
+                e.handleSubFormRowChange(i)
+            }
+            ), 800)
+        }
+        ))
+    },
+    handleSubFormFirstRowAdd () {
+        var e = this;
+        if ("sub-form" === this.widget.type && this.widget.options.showBlankRow && 1 === this.rowIdData.length) {
+            var t = this.formModel[this.widget.options.name] || [];
+            this.$nextTick((function() {
+                e.handleSubFormRowAdd(t, e.rowIdData[0]),
+                e.handleSubFormRowChange(t),
+                e.widget.options.disabled && e.disableSubForm()
+            }
+            ))
+        }
+    },
+    addSubFormRow () {
+        var e = this
+          , t = {};
+        this.widget.widgetList.forEach((function(e) {
+            e.formItemFlag && (t[e.options.name] = e.options.defaultValue)
+        }
+        ));
+        var i = this.formModel[this.widget.options.name] || [];
+        i.push(t),
+        this.addToRowIdData(),
+        this.addToFieldSchemaData(),
+        this.$nextTick((function() {
+            e.handleSubFormRowAdd(i, e.rowIdData[i.length - 1]),
+            e.handleSubFormRowChange(i)
+        }
+        ))
+    },
+    insertSubFormRow (e) {
+        var t = this
+          , i = {};
+        this.widget.widgetList.forEach((function(e) {
+            e.formItemFlag && (i[e.options.name] = e.options.defaultValue)
+        }
+        ));
+        var n = this.formModel[this.widget.options.name] || [];
+        n.splice(e, 0, i),
+        this.insertToRowIdData(e),
+        this.addToFieldSchemaData(e),
+        this.$nextTick((function() {
+            t.handleSubFormRowInsert(n, t.rowIdData[e]),
+            t.handleSubFormRowChange(n)
+        }
+        ))
+    },
+    deleteSubFormRow (e) {
+        var t = this;
+        this.$confirm(this.i18nt("render.hint.deleteSubFormRow") + "?", this.i18nt("render.hint.prompt"), {
+            confirmButtonText: this.i18nt("render.hint.confirm"),
+            cancelButtonText: this.i18nt("render.hint.cancel")
+        }).then((function() {
+            var i = t.formModel[t.widget.options.name] || []
+              , n = Object(r["d"])(i[e]);
+            i.splice(e, 1),
+            t.deleteFromRowIdData(e),
+            t.deleteFromFieldSchemaData(e),
+            t.$nextTick((function() {
+                t.handleSubFormRowDelete(i, n),
+                t.handleSubFormRowChange(i)
+            }
+            ))
+        }
+        )).catch((function() {}
+        ))
+    },
+    handleSubFormRowChange (e) {
+        if (this.widget.options.onSubFormRowChange) {
+            var t = new Function("subFormData",this.widget.options.onSubFormRowChange);
+            t.call(this, e)
+        }
+    },
+    handleSubFormRowAdd (e, t) {
+        if (this.widget.options.onSubFormRowAdd) {
+            var i = new Function("subFormData","newRowId",this.widget.options.onSubFormRowAdd);
+            i.call(this, e, t)
+        }
+    },
+    handleSubFormRowInsert (e, t) {
+        if (this.widget.options.onSubFormRowInsert) {
+            var i = new Function("subFormData","newRowId",this.widget.options.onSubFormRowInsert);
+            i.call(this, e, t)
+        }
+    },
+    handleSubFormRowDelete (e, t) {
+        if (this.widget.options.onSubFormRowDelete) {
+            var i = new Function("subFormData","deletedDataRow",this.widget.options.onSubFormRowDelete);
+            i.call(this, e, t)
+        }
+    },
+    setDisabled (e) {
+        this.widget.options.disabled = e,
+        e ? this.disableSubForm() : this.enableSubForm()
+    },
+    setInsertDisabled (e) {
+        this.insertDisabled = e
+    },
+    setDeleteDisabled (e) {
+        this.deleteDisabled = e
+    },
+    setSubFormValues (e) {
+        var t = this;
+        this.$set(this.globalModel.formModel, this.widget.options.name, e),
+        this.initRowIdData(!1),
+        this.initFieldSchemaData(),
+        setTimeout((function() {
+            t.handleSubFormRowChange(e)
+        }
+        ), 800)
+    },
+    setSubFormFieldValue (e, t, i) {
+        var n = this.globalModel.formModel[this.widget.options.name];
+        n[i][e] = t,
+        this.handleSubFormRowChange(n)
+    }
   },
 };
 </script>
