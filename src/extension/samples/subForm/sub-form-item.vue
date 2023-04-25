@@ -100,7 +100,7 @@
         <!-- <el-button type="normal" icon="el-icon-plus" size="mini" @click="initDefaultFields">添加默认字段</el-button> -->
         <!-- <el-button type="normal" icon="el-icon-delete" size="mini" @click="handleDeleteTableCreatorTableColumn">删除</el-button> -->
       </div>
-      <el-row class="header-row">
+      <!-- <el-row class="header-row">
         <div v-if="leftActionColumn" class="action-header-column">
           <span class="action-label">{{ i18nt("render.hint.subFormAction") }}</span>
           <el-button
@@ -232,7 +232,6 @@
               :sub-form-row-index="sfrIdx"
               :sub-form-col-index="swIdx"
             >
-              <!-- 子表单暂不支持插槽！！！ -->
             </component>
           </div>
         </template>
@@ -259,7 +258,7 @@
             >
           </div>
         </div>
-      </el-row>
+      </el-row> -->
     </div>
   </container-item-wrapper>
 </template>
