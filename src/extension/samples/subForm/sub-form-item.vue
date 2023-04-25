@@ -16,7 +16,17 @@
           highlight-current-row
           border
         >
-          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" align="center">
+          <el-table-column v-if="leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
+            <template slot-scope="scope">
+              <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" :width="subWidget.options.columnWidth || 'auto'">
             <template slot="header" slot-scope="scope">
               <span
                 v-if="!!subWidget.options.labelIconClass"
@@ -77,34 +87,32 @@
                   :sub-form-row-id="rowIdData[scope.$index]"
                   :sub-form-row-index="scope.$index"
                   :sub-form-col-index="swIdx"
+                  :disabled="widgetDisabled || subWidget.options.disabled"
                 >
                   <!-- 子表单暂不支持插槽！！！ -->
                 </component>
               </div>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="uuid" align="center" prop="uuid" width="60" class-name="allowDrag" /> -->
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
+          <el-table-column v-if="!leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
-                <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
+                <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
-                <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
+                <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
       <div class="add-block">
-        <el-button type="text" icon="el-icon-plus" size="mini" @click="addSubFormRow">添加行</el-button>
-        <!-- <el-button type="normal" icon="el-icon-plus" size="mini" @click="initDefaultFields">添加默认字段</el-button> -->
-        <!-- <el-button type="normal" icon="el-icon-delete" size="mini" @click="handleDeleteTableCreatorTableColumn">删除</el-button> -->
+        <el-button type="text" icon="el-icon-plus" size="mini" :disabled="widgetDisabled" @click="addSubFormRow">添加行</el-button>
       </div>
       <!-- <el-row class="header-row">
         <div v-if="leftActionColumn" class="action-header-column">
           <span class="action-label">{{ i18nt("render.hint.subFormAction") }}</span>
           <el-button
-            :disabled="actionDisabled"
+            :disabled="widgetDisabled"
             round
             type="primary"
             size="mini"
@@ -174,7 +182,7 @@
         <div v-if="!leftActionColumn" class="action-header-column">
           <span class="action-label">{{ i18nt("render.hint.subFormAction") }}</span>
           <el-button
-            :disabled="actionDisabled"
+            :disabled="widgetDisabled"
             round
             type="primary"
             size="mini"
@@ -195,7 +203,7 @@
         <div v-if="leftActionColumn" class="sub-form-action-column hide-label">
           <div class="action-button-column">
             <el-button
-              :disabled="actionDisabled"
+              :disabled="widgetDisabled"
               circle
               type=""
               icon="el-icon-circle-plus-outline"
@@ -203,7 +211,7 @@
               :title="i18nt('render.hint.insertSubFormRow')"
             ></el-button>
             <el-button
-              :disabled="actionDisabled"
+              :disabled="widgetDisabled"
               circle
               type=""
               icon="el-icon-delete"
@@ -238,7 +246,7 @@
         <div v-if="!leftActionColumn" class="sub-form-action-column hide-label">
           <div class="action-button-column">
             <el-button
-              :disabled="actionDisabled"
+              :disabled="widgetDisabled"
               circle
               type=""
               icon="el-icon-circle-plus-outline"
@@ -246,7 +254,7 @@
               :title="i18nt('render.hint.insertSubFormRow')"
             ></el-button>
             <el-button
-              :disabled="actionDisabled"
+              :disabled="widgetDisabled"
               circle
               type=""
               icon="el-icon-delete"
@@ -284,17 +292,17 @@ export default {
     widget: Object,
   },
   inject: ["refList", "sfRefList", "globalModel"],
+  // , "getReadMode"
   data() {
     return {
       rowIdData: [],
-      fieldSchemaData: [],
-      actionDisabled: false,
+      fieldSchemaData: []
     };
   },
   computed: {
-    isReadMode () {
-      return this.getReadMode();
-    },
+    // isReadMode () {
+    //   return this.getReadMode();
+    // },
     leftActionColumn () {
       return "left" === (this.widget.options.actionColumnPosition || "right");
     },
