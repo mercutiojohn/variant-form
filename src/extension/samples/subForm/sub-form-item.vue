@@ -16,12 +16,12 @@
           highlight-current-row
           border
         >
-          <el-table-column v-if="leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
+          <el-table-column v-if="leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+              <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
                 <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+              <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
                 <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
             </template>
