@@ -16,7 +16,7 @@
           highlight-current-row
           border
         >
-          <el-table-column v-if="leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
+          <el-table-column v-if="leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
             <template slot-scope="scope">
               <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
                 <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
@@ -24,6 +24,11 @@
               <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
                 <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column v-if="!!widget.options.showRowNumber" label="序号" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
+            <template slot-scope="scope">
+              {{scope.$index + 1}}
             </template>
           </el-table-column>
           <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" :width="subWidget.options.columnWidth || 'auto'">
@@ -94,7 +99,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column v-if="!leftActionColumn" label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
+          <el-table-column v-if="!leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
                 <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>

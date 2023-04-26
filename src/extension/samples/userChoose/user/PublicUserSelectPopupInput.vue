@@ -72,7 +72,7 @@ export default {
           labelAlign: '',
           type: 'text',
           placeholder: '',
-          columnWidth: '200px',
+          columnWidth: '',
           size: '',
           labelWidth: null,
           labelHidden: false,
