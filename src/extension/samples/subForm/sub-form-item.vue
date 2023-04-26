@@ -31,7 +31,7 @@
               {{scope.$index + 1}}
             </template>
           </el-table-column>
-          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" :width="subWidget.options.columnWidth || 'auto'">
+          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="getLabelAlign(widget,subWidget)" align="center" :width="subWidget.options.columnWidth || 'auto'">
             <template slot="header" slot-scope="scope">
               <span
                 v-if="!!subWidget.options.labelIconClass"
@@ -330,7 +330,10 @@ export default {
   },
   methods: {
     getLabelAlign(widget, subWidget) {
-      return subWidget.options.labelAlign || widget.options.labelAlign;
+      const wid = widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'
+      const sub_wid = subWidget.options.labelAlign === 'label-left-align' ? 'left' : subWidget.options.labelAlign === 'label-right-align' ? 'right' : 'center'
+      return sub_wid || wid
+      // return subWidget.options.labelAlign || widget.options.labelAlign;
     },
 
     registerSubFormToRefList() {

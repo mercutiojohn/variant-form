@@ -30,7 +30,10 @@
         >
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label class="el-form-item__label" style="line-height: 32px"
+              <label :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
                 >操作</label
               >
               <div class="el-form-item__content">
@@ -67,11 +70,13 @@
         <div
           v-if="!!widget.options.showRowNumber"
           class="sub-form-table-extended index"
-          style="width: 60px"
         >
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label class="el-form-item__label" style="line-height: 32px"
+              <label :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
                 >序号</label
               >
               <div class="el-form-item__content">1</div>
@@ -130,7 +135,10 @@
         >
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label class="el-form-item__label" style="line-height: 32px"
+              <label :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
                 >操作</label
               >
               <div class="el-form-item__content">
@@ -257,7 +265,10 @@ export default {
     onSubFormDragEnd(e) {
       // console.log("sub form drag end: ", e);
       this.updateBoxWidth(e)
-    }
+    },
+    getLabelAlign(widget, subWidget) {
+      return subWidget.options.labelAlign || widget.options.labelAlign || 'label-center-align';
+    },
   },
 };
 </script>
@@ -339,6 +350,9 @@ export default {
     &:first-child {
       border-left: 1px solid #ebeef5;
     }
+    .index{
+      width: 60px
+    }
     // .drag-empty {
     //   width: 100%;
     // }
@@ -364,7 +378,10 @@ export default {
   overflow-x: scroll;
 }
 ::v-deep .el-form-item__label {
-  margin: 0 10px;
+  line-height: 32px;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
 }
 ::v-deep .el-form-item__content {
   display: flex;
@@ -374,5 +391,16 @@ export default {
 }
 ::v-deep .el-form-item__content:not(.empty) {
   border-top: 1px solid #ebeef5;
+}
+.label-center-left {
+  text-align: left;
+}
+
+.label-center-align {
+  text-align: center;
+}
+
+.label-right-align {
+  text-align: right;
 }
 </style>
