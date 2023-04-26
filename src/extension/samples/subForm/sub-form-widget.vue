@@ -17,7 +17,7 @@
            @click="toggleCard"></i>
       </div>
     </el-card> -->
-
+    <span class="test" ref="test"></span>
     <div
       class="sub-form-container"
       :class="{ selected: selected }"
@@ -81,15 +81,16 @@
         <draggable
           :list="widget.widgetList"
           handle=".drag-handler"
-          @add="onSubFormDragAdd"
+          @add="onSubFormDragAdd($event, widget.widgetList)"
           @end="onSubFormDragEnd"
           @update="onContainerDragUpdate"
           group="dragGroup"
           ghost-class="ghost"
           animation="200"
-          class="full-width"
+          :class="{'full-width':true, 'overflowed':overflowed}"
+          ref="overflowBox"
         >
-          <transition-group class="sub-form-table" name="fade" tag="div">
+          <transition-group class="sub-form-table" name="fade" tag="div" ref="innerTable">
             <div
               v-for="(subWidget, swIdx) in widget.widgetList"
               :key="subWidget.id + 'tc'"
@@ -202,10 +203,23 @@ export default {
     },
     customClass() {
       return this.widget.options.customClass || "";
-    },
+    }
   },
   created() {
     this.initRefList();
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      this.updateBoxWidth('')
+    })
+  },
+  watch: {
+    widget: {
+      handler() {
+        this.updateBoxWidth('')
+      },
+      deep: true
+    }
   },
   data() {
     return {
@@ -215,90 +229,35 @@ export default {
       options: {
         tableDataTypeOptions: [],
       },
+      overflowed: false
     };
   },
   methods: {
-    onSubFormDragAdd(e, t) {
-      const newIndex = e.newIndex;
-      if (t[newIndex]) {
-        this.designer.setSelected(t[newIndex]);
+    updateBoxWidth(e){
+      this.$nextTick(()=>{
+        let overflowBoxWidth = this.$refs.overflowBox?.$el.offsetWidth || 0
+        let innerTableWidth = 0
+        this.$refs.innerTable.$children.forEach((element)=>{
+          innerTableWidth += element.$el.offsetWidth
+        })
+        this.overflowed = overflowBoxWidth < innerTableWidth
+        // console.log('[updateBoxWidth]', overflowBoxWidth, innerTableWidth, '[return]:', overflowBoxWidth < innerTableWidth, e)
+      })
+    },
+    onSubFormDragAdd(event, widgetList) {
+      // console.log('[onSubFormDragAdd]: [event]',event,'[widgetList]',widgetList)
+      const newIndex = event.newIndex;
+      if (widgetList[newIndex]) {
+        this.designer.setSelected(widgetList[newIndex]);
       }
       this.designer.emitHistoryChange();
-      console.log("test", "onSubFormDragAdd");
       this.designer.emitEvent("field-selected", this.widget);
+      this.updateBoxWidth('')
     },
     onSubFormDragEnd(e) {
-      console.log("sub form drag end: ", e);
-    },
-    // ------------------------subform-----------------------------
-    /** 复选框选中数据 */
-    handleTableCreatorTableColumnSelectionChange(selection) {
-      this.checkedTableCreatorTableColumn = selection.map((item) => item.index);
-    },
-    /** 添加列按钮操作 */
-    addBetweenRow(index) {
-      let obj = {};
-      obj.name = "";
-      obj.comment = "";
-      obj.type = "";
-      obj.length = "";
-      obj.isNull = "";
-      obj.createBy = "";
-      obj.updateTime = "";
-      obj.createTime = "";
-      obj.groupId = "";
-      obj.updateBy = "";
-      obj.uuid = this.uuid(8, 16);
-      this.columnForm.tableCreatorTableColumnList.splice(index, 0, obj);
-    },
-    /** 建表工具-列信息添加按钮操作 */
-    handleAddTableCreatorTableColumn() {
-      let obj = {};
-      obj.name = "";
-      obj.comment = "";
-      obj.type = "";
-      obj.length = "";
-      obj.isNull = "";
-      obj.createBy = "";
-      obj.updateTime = "";
-      obj.createTime = "";
-      obj.groupId = "";
-      obj.updateBy = "";
-      obj.uuid = this.uuid(8, 16);
-      this.columnForm.tableCreatorTableColumnList.push(obj);
-    },
-    deleteRow(index) {
-      this.columnForm.tableCreatorTableColumnList.splice(index - 1, 1);
-    },
-    ifLengthDisabledType(type) {
-      return type !== "varchar";
-    },
-    uuid(len, radix) {
-      let chars = "0123456789abcdefghijklmnopqrstuvwxyz";
-      let uuid = [];
-      let i;
-      radix = radix || chars.length;
-      if (len) {
-        for (i = 0; i < len; i++) {
-          uuid[i] = chars[0 | (Math.random() * radix)];
-        }
-      } else {
-        var r;
-      }
-      uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
-      uuid[14] = "4";
-      for (i = 0; i < 36; i++) {
-        if (!uuid[i]) {
-          r = 0 | (Math.random() * 16);
-          uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r];
-        }
-      }
-      return uuid.join("");
-    },
-    /** 建表工具-列信息序号 */
-    rowTableCreatorTableColumnIndex({ row, rowIndex }) {
-      row.index = rowIndex + 1;
-    },
+      // console.log("sub form drag end: ", e);
+      this.updateBoxWidth(e)
+    }
   },
 };
 </script>
@@ -342,7 +301,7 @@ export default {
   min-height: 68px;
   display: flex;
   align-items: stretch;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
 }
 // .ghost {
@@ -373,6 +332,7 @@ export default {
   align-items: stretch;
   justify-content: center;
   .sub-form-table-extended {
+    flex-shrink: 0;
     display: inline-block;
     border: 1px solid #ebeef5;
     border-left: none;
@@ -386,6 +346,7 @@ export default {
 }
 .full-width {
   width: 100%;
+  overflow: hidden;
   border: 1px solid #ebeef5;
   border-left: none;
   background: #eee;
@@ -396,7 +357,11 @@ export default {
     background: #fff;
     width: 100%;
     max-width: 220px;
+    min-width: 180px;
   }
+}
+.full-width.overflowed {
+  overflow-x: scroll;
 }
 ::v-deep .el-form-item__label {
   margin: 0 10px;
