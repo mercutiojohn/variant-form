@@ -121,7 +121,7 @@
               label: "新增",
               type: "primary",
               permission: "resultsetManage:add",
-              icon: "el-icon-add",
+              icon: "el-icon-plus",
               plain: false,
               id:'add',
               click: () => {
@@ -132,6 +132,7 @@
           // 表格行按钮
           rowButtons: [
             {
+              id:'edit',
               label: "编辑",
               permission: "resultsetManage:update",
               click: row => {
@@ -144,6 +145,7 @@
             //   click: this.dataView
             // },
             {
+              id:'delete',
               label: "删除",
               permission: "resultsetManage:delete",
               click: row => {
@@ -350,7 +352,7 @@
       this.crudOption.tableButtons=tableButtons
       let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
       this.crudOption.rowButtons=rowButtons
-      console.log(this.crudOption);
+      console.log(crudOption);
       this.field=this.widget
       // this.initFieldModel()
       // this.registerToRefList()

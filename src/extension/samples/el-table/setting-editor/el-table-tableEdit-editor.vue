@@ -11,6 +11,7 @@
           :list="list"
           windowHight="700px"
           @close="toClose"
+          :formId="formId"
         ></editTable>
     </el-dialog>
   </div>
@@ -19,7 +20,7 @@
 <script>
   import i18n from "@/utils/i18n"
   import eventMixin from "@/components/form-designer/setting-panel/property-editor/event-handler/eventMixin"
-  import editTable from "../anji/components/editTable.vue"
+  import editTable from "./components/editTable.vue"
   export default {
     name: "el-table-tableEdit-editor",
     mixins: [i18n, eventMixin],
@@ -46,8 +47,10 @@
     computed:{
       list(){
         return  this.selectedWidget.options.crudOption.columns;
-      }
-
+      },
+      formId(){
+        return  this.selectedWidget.options.formId;
+      },
     },
     data() {
       return {

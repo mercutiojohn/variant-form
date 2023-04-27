@@ -39,6 +39,9 @@ import elTableWidget from '@/extension/samples/el-table/el-table-widget'
 import elTableItem from '@/extension/samples/el-table/el-table-item'
 import elTableEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableEdit-editor'
 import elTableButtonEditEditor from '@/extension/samples/el-table/setting-editor/el-table-tableButtonEdit-editor'
+import elRowButtonEditEditor from '@/extension/samples/el-table/setting-editor/el-table-rowButtonEdit-editor'
+import elQueryFormFieldsEditor from '@/extension/samples/el-table/setting-editor/el-table-queryFormFields-editor'
+import elTableFormIdEditor from '@/extension/samples/el-table/setting-editor/el-table-formId-editor'
 export const loadExtension = function () {
 
   /**
@@ -182,11 +185,18 @@ export const loadExtension = function () {
   Vue.component(elTableItem.name, elTableItem)
   Vue.component(elTableEditEditor.name, elTableEditEditor)
   Vue.component(elTableButtonEditEditor.name, elTableButtonEditEditor)
+  Vue.component(elRowButtonEditEditor.name, elRowButtonEditEditor)
+  Vue.component(elQueryFormFieldsEditor.name, elQueryFormFieldsEditor)
+  Vue.component(elTableFormIdEditor.name, elTableFormIdEditor)  
   PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
   PEFactory.createEventHandlerEditor('tableEdit', [])) 
   PERegister.registerCPEditor('tableButtonEdit', 'tableButtonEdit-editor',
   PEFactory.createEventHandlerEditor('tableButtonEdit', [])) 
-  PERegister.registerCPEditor('el-table-formId', 'el-table-formId-editor',
-  PEFactory.createInputTextEditor('formId', 'extension.setting.formId')) 
+  PERegister.registerCPEditor('rowButtonEdit', 'rowButtonEdit-editor',
+  PEFactory.createEventHandlerEditor('rowButtonEdit', [])) 
+  PERegister.registerCPEditor('queryFormFields', 'queryFormFields-editor',
+  PEFactory.createEventHandlerEditor('queryFormFields', [])) 
+  PERegister.registerCPEditor('formId', 'formId-editor',
+  PEFactory.createInputTextEditor('formId', [])) 
   /* 表格组件加载 end */
 }

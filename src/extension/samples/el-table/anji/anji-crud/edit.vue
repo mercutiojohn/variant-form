@@ -219,14 +219,14 @@ export default {
   },
   mounted() {
     // 为主表的编辑表单，渲染上默认值
-    // this.textAlert(this.itemId)
-    if(this.itemId){
-      let data= this.textAlert(this.itemId)
-      data.then(res => {
-        console.log('aaaaaaaaaaaaa',res)
-        this.formJson=JSON.parse(res.pageJson)
-        });
-    }    
+    // this.textAlert(this.itemId)内部弹窗（暂未使用）
+    // if(this.itemId){
+    //   let data= this.textAlert(this.itemId)
+    //   data.then(res => {
+    //     console.log('aaaaaaaaaaaaa',res)
+    //     this.formJson=JSON.parse(res.pageJson)
+    //     });
+    // }    
     this.initDefaultSaveForm();
   },
   methods: {

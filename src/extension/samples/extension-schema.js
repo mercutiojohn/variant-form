@@ -173,7 +173,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -187,7 +187,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -201,7 +201,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -215,7 +215,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -229,7 +229,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -249,7 +249,7 @@ export const tableSchema = {
             ],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           },
           {
@@ -262,19 +262,21 @@ export const tableSchema = {
             rules: [],
             disabled: false,
             contentAlign:'center',
-            headerAlign:'left',
+            headerAlign:'center',
             sortable:true,
           }
         ],
         //表格列按钮
         rowButtons: [
           {
+            id:'edit',
             label: "编辑",
             permission: "resultsetManage:update",
             click: row => {
               return 'handleOpenEditView("edit")'
               // return this.operateDataset("edit", row);
             },
+            isHide:'',
             tableHide:false
           },
           // {
@@ -283,16 +285,31 @@ export const tableSchema = {
           //   click: this.dataView
           // },
           {
+            id:'delete',
             label: "删除",
             permission: "resultsetManage:delete",
             click: row => {
               return this.$refs.listPage.handleDeleteBatch(row);
             },
+            isHide:'',
             tableHide:false
           }
         ],
          // 表头按钮
          tableButtons: [
+          {
+            id:'add',
+            label: "新增",
+            type: "primary",
+            permission: "resultsetManage:add",
+            icon: "el-icon-plus",
+            plain: false,
+            tableHide:false,
+            size:'medium'
+            // click: () => {
+            //   return this.$refs.listPage.handleOpenEditView("add");
+            // }
+          },
           {
             id:'delete',
             label: "删除",
@@ -300,23 +317,13 @@ export const tableSchema = {
             permission: "resultsetManage:delete",
             icon: "el-icon-delete",
             plain: false,
-            tableHide:false
+            tableHide:false,
+            size:'medium'
             // click: () => {
             //   return this.$refs.listPage.handleDeleteBatch();
             // }
           },
-          {
-            id:'add',
-            label: "新增",
-            type: "primary",
-            permission: "resultsetManage:add",
-            icon: "el-icon-add",
-            plain: false,
-            tableHide:false
-            // click: () => {
-            //   return this.$refs.listPage.handleOpenEditView("add");
-            // }
-          },
+          
         ],
         itemId:'3',
         // 操作按钮
@@ -348,8 +355,10 @@ export const tableSchema = {
           }
         },
       },
-      formId:'SWP00000000000000276',
+      formId:'',
       tableButtonEdit:[],
+      rowButtonEdit:[],
+      queryFormFields:[]
     },
 
   

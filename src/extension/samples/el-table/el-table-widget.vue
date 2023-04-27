@@ -14,7 +14,7 @@
 
     <div :key="widget.id" class="table-container"
          :class="[selected ? 'selected' : '', customClass]" @click.stop="selectWidget(widget)">
-         <anji-crud ref="listPage" :option="newCrudOption" :formId="formId">
+         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId">
           </anji-crud>
     </div>
 
@@ -38,11 +38,12 @@
   import anjiCrud from './anji/anji-crud/anji-crud'
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin";
   import common from './anji/anji-crud/mixins/common'
+  import {getAllFieldWidgets} from "@/utils/util"
   export default {
     name: "el-table-widget",
     componentName: 'ContainerWidget',
     mixins: [i18n, containerMixin, refMixinDesign,fieldMixin,common],
-    inject: ['refList'],
+    inject: ['refList','setFunction'],
     components: {
       ContainerWrapper,
       TableCellWidget,
@@ -62,9 +63,28 @@
     },
     data() {
       return {
+        flag:false,
         dialogVisibleSetDataSet: false,
         dataSet: {},
         dialogCaseResult: false,
+        // queryParams: {
+        //   pageId: null,
+        //   title: null,
+        //   status: null,
+        //   pageType: "form",
+        //   genTableName: null,
+        //   genTableStatus: null,
+        //   bindPageId: null,
+        //   asTemplate: null,
+        //   createTime: null,
+        //   updateTime: null,
+        // },
+        // //分页参数
+        // pageQueryData:{
+        //   currentPage: 1,
+        //   pageSize: 1000,
+        //   total: 0,
+        // },
         crudOption: {
           // 使用菜单做为页面标题
           title: "数据集",
@@ -124,7 +144,7 @@
               type: "primary",
               id:'add',
               permission: "resultsetManage:add",
-              icon: "el-icon-add",
+              icon: "el-icon-plus",
               plain: false,
               click: () => {
                 return this.$refs.listPage.handleOpenEditView("add");
@@ -135,12 +155,15 @@
           // 表格行按钮
           rowButtons: [
             {
+              id:'edit',
               label: "编辑",
               permission: "resultsetManage:update",
               click: row => {
                 return this.$refs.listPage.handleOpenEditView("edit",row);
                 // return this.operateDataset("edit", row);
-              }
+              },
+              isHide:'',
+              tableHide:false
             },
             // {
             //   label: "数据预览",
@@ -148,11 +171,14 @@
             //   click: this.dataView
             // },
             {
+              id:'delete',
               label: "删除",
               permission: "resultsetManage:delete",
               click: row => {
                 return this.$refs.listPage.handleDeleteBatch(row);
-              }
+              },
+              isHide:'',
+              tableHide:false
             }
           ],
           // 操作按钮
@@ -331,18 +357,24 @@
         crudOption=this.deepClone(this.crudOption)
         crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
         crudOption.columns=this.widget.options.crudOption.columns
-        crudOption.itemId=this.widget.options.crudOption.itemId         
+        crudOption.itemId=this.widget.options.crudOption.itemId   
+        // crudOption.formList=this.widget.options.crudOption.formList      
         let tableButtons=this.getData(crudOption.tableButtons,this.widget.options.crudOption.tableButtons)
         crudOption.tableButtons=tableButtons
         let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
         crudOption.rowButtons=rowButtons
-        console.log(this.crudOption);
-        
+        console.log(crudOption);
+        // let formId=this.formId
         return  crudOption
       },
       formId(){
-        
-        return  this.widget.options.formId
+        let formId=this.widget.options.formId
+        if(this.flag){
+          this.getLatestData(formId)
+        }else{
+          this.flag=true
+        }    
+        return  formId
       }
     },
     watch: {
@@ -356,16 +388,73 @@
       // this.crudOption.tableButtons=tableButtons
       // this.formId=this.widget.options.formId
       this.field=this.widget
-
+      // this.widget.options.crudOption.formList=this.setFunction.listVformPages
       this.handleOnCreated()
     },
     mounted() {
       this.handleOnMounted()
-      //
     },
     methods: {
+      // listVformPages(){
+      //   this.setFunction.listVformPages({...this.queryParams,pageQueryData:this.pageQueryData}).then(response => {
+      //     // console.log(response.data.rows);
+      //     let list=[]
+      //     response.data.rows.forEach((item)=>{
+      //       let data={
+      //         id:item.id,
+      //         label:item.title,
+      //         value:item.pageId
+      //       }
+      //       list.push(data)
+      //     })
+      //     this.widget.options.crudOption.formList=list
+      //     // console.log(this.list,'1111111111');
+      //   });
+      // },
+      async getLatestData(formId){
+
+        const {data} = await this.setFunction.getVformPagesByPageId(formId);
+        const pageJsonObj=  JSON.parse(data.pageJson)       
+        try {
+          let widgetList=pageJsonObj.widgetList
+          let widgets= this.getFieldWidgets(widgetList)
+          // console.log(widgets);
+          let newTable=[]
+          newTable.push({
+                label: "",
+                field: "task_id",
+                primaryKey: true, // 根据主键查询详情或者根据主键删除时, 主键的
+                tableHide: true, // 表格中不显示
+                editHide: true // 编辑弹框中不显示
+          })
+          widgets.forEach((item)=>{
+            let data={
+                  label: item.field.options.label, //数据源编码
+                  placeholder: item.field.options.defaultValue,
+                  field: item.field.options.name,
+                  editField: item.field.options.name,
+                  inputType: item.type,
+                  // disabled: item.field.options.,
+                  contentAlign:'center',
+                  headerAlign:'center',
+                  sortable:true,
+                  option:item.field.options.optionItems
+                }
+            newTable.push(data)        
+          })
+          // console.log(newTable);
+          this.widget.options.crudOption.columns=newTable
+          
+        } catch (error) {
+          this.widget.options.crudOption.columns=[]
+        }
+        this.$message.success("切换表单成功");
+      },
+      getFieldWidgets(widgetList = null) {
+        return !!widgetList ? getAllFieldWidgets(widgetList) : getAllFieldWidgets(this.formJson.widgetList)
+      },
       getData(defaultData,queryData){
-        // console.log('2342',defaultData,queryData);
+        console.log('2342',defaultData,queryData);
         
         let defaultDataId=[]
         let finallyData=[]

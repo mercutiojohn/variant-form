@@ -1,17 +1,18 @@
 <template>
   <div>
-    <el-form-item label="表格头按钮编辑" label-width="150px">
+    <el-form-item label="表格操作列按钮编辑" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
         编辑字段</el-button>
     </el-form-item>
-    <el-dialog title="表格列编辑" :visible.sync="editNumberVisible" :append-to-body="true">
-        <editButtonTable
+    <el-dialog title="表格操作列按钮编辑" :visible.sync="editNumberVisible" :append-to-body="true">
+        <rowButton
           v-if="editNumberVisible"
           @need-close="editNumberVisible=false"
           :list="list"
+          :getTableData="getTableData"
           windowHight="700px"
           @close="toClose"
-        ></editButtonTable>
+        ></rowButton>
     </el-dialog>
   </div>
 </template>
@@ -20,9 +21,9 @@
   import Vue from 'vue'
   import i18n from "@/utils/i18n"
   import eventMixin from "@/components/form-designer/setting-panel/property-editor/event-handler/eventMixin"
-  import editButtonTable from "./components/editButtonTable.vue"
+  import rowButton from "./components/rowButton.vue"
   export default {
-    name: "el-table-tableButtonEdit-editor",
+    name: "el-table-rowButtonEdit-editor",
     mixins: [i18n, eventMixin],
     props: {
       designer: Object,
@@ -31,7 +32,7 @@
 
     },
     components: {
-      editButtonTable
+      rowButton
     },
     watch: {
     //   selectedWidget: {
@@ -46,7 +47,18 @@
   },
     computed:{
       list(){
-        return  this.selectedWidget.options.crudOption.tableButtons;
+        return  this.selectedWidget.options.crudOption.rowButtons;
+      },
+      getTableData(){
+        let tableList=[]
+        this.selectedWidget.options.crudOption.columns.forEach((item)=>{
+          let data={
+            field:item.field,
+            name:item.label
+          }
+          tableList.push(data)
+        })
+        return tableList
       }
 
     },
@@ -62,7 +74,7 @@
         this.editNumberVisible=true
       },
       toClose(data){
-        this.selectedWidget.options.crudOption.tableButtons=data
+        this.selectedWidget.options.crudOption.rowButtons=data
         this.editNumberVisible=false
       }
     },

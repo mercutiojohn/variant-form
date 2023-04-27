@@ -190,7 +190,8 @@
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
               @click="item.click"
-              size="mini"
+              style="font-size: 16px;"
+              :size="item.size"
               >{{ handlegetLable(checkRecords, item.label) }}
             </el-button>
           </div>
@@ -229,7 +230,8 @@
                           />
                         </div>
                         <div v-else>
-                          <span v-if="item.inputType == 'switch' && !item.colorStyle">
+                            {{ getDataName(scope.row,item)}}
+                          <!-- <span v-if="item.inputType == 'switch' && !item.colorStyle">
                             <el-switch
                               v-model.trim="scope.row[item.field]"
                               :active-value="1"
@@ -239,17 +241,13 @@
                               @change="switchChange(scope.row, item.switchOption)"
                             />
                           </span>
-                          <!-- 带单位 -->
-                          <!-- <span v-else-if="item.inputType == 'anji-input'">{{
-                            fieldValueByAnjiInput(scope.row[item.field], item)
-                          }}</span> -->
-                          <!--表格 a 合并 b上-->
+
                           <span v-else-if="item.mergeColumn"
                             >{{ scope.row[item.field] }}({{
                               scope.row[item.mergeColumn]
                             }})</span
                           >
-                          <!-- 没有单位 -->
+
                           <span
                             v-else-if="item.colorStyle"
                             :class="item.colorStyle[scope.row[item.editField]]"
@@ -257,7 +255,7 @@
                           >
                           <span v-else>{{
                             fieldValueByRowRenderer(scope.row, item)
-                          }}</span>
+                          }}</span> -->
                         </div>
                       </template>
                     </el-table-column>
@@ -297,7 +295,7 @@
               :width="option.buttons.rowButtonsWidth || 100"
             >
               <template slot-scope="scope">
-                <div v-if="option.rowButtons.length <= 2">
+                <div v-if="option.rowButtons.length <= 3">
                   <template v-for="(item, index) in option.rowButtons">
                     <el-button
                       v-if="isHide(item, scope.row)"
@@ -516,9 +514,14 @@ export default {
   watch: {
     option: {
       handler(val) {
-        console.log(111111)
+        // console.log(111111)
       },
       deep: true
+    },
+    formId:{
+      handler(val) {
+        this.handleResetForm()
+      },
     }
   },
   computed: {
@@ -679,11 +682,13 @@ export default {
     async handleQueryPageList() {
       // 将特殊参数值urlcode处理
       // let params = this.urlEncodeObject(this.queryParams, "order,sort");
-      this.listVformPages(this.formId,{pageQueryData:this.params.pageQueryData,params: this.queryParams}).then(response => {
-        if (response.data.code != "200") return;
-        this.records = response.data.rows;
-        this.params.pageQueryData.total = response.data.total;
-      });
+      if(!!this.formId){
+        this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,params: this.queryParams}).then(response => {
+          if (response.data.code != "200") return;
+          this.records = response.data.rows;
+          this.params.pageQueryData.total = response.data.total;
+        });
+      }
       // const { data } = await this.option.buttons.query.api({ pageQueryData: JSON.stringify(this.params.pageQueryData),condition: JSON.stringify(this.queryParams),});
       // if (code != "200") return;
       // this.records = data.list;
@@ -780,7 +785,16 @@ export default {
       if (typeof item.isHide === "function") {
         return item.isHide(row);
       } else {
-        return !item.isHide;
+        if(!!item.isHide){
+            if(eval(item.isHide)){
+              return true
+            }else{
+              return false
+          } 
+        }else{
+          return true
+        }
+        
       }
     },
     // 弹框被关闭时的回调事件
@@ -809,10 +823,10 @@ export default {
         // 批量删除选中的行
         ids = this.checkRecords.map(item => item[this.primaryKeyFieldName]);
       }
-      console.log(ids);
-      console.log(this.setFunction)
-      console.log(this.listVformPages)
-      console.log(this.setFunction.delRecordByIds);
+      // console.log(ids);
+      // console.log(this.setFunction)
+      // console.log(this.listVformPages)
+      // console.log(this.setFunction.delRecordByIds);
       
       if(ids.length>0){
           this.$confirm("删除确认", "确认要删除吗?", {
@@ -825,7 +839,7 @@ export default {
             ids.forEach((item)=>{
               jsonIds+=item+','
             })
-            console.log(jsonIds);
+            // console.log(jsonIds);
             jsonIds=jsonIds.substr(0,jsonIds.length-1) 
             console.log(jsonIds);
             // jsonIds=JSON.parse(jsonIds)
@@ -1053,6 +1067,48 @@ export default {
       onTableDragUpdate() {
         this.designer.emitHistoryChange()
       },
+          // 表格参数名称转换
+    getDataName(row,item) {
+      if (item.inputType == 'radio' || item.inputType == 'select') {
+        if (row[item.field]!= null) {
+          let tempStr = row[item.field]
+          for (let index = 0; index < item.option.length; index++) {
+            if (tempStr == item.option[index].value) {
+                tempStr = item.option[index].label
+                break;
+              }                         
+          }
+          return tempStr
+        }else{
+          return row[item.field]
+        }
+      }
+      // else if(item.inputType == 'checkbox'){
+      //   if (row[item.field]!= null) {
+      //     let tempStrList = row[item.field].split(",")
+      //     this.optionsFields.forEach(element => {
+      //       this.options[element.dict+'Options'].forEach((temp) => {
+      //         tempStrList.forEach(function(item,index,arr){
+      //           if (item == temp.field) {
+      //             arr[index] = temp.name
+      //           }
+      //         })
+      //       })
+      //     })
+      //     return tempStrList.join(",")
+      //   }else{
+      //     return row[item.field]
+      //   }
+      // }else if (item.inputType == 'group' || item.inputType == 'groupMultiple' ||
+      //   item.inputType == 'user' || item.inputType == 'userMultiple') {
+      //   if(row[item.field]!= null) {
+      //     return row[item.field].split('|')[0]
+      //   }
+      // }
+      else {
+        return row[item.field]
+      }
+    },
   }
 };
 </script>
