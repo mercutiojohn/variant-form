@@ -16,8 +16,6 @@
 </template>
 
 <script>
-// import { getGroupUserTree } from '../../api/transferunit'
-// import { treeData } from '../../api/tree'
 export default {
   name: 'stepGroupTree',
   inject:['getGroupUserTree','treeData'],

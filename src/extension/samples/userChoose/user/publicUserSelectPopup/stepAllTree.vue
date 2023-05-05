@@ -20,8 +20,6 @@
 </template>
 
 <script>
-// import { getPersonData, getParentId } from "../../api/transferunit";
-// import { PersonTreeData } from "../../api/tree";
 export default {
   name: "stepAllTree",
   inject:['getPersonData','getParentId','PersonTreeData'],
