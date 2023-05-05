@@ -26,6 +26,9 @@ import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generato
 import {userChooseSchema} from "@/extension/samples/extension-schema"
 import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
 // import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+// groupChoose 机构选择
+import {groupChooseSchema} from "@/extension/samples/extension-schema"
+import GroupChooseWidget from '@/extension/samples/groupChoose/group-choose-widget'
 
 // subForm 子表
 import {subFormSchema} from "@/extension/samples/extension-schema"
@@ -142,8 +145,11 @@ export const loadExtension = function () {
   
   /* UserChoose 组件加载测试 start */
   addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
+  addCustomWidgetSchema(groupChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
+  Vue.component(GroupChooseWidget.name, GroupChooseWidget)  //注册组件
+
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('test-testName', 'test-testName-editor',
       PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))

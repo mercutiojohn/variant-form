@@ -1,16 +1,20 @@
 <template>
   <section>
-    <el-dialog :title="title" :visible.sync="editVisible" :append-to-body="true" width="500px">
-      <nextStep
+    <el-dialog :title="title" :visible.sync="editVisible" :append-to-body="true">
+      <PublicGroupSelectPopup
         v-if= "editVisible"
+        ref="transferunit"
         @need-close="editVisible=false"
-        @sendTranUnit="getTranUnit"
-        :selectMode="!showCheckbox"
-      ></nextStep>
+        :groupList="groupList"
+        :groupName="groupName"
+        :showCheckbox = "showCheckbox"
+        @sendGroup="getGroup"
+        windowHight="700px"
+      ></PublicGroupSelectPopup>
     </el-dialog>
     <el-input
       readonly
-      v-model="this.userNames"
+      v-model="this.groupNames"
       @click.native="search"
       style="font-size: 16px;"
       :placeholder="options.placeholder"
@@ -25,24 +29,17 @@
       @input="handleInputCustomEvent"
       @change="handleChangeEvent"
     >
-      <!-- <el-button
-        @click.native="search"
-        :diasbled ="readonly"
-        type="primary"
-        size="mini"
-        slot="append"
-        icon="el-icon-search"
-      ></el-button> -->
     </el-input>
   </section>
 </template>
 
 <script>
-import nextStep from './publicUserSelectPopup/nextStep.vue'
+import PublicGroupSelectPopup from './PublicGroupSelectPopup.vue'
+
 export default {
-  name: 'CommonUser',
+  name: 'CommonGroup',
   components: {
-    nextStep
+    PublicGroupSelectPopup
   },
   props: {
     // 只读标识
@@ -107,34 +104,29 @@ export default {
   data () {
     return {
       editVisible: false,
-      userNames: '',
-      userIds: '',
-      title: '人员选择'
+      groupList:[],
+      groupName:[],
+      groupNames:'',
+      groupIds:'',
+      title: '机构选择'
     }
   },
   methods: {
     search () {
       if(!this.options.disabled){
+        this.groupList = this.groupIds.split(",");
+        this.groupName = this.groupNames.split("、");
         this.editVisible = true
       }
     },
-    getTranUnit(data) {
-      if(data.length>0){
-        var id = ''
-        var name = ''
-        data.forEach(item => {
-          name = name + "、" + item.name
-          id = id + "," + item.id
-        })
-        name = name.substr(1)
-        id = id.substr(1)
-        this.userIds = id
-        this.userNames = name
-        this.value = this.userNames+"|"+this.userIds
+    getGroup(data) {
+      // 接收弹窗传送回来的承办单位名称、承办单位id
+      this.groupNames = data.unitNames;
+      this.groupIds = data.unitIds;
+      if(this.groupNames !='' && this.groupIds != ''){
+        this.value = this.groupNames+"|"+this.groupIds
       }else{
-        this.userIds = ''
-        this.userNames = ''
-        this.value = ''
+        this.value = ""
       }
       this.$emit('input', this.value)
       // 关闭弹窗
@@ -156,16 +148,16 @@ export default {
   },
   mounted: function () {
     if (this.value && this.value.split("|").length==2) {
-      this.userNames = this.value.split("|")[0]
-      this.userIds = this.value.split("|")[1]
+      this.groupNames = this.value.split("|")[0]
+      this.groupIds = this.value.split("|")[1]
     }
   },
   watch: {
     value(newVal){
       console.log(newVal);
       if (newVal && newVal.split("|").length==2) {
-        this.userNames = newVal.split("|")[0]
-        this.userIds = newVal.split("|")[1]
+        this.groupNames = newVal.split("|")[0]
+        this.groupIds = newVal.split("|")[1]
       }
     }
   }

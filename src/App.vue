@@ -14,8 +14,8 @@
 <script>
 import VFormDesigner from './components/form-designer/index.vue'
 // 人员选择API
-import { getGroupUserTree, getPersonData, getParentId, getCommonUseData, addContacts } from '@/api/sys/transferunit'
-import { treeData, PersonTreeData } from '@/api/sys/tree'
+import { getGroupUserTree, getPersonData, getParentId,getNodeData, getCommonUseData, addContacts } from '@/api/sys/transferunit'
+import { treeData, PersonTreeData,lowTreeData } from '@/api/sys/tree'
 export default {
   name: 'App',
   components: {
@@ -38,9 +38,12 @@ export default {
       getRecordById: this.testApi,
       // 人员选择API
       PersonTreeData,
+      //机构选择
+      lowTreeData,
       treeData,
       getParentId,
       getPersonData,
+      getNodeData,
       getGroupUserTree,
       addContacts,
       getCommonUseData

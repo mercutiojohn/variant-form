@@ -4,6 +4,7 @@ export default {
       card: '卡片',
       alert: '提示',
       'user-choose': '人员选择',
+      'group-choose': '机构选择',
       'el-table': '增删改查',
     },
 

@@ -4,6 +4,7 @@ export default {
       card: 'Card',
       alert: 'Alert',
       'user-choose': '人员选择',
+      'group-choose': '机构选择',
     },
 
     setting: {
