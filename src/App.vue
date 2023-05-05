@@ -36,9 +36,8 @@ export default {
       updateRecord: this.testApi,
       queryListCond: this.testApi,
       getRecordById: this.testApi,
-      // 人员选择API
+      // 人员选择与机构选择
       PersonTreeData,
-      //机构选择
       lowTreeData,
       treeData,
       getParentId,
