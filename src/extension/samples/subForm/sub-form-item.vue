@@ -11,7 +11,7 @@
     <!-- :data="formModel[widget.id]" -->
     <!-- :row-class-name="rowTableCreatorTableColumnIndex" -->
         <el-table
-          :data="formModel[widget.id]"
+          :data="formModel[widget.options.name]"
           class="column-table"
           highlight-current-row
           border
@@ -520,6 +520,7 @@ export default {
     },
 
     handleSubFormRowChange(subFormData) {
+      // this.$forceUpdate();
       if (!!this.widget.options.onSubFormRowChange) {
         let customFunc = new Function(
           "subFormData",

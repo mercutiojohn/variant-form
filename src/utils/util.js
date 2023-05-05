@@ -149,7 +149,16 @@ export function traverseFieldWidgets(widgetList, handler, parent = null) {
         traverseFieldWidgets(tab.widgetList, handler, w)
       })
     } else if (w.type === 'sub-form') {
-      traverseFieldWidgets(w.widgetList, handler, w)
+      handler(w, parent)
+      // let subWidgetList = []
+      // let subHandler = (w) => {
+      //   subWidgetList.push({
+      //     type: w.type,
+      //     name: w.options.name,
+      //     field: w
+      //   })
+      // }
+      // traverseFieldWidgets(w.widgetList, handler, w)
     } else if (w.category === 'container') {  //自定义容器
       traverseFieldWidgets(w.widgetList, handler, w)
     }
@@ -292,7 +301,7 @@ export function getAllFieldWidgets(widgetList) {
  * 获取所有容器组件
  * @param widgetList
  * @returns {[]}
- */
+ */ 
 export function getAllContainerWidgets(widgetList) {
   if (!widgetList) {
     return []

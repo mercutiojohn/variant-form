@@ -39,10 +39,11 @@
 
 <script>
 import { Button, Dialog } from 'element-ui'
-import { getCommonUseData, addContacts } from '../../api/transferunit'
+// import { getCommonUseData, addContacts } from '../../api/transferunit'
 import stepAllTree from './stepAllTree'
 export default {
   name: 'commonUse',
+  inject:['getCommonUseData','addContacts'],
   components: {
     Button,
     Dialog,

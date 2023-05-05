@@ -20,7 +20,7 @@
   import i18n from "@/utils/i18n"
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin"
 
-  import UserTree from './user'
+  import UserTree from './user/PublicUserSelectPopupInput'
 
   export default {
     name: "user-choose-widget",

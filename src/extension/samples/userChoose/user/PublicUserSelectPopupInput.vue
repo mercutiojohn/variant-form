@@ -38,9 +38,7 @@
 </template>
 
 <script>
-  import nextStep from './publicUserSelectPopup/nextStep.vue'
-// import { getDisplayName } from '../../api/commons/index.js'
-
+import nextStep from './publicUserSelectPopup/nextStep.vue'
 export default {
   name: 'CommonUser',
   components: {
