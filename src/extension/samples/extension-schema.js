@@ -183,20 +183,20 @@ export const tableSchema = {
       tableEdit:[],
       crudOption: {
         // 使用菜单做为页面标题
+        //是否使用内部弹窗（不要修改）
         dialogFlag:false,
-        queryFormFieldsFlag:false,
+        //查询条件控制（不包括查询重置按钮）
+        queryFormFieldsFlag:true,
+        //查询条件显隐
+        queryFormHide:true,
         title: "数据集",
         labelWidth: "120px",
         queryFormFields: [
           {
             inputType: "input",
-            label: "数据集编码333",
-            field: "setCode"
-          },
-          {
-            inputType: "input",
-            label: "数据集名称",
-            field: "setName"
+            label: "",
+            field: "",
+            disabled:false
           },
         ],
         // 表格列

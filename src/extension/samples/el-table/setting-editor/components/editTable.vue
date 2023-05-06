@@ -9,6 +9,20 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
+        <TableColumn
+            align="center"
+            label="拖拽排序"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+                <el-button
+                style="font-size:30px;"
+                type="text"
+                icon="el-icon-menu"
+                class="drag"
+              />
+            </template>
+        </TableColumn>
         <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="字段名称" >
             <template slot-scope="scope" >
                 <el-input  v-model="scope.row.label" ></el-input>
@@ -24,7 +38,7 @@
                 <el-input  v-model="scope.row.field" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="headerAlign" header-align="center" align="left" min-width="120" label="表头对齐方式" >
+        <TableColumn  prop="headerAlign" header-align="center" align="left" min-width="160" label="表头对齐方式" >
           <template slot-scope="scope"  >
               <el-select v-model="scope.row.headerAlign" placeholder="请选择">
                 <el-option label="左对齐" value='left'></el-option>
@@ -50,7 +64,7 @@
               </el-select>
           </template>
         </TableColumn>
-        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="120" label="是否在列表中显示" >
+        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="160" label="是否在列表中显示" >
           <template slot-scope="scope"  >
               <el-select v-model="scope.row.tableHide" placeholder="请选择">
                   <el-option label="隐藏" :value='true'></el-option>
@@ -228,7 +242,9 @@
             const el = this.$refs.multipleTable.$el.querySelector('.el-table__body-wrapper tbody')
             const _this=this
             sortable.create(el,{
-            ghostClass:'sortable-ghost',
+              draggable:".el-table__row",
+              handle:'.drag',          
+              // ghostClass:'sortable-ghost',
                 // setData:function(dataTransfer){
                 //     dataTransfer.setData('Text', '')
                 // },

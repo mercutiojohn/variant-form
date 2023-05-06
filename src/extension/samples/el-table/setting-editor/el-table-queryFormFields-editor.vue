@@ -12,6 +12,7 @@
           windowHight="700px"
           @close="toClose"
           :formId="formId"
+          :columns="columns"
         ></queryFormFields>
     </el-dialog>
   </div>
@@ -52,6 +53,55 @@
       formId(){
         return  this.selectedWidget.options.formId;
       },
+      columns(){
+        //表格里回显数据
+        let columns= this.selectedWidget.options.crudOption.columns
+        let data=[]
+        const optionType=['select','radio','checkbox']
+        const inputType=['input','user-choose','textarea','number']
+        const dataType=['time','time-range','date','date-range']
+        columns.forEach((item)=>{
+          if(!!item.label&&!!item.field){
+            if(optionType.includes(item.inputType)){
+              data.push({
+              name:item.label,
+              code:item.field,
+              type:item.inputType,
+              anjiSelectOption: {
+                  dictCode: "",
+                  option:item.option.optionItems
+                },
+              })
+            }else if(inputType.includes(item.inputType)){
+              data.push({
+              name:item.label,
+              code:item.field,
+              type:item.inputType,           
+              })
+            }else if(dataType.includes(item.inputType)){
+              data.push({
+              name:item.label,
+              code:item.field,
+              type:item.inputType,
+              format:item.option.format,
+              valueFormat:item.option.valueFormat||item.option.format           
+              })
+            } 
+            }else if(item.inputType=="switch"){
+              data.push({
+              name:item.label,
+              code:item.field,
+              type:item.inputType,
+              disableValue:item.option.activeText,
+              enableValue:item.option.inactiveText           
+              })
+                    
+          }else{
+
+          }         
+        })
+        return data
+      },
     },
     data() {
       return {
@@ -65,6 +115,8 @@
         this.editNumberVisible=true
       },
       toClose(data){
+        console.log(data);
+        
         this.selectedWidget.options.crudOption.queryFormFields=data
         this.editNumberVisible=false
       }

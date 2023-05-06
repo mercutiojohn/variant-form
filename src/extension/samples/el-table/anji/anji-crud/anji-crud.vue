@@ -17,7 +17,7 @@
      
         <!-- 查询表单开始 -->
         <el-form
-          v-if="queryFormTreeHide == false"
+          v-if="queryFormTreeHide"
           ref="formSearch"
           :model="queryParams"
           label-width="100px"
@@ -26,9 +26,9 @@
               <el-row :span="24">
                 <template v-for="(item, index) in queryFormFieldExcludeTree">
                   <el-col
-                    v-if="index < 4 || queryParams.showMoreSearch"
+                    v-if="index < 5 || showMoreSearch"
                     :key="item.field"
-                    :span="5"
+                    :span="7"
                   >
                     <el-form-item
                       :label="item.label"
@@ -39,7 +39,9 @@
                       <el-input
                         v-if="
                           item.inputType == 'input' ||
-                            item.inputType == 'input-number'
+                            item.inputType == 'number'
+                            ||item.inputType=='textarea'
+                            ||item.inputType=='user-choose'
                         "
                         v-model.trim="queryParams[item.field]"
                         :placeholder="item.placeholder || '请输入'"
@@ -52,26 +54,38 @@
                         v-else-if="item.inputType == 'switch'"
                         v-model.trim="queryParams[item.field]"
                         :disabled="item.disabled"
-                        :active-value="item.switchOption.disableValue"
-                        :inactive-value="item.switchOption.enableValue"
+                        :active-value="item.disableValue"
+                        :inactive-value="item.enableValue"
                         active-color="#5887fb"
                         inactive-color="#ccc"
                         @change="value => queryFormChange(item.field, value)"
                       />
                       <!-- 下拉框 -->
                       <Select 
-                          v-else-if="item.inputType == 'anji-select'"         
+                          v-else-if="item.inputType == 'select'||item.inputType == 'radio'"         
                           v-model.trim="queryParams[item.field]"
                           :disabled="item.disabled"
                           @change="value => queryFormChange(item.field, value)"
                           >
                           <Option
                             v-for="item1 in item.anjiSelectOption.option"
-                            :key="item1.code"
-                            :label="item1.name"
-                            :value="item1.code"
+                            :key="item1.value"
+                            :label="item1.label"
+                            :value="item1.value"
                           ></Option>
                       </Select>
+                      <el-checkbox-group
+                        v-else-if="item.inputType == 'checkbox'" 
+                        :disabled="item.disabled" 
+                        v-model="queryParams[item.field]"
+                        @change="value => queryFormChange(item.field, value)"
+                      >
+                        <template>
+                          <el-checkbox v-for="(item1,index) in item.anjiSelectOption.option" 
+                          :key="index" :label="item1.value"  :disabled="item.disabled"                     
+                                        >{{item1.label}}</el-checkbox>
+                        </template>
+                      </el-checkbox-group>
                       <!-- <anji-select
                         v-else-if="item.inputType == 'anji-select'"
                         v-model.trim="queryParams[item.field]"
@@ -92,7 +106,7 @@
                       /> -->
                       <!-- 日期时间框  -->
                       <el-date-picker
-                        v-else-if="item.inputType.indexOf('date') >= 0"
+                        v-else-if="item.inputType == 'date'"
                         v-model="queryParams[item.field]"
                         style="width: 100%"
                         :placeholder="item.placeholder || '请选择'"
@@ -102,6 +116,44 @@
                         :clearable="item.clearable !== false"
                         @change="value => queryFormChange(item.field, value)"
                       />
+                      <el-date-picker
+                        v-else-if="item.inputType == 'date-range'"
+                        v-model="queryParams[item.field]"
+                        style="width: 100%"
+                        :placeholder="item.placeholder || '请选择'"
+                        type="daterange"
+                        :format="item.format"
+                        :value-format="item.valueFormat"
+                        :clearable="item.clearable !== false"
+                        range-separator="-"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        @change="value => queryFormChange(item.field, value)"
+                      ></el-date-picker>
+                      <el-time-picker
+                        v-else-if="item.inputType == 'time'"
+                        v-model="queryParams[item.field]"
+                        style="width: 100%"                       
+                        :placeholder="item.placeholder || '请选择'"
+                        :format="item.format" 
+                        :value-format="item.valueFormat"
+                        :clearable="item.clearable !== false"
+                        @change="value => queryFormChange(item.field, value)"
+                      />
+                      <el-time-picker 
+                        v-else-if="item.inputType == 'time-range'"
+                        v-model="queryParams[item.field]"
+                        style="width: 100%"                       
+                        :placeholder="item.placeholder || '请选择'"
+                        is-range
+                        :format="item.format" 
+                        :value-format="item.valueFormat"
+                        :clearable="item.clearable !== false"
+                        range-separator="-"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                        @change="value => queryFormChange(item.field, value)"
+                        />
                       <anji-cascader
                         v-else-if="item.inputType == 'anji-cascader'"
                         v-model.trim="queryParams[item.field]"
@@ -139,15 +191,19 @@
                   {{ queryParams.showMoreSearch == true ? "展开" : "收起" }}
                 </el-button> -->
                 </template>
-                <ElCol :span="4"  v-if="queryFormFieldExcludeTree.length > 4">
-                    &nbsp;<Button size="medium" type="text" :icon=" queryParams.showMoreSearch?'':'el-icon-search'" @click="handleToggleMoreSearch">
-                        {{ queryParams.showMoreSearch == true ? "收起": "高级查询" }}
-                          </Button>
+                <ElCol :span="2"  v-if="queryFormFieldExcludeTree.length > 5"> 
+                  <div style="height:1px;"></div>                 
                 </ElCol>
+                <ElCol :span="3"  v-if="queryFormFieldExcludeTree.length > 5">
+                    <el-button size="medium" type="text" :icon=" showMoreSearch?'':'el-icon-search'" @click="handleToggleMoreSearch">
+                        {{ showMoreSearch == true ? "收起": "高级查询" }}
+                          </el-button>
+                </ElCol>
+              </el-row>
+              <el-row :span="24">
                   <el-button style="float:right;margin-right: 15px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
                   <el-button style="float:right;margin-right: 15px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
               </el-row>
-             
             <!-- <el-row :span="24">
                 <ELCol :span="24" style="text-align: center;">
                   <div >
@@ -213,7 +269,7 @@
                       :key="index"
                       :prop="item.field"
                       :label="fieldLabel(item)"
-                      :min-width="item.minWidth || 110"
+                      :min-width="item.minWidth || 120"
                       :sortable="item.sortable"
                       show-overflow-tooltip
                       :align="item.contentAlign"
@@ -430,7 +486,7 @@ import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, R
 import common from './mixins/common'
 import queryform from './mixins/queryform'
 export default {
-  inject: ['listVformPages','openForm','setFunction'],
+  inject: ['listVformPages','openForm','setFunction','dataHandling'],
   mixins: [
     common,
     queryform,
@@ -481,6 +537,7 @@ export default {
   data() {
     return {
       // 查询表单提交的值
+      showMoreSearch:false,
       queryParams: {
         // showMoreSearch: false, // 是否展开更多搜索条件
         // order: "",
@@ -539,8 +596,7 @@ export default {
     },
     // 查询区隐藏
     queryFormTreeHide() {
-      const flag =
-        this.option.queryFormHide != null && this.option.queryFormHide == true;
+      const flag =this.option.queryFormHide != null && this.option.queryFormHide == true;
       return flag;
     },
     // 左侧树形查询条件
@@ -557,6 +613,18 @@ export default {
     // 不包含树形控件的查询条件
     queryFormFieldExcludeTree() {
       //查询条件控制
+      this.queryParams={}
+      this.option.queryFormFields.forEach(item => {
+        // 动态添加属性
+        if(item.inputType=='checkbox'){
+          this.$set(this.queryParams, item.field, item.defaultValue || []);
+        }else{
+          this.$set(this.queryParams, item.field, item.defaultValue || null);
+        }
+      
+      });
+      console.log('this.option.queryFormFields',this.option.queryFormFields);
+      
       let treeFields =this.option.queryFormFieldsFlag?(this.option.queryFormFields.filter(
         item => item["inputType"] != "anji-tree"
       )):[]
@@ -589,10 +657,15 @@ export default {
   },
   created() {
     this.itemId=this.option.itemId
-    // 为查询框中所有input加上默认值
+    // 为查询框中所有input加上默认值   
     this.option.queryFormFields.forEach(item => {
       // 动态添加属性
-      this.$set(this.queryParams, item.field, item.defaultValue || null);
+      if(item.inputType=='checkbox'){
+        this.$set(this.queryParams, item.field, item.defaultValue || []);
+      }else{
+        this.$set(this.queryParams, item.field, item.defaultValue || null);
+      }
+     
     });
     // 查询列表
     if (this.option.skipQuery || this.option.skipQuery == undefined) {
@@ -617,7 +690,7 @@ export default {
     },
     // 切换更多搜索条件
     handleToggleMoreSearch() {
-      // this.queryParams.showMoreSearch = !this.queryParams.showMoreSearch;
+      this.showMoreSearch = !this.showMoreSearch;
     },
     // 列上排序切换
     handleSortChange(column) {
@@ -682,8 +755,39 @@ export default {
     async handleQueryPageList() {
       // 将特殊参数值urlcode处理
       // let params = this.urlEncodeObject(this.queryParams, "order,sort");
+      let object=this.deepClone(this.queryParams)
+      console.log('queryParams',this.queryParams);
+      console.log(this.option.columns);
+      let params ={}
+      for (const key in object) {
+        if (object.hasOwnProperty(key)&&!!key) {
+          let type=''
+          let query=''
+          for (let index = 0; index < this.option.columns.length; index++) {
+            if(this.option.columns[index].field==key&&!!object[key]){
+              type=this.option.columns[index].inputType
+              if(type=='date'){
+                // query= object[key]
+              }else if(type=='date-range'||type=='time-range'){
+                // let data=[]
+                // object[key].forEach((item)=>{
+                //   data.push(this.dataHandling.parseTime(item,this.option.columns[index].option.format))               
+                // })           
+                query= this.dataHandling.addDateRange({},object[key],key)
+              }
+              break
+            }            
+          }
+          params[key]={
+            name:key,
+            type:type,
+            query:query||object[key],
+          }         
+        }
+      }
+      console.log(params);
       if(!!this.formId){
-        this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,params: this.queryParams}).then(response => {
+        this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,queryParams:params}).then(response => {
           if (response.data.code != "200") return;
           this.records = response.data.rows;
           this.params.pageQueryData.total = response.data.total;
@@ -706,8 +810,8 @@ export default {
       // 查询条件表单只读模式下不重置默认值
       const queryFormFieldsOption = this.option.queryFormFields;
       queryFormFieldsOption.forEach(el => {
-        if (el.disabled) {
-          this.queryParams[el.field] = el.defaultValue;
+        if (!el.disabled) {
+          this.queryParams[el.field] = !!el.defaultValue?el.defaultValue:''
         }
       });
       this.handleQueryForm('query')
@@ -1072,9 +1176,9 @@ export default {
       if (item.inputType == 'radio' || item.inputType == 'select') {
         if (row[item.field]!= null) {
           let tempStr = row[item.field]
-          for (let index = 0; index < item.option.length; index++) {
-            if (tempStr == item.option[index].value) {
-                tempStr = item.option[index].label
+          for (let index = 0; index < item.option.optionItems.length; index++) {
+            if (tempStr == item.option.optionItems[index].value) {
+                tempStr = item.option.optionItems[index].label
                 break;
               }                         
           }
@@ -1082,29 +1186,33 @@ export default {
         }else{
           return row[item.field]
         }
-      }
-      // else if(item.inputType == 'checkbox'){
-      //   if (row[item.field]!= null) {
-      //     let tempStrList = row[item.field].split(",")
-      //     this.optionsFields.forEach(element => {
-      //       this.options[element.dict+'Options'].forEach((temp) => {
-      //         tempStrList.forEach(function(item,index,arr){
-      //           if (item == temp.field) {
-      //             arr[index] = temp.name
-      //           }
-      //         })
-      //       })
-      //     })
-      //     return tempStrList.join(",")
-      //   }else{
-      //     return row[item.field]
-      //   }
-      // }else if (item.inputType == 'group' || item.inputType == 'groupMultiple' ||
-      //   item.inputType == 'user' || item.inputType == 'userMultiple') {
-      //   if(row[item.field]!= null) {
-      //     return row[item.field].split('|')[0]
-      //   }
-      // }
+      }else if(item.inputType == 'switch' ){
+          if (row[item.field]=='true') {
+            return item.option.activeText
+          } else {
+            return item.option.inactiveText
+          }
+        }else if(item.inputType == 'checkbox'){
+          if (row[item.field]!= null) {
+            let tempStrList = row[item.field]
+            let tempStr=''
+            tempStrList.forEach((data)=>{
+              for (let index = 0; index < item.option.optionItems.length; index++) {
+                if (data == item.option.optionItems[index].value) {
+                    tempStr = tempStr?tempStr+','+item.option.optionItems[index].label:item.option.optionItems[index].label
+                    break;
+                  }                         
+              }
+            })        
+            return tempStr
+          }else{
+            return row[item.field]
+          }
+        }else if (item.inputType == 'user-choose' ) {
+          if(row[item.field]!= null) {
+            return row[item.field].split('|')[0]
+          }
+        }
       else {
         return row[item.field]
       }
@@ -1116,6 +1224,9 @@ export default {
  /deep/.el-tooltip>div{
     text-overflow: ellipsis;
     overflow: hidden;
+ }
+ .top_part /deep/.el-form-item__label{
+   text-align: right;
  }
 </style>
 <!-- <style scoped lang="scss">

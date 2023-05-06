@@ -65,20 +65,21 @@
         dialogCaseResult: false,
         crudOption: {
           // 使用菜单做为页面标题
+           //是否使用内部弹窗（不要修改）
+           dialogFlag:false,
+          //查询条件控制（不包括查询重置按钮）
+          queryFormFieldsFlag:true,
+          //查询条件显隐
+          queryFormHide:true,
           title: "数据集",
           // 详情页中输入框左边文字宽度
           labelWidth: "120px",
           // 查询表单条件
           queryFormFields: [
-            {
-              inputType: "input",
-              label: "数据集编码",
-              field: "setCode"
-            },
-            {
-              inputType: "input",
-              label: "数据集名称",
-              field: "setName"
+          {
+              inputType: "",
+              label: "",
+              field: ""
             },
             // {
             //   inputType: "anji-select", //form表单类型 input|input-number|anji-select(传递url或者dictCode)|anji-tree(左侧树)|date|datetime|datetimerange

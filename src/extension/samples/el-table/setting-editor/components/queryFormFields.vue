@@ -9,55 +9,44 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="字段名称" >
+        <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="名称" >
             <template slot-scope="scope" >
                 <el-input  v-model="scope.row.label" ></el-input>
             </template>
         </TableColumn>
+        <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="绑定字段" >
+            <template slot-scope="scope"  >
+              <el-select v-model="scope.row.field" @change="fieldChange(scope.row)" placeholder="请选择">
+                <el-option
+                  v-for="dict in columns"
+                  :key="dict.code"
+                  :label="dict.name"
+                  :value="dict.code"
+               ></el-option>
+              </el-select>
+            </template>
+        </TableColumn>
         <TableColumn  prop="inputType" header-align="center" align="left" min-width="120" label="类型" >
             <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.inputType" ></el-input>
+              <!-- <el-input  v-model="scope.row.inputType" ></el-input> -->
+              <el-select v-model="scope.row.inputType" placeholder="请选择">
+                <el-option
+                  v-for="dict in inputType"
+                  :key="dict"
+                  :label="dict"
+                  :value="dict"
+               ></el-option>
+              </el-select>
             </template>
         </TableColumn>
-        <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="字段" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.field" ></el-input>
-            </template>
-        </TableColumn>
-        <TableColumn  prop="headerAlign" header-align="center" align="left" min-width="120" label="表头对齐方式" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.headerAlign" placeholder="请选择">
-                <el-option label="左对齐" value='left'></el-option>
-                <el-option label="居中对齐" value='center'></el-option>
-                <el-option label="右对齐" value='right'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn  prop="contentAlign" header-align="center" align="left" min-width="120" label="对齐方式" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.contentAlign" placeholder="请选择">
-                  <el-option label="左对齐" value='left'></el-option>
-                  <el-option label="居中对齐" value='center'></el-option>
-                  <el-option label="右对齐" value='right'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn  prop="sortable" header-align="center" align="left" min-width="120" label="是否可排序" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.sortable" placeholder="请选择">
-                  <el-option label="是" :value='true'></el-option>
-                  <el-option label="否" :value='false'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="120" label="是否在列表中显示" >
+        <!-- <TableColumn  prop="tableHide" header-align="center" align="left" min-width="120" label="是否在列表中显示" >
           <template slot-scope="scope"  >
               <el-select v-model="scope.row.tableHide" placeholder="请选择">
                   <el-option label="隐藏" :value='true'></el-option>
                   <el-option label="显示" :value='false'></el-option>
               </el-select>
           </template>
-        </TableColumn>
+        </TableColumn> -->
         <TableColumn
         label="操作"
         width="150px"
@@ -85,12 +74,7 @@
             />
           </template>
         </TableColumn>
-        <!-- <TableColumn  prop="editField" header-align="center" align="left" label="编辑字段" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.editField" ></el-input>
-            </template>
-        </TableColumn>
-        <TableColumn  prop="disabled" header-align="center" align="left" label="是否可编辑" >
+        <!-- <TableColumn  prop="disabled" header-align="center" align="left" label="是否可编辑" >
             <template slot-scope="scope"  >
                 <el-select v-model="scope.row.disabled" placeholder="请选择">
                     <el-option label="可编辑" :value='false'></el-option>
@@ -113,9 +97,6 @@
       <div style="text-align: center;margin-top: 20px">
         <Button  size="medium" type="primary" @click="toSave">
           保存
-        </Button>
-        <Button  size="medium" type="primary" @click="getLatestData">
-          更新字段
         </Button>
       </div>
     </div>
@@ -140,6 +121,9 @@
       },
       formId:{
 
+      },
+      columns:{
+        type: [Array]
       }
     },
     data () {
@@ -147,9 +131,38 @@
         listData: [],
         num: 1,
         lodding:false,
+        inputType:['input','user-choose','textarea','number','select','radio','checkbox','switch','time','time-range','date','date-range']
       }
     },
     methods: {
+      //下拉框选项改变触发
+      fieldChange(row){
+        //查询条件
+        let columns=this.columns
+        const optionType=['select','radio','checkbox']
+        const inputType=['input','user-choose','textarea','number']
+        const dataType=['time','time-range','date','date-range']
+        for (let index = 0; index < columns.length; index++) {
+          if(columns[index].code==row.field){
+            row.inputType=columns[index].type
+            row.label=columns[index].name
+            if(optionType.includes(columns[index].type)){
+              if(!!columns[index].anjiSelectOption){
+                row.anjiSelectOption=columns[index].anjiSelectOption
+              }  
+            }else if(inputType.includes(columns[index].type)){
+
+            }else if(dataType.includes(columns[index].type)){
+              row.format=columns[index].format
+              row.valueFormat=columns[index].valueFormat||columns[index].format
+            }else if(columns[index].type=="switch"){
+              row.disableValue=columns[index].activeText
+              row.enableValue=columns[index].inactiveText                     
+            }
+            break;   
+          }                
+        }
+      },
       async getLatestData(){
         this.lodding=true
         const {data} = await this.setFunction.getVformPagesByPageId(this.formId);
@@ -172,7 +185,7 @@
                 field: item.field.options.name,
                 editField: item.field.options.name,
                 inputType: item.type,
-                // disabled: item.field.options.,
+                // disabled: item.field.options.disabled,
                 contentAlign:'center',
                 headerAlign:'left',
                 sortable:false,
@@ -188,16 +201,12 @@
         return !!widgetList ? getAllFieldWidgets(widgetList) : getAllFieldWidgets(this.formJson.widgetList)
       },
       addDict(index,item) {
-        console.log(index,item);
+        // console.log(index,item);
         item.push({ 
-          contentAlign: "center",
-          disabled: false,
-          editField: "",
           field: "",
-          headerAlign: "left",
           inputType: "input",
           label: "",
-          placeholder: "",
+          disabled:false
         });
       },
       delDict(index,rows) {
@@ -216,7 +225,7 @@
         }else{
           rows.splice(index, 1);
         }
-        console.log(index,rows);
+        // console.log(index,rows);
         
 
       },
@@ -248,7 +257,9 @@
     // 页面初始化调用方法
     mounted: function () {
       this.listData = JSON.parse(JSON.stringify(this.list))
-      console.log(this.listData);
+      // console.log(this.listData);
+      console.log('columns',this.columns);
+      
       document.body.ondrag=function(event){
         event.preventDefault()
         event.stopPropagation()
