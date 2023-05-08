@@ -54,7 +54,6 @@
         return  this.selectedWidget.options.formId;
       },
       columns(){
-        //表格里回显数据
         let columns= this.selectedWidget.options.crudOption.columns
         let data=[]
         const optionType=['select','radio','checkbox']
@@ -85,17 +84,23 @@
               type:item.inputType,
               format:item.option.format,
               valueFormat:item.option.valueFormat||item.option.format           
-              })
-            } 
+              })             
             }else if(item.inputType=="switch"){
+              let option=[]
+              option.push({value:'true',label:item.option.activeText,})
+              option.push({value:'false',label:item.option.inactiveText,})
               data.push({
               name:item.label,
               code:item.field,
               type:item.inputType,
+              anjiSelectOption: {
+                  dictCode: "",
+                  option:option
+              },
               disableValue:item.option.activeText,
               enableValue:item.option.inactiveText           
               })
-                    
+            }      
           }else{
 
           }         

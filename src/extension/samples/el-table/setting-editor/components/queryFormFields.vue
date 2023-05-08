@@ -139,7 +139,7 @@
       fieldChange(row){
         //查询条件
         let columns=this.columns
-        const optionType=['select','radio','checkbox']
+        const optionType=['select','radio','checkbox','switch']
         const inputType=['input','user-choose','textarea','number']
         const dataType=['time','time-range','date','date-range']
         for (let index = 0; index < columns.length; index++) {
@@ -155,10 +155,11 @@
             }else if(dataType.includes(columns[index].type)){
               row.format=columns[index].format
               row.valueFormat=columns[index].valueFormat||columns[index].format
-            }else if(columns[index].type=="switch"){
-              row.disableValue=columns[index].activeText
-              row.enableValue=columns[index].inactiveText                     
             }
+            // else if(columns[index].type=="switch"){
+            //   row.disableValue=columns[index].activeText
+            //   row.enableValue=columns[index].inactiveText                     
+            // }
             break;   
           }                
         }

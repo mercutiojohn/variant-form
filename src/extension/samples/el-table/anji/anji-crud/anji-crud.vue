@@ -50,7 +50,7 @@
                         @change="value => queryFormChange(item.field, value)"
                       />
                       <!-- 开关 -->
-                      <el-switch
+                      <!-- <el-switch
                         v-else-if="item.inputType == 'switch'"
                         v-model.trim="queryParams[item.field]"
                         :disabled="item.disabled"
@@ -59,10 +59,10 @@
                         active-color="#5887fb"
                         inactive-color="#ccc"
                         @change="value => queryFormChange(item.field, value)"
-                      />
+                      /> -->
                       <!-- 下拉框 -->
                       <Select 
-                          v-else-if="item.inputType == 'select'||item.inputType == 'radio'"         
+                          v-else-if="item.inputType == 'select'||item.inputType == 'radio'||item.inputType == 'switch'||item.inputType == 'checkbox'"         
                           v-model.trim="queryParams[item.field]"
                           :disabled="item.disabled"
                           @change="value => queryFormChange(item.field, value)"
@@ -74,7 +74,7 @@
                             :value="item1.value"
                           ></Option>
                       </Select>
-                      <el-checkbox-group
+                      <!-- <el-checkbox-group
                         v-else-if="item.inputType == 'checkbox'" 
                         :disabled="item.disabled" 
                         v-model="queryParams[item.field]"
@@ -85,7 +85,7 @@
                           :key="index" :label="item1.value"  :disabled="item.disabled"                     
                                         >{{item1.label}}</el-checkbox>
                         </template>
-                      </el-checkbox-group>
+                      </el-checkbox-group> -->
                       <!-- <anji-select
                         v-else-if="item.inputType == 'anji-select'"
                         v-model.trim="queryParams[item.field]"
@@ -276,7 +276,7 @@
                       :header-align="item.headerAlign"
                     >
                       <template slot-scope="scope">
-                        <div v-if="item.columnType == 'imgPreview'">
+                        <div v-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
                           <!-- 图片缩略图-->
                           <el-image
                             style="width: 25%; height: 50%"
@@ -285,6 +285,18 @@
                             :preview-src-list="[scope.row[item.field]]"
                           />
                         </div>
+                        <div v-else-if="item.inputType == 'color'" >
+                           <div :style="{width:'100%',height:'22px','background-color':scope.row[item.field]}"></div>
+                        </div>
+                        <!-- <div v-else-if="item.inputType == 'rate'" >
+                          <el-rate  v-model="scope.row[item.field]"
+                            disabled="true"
+                            :max="item.option.max"
+                            :low-threshold="item.option.lowThreshold" :high-threshold="item.option.highThreshold"
+                            :allow-half="item.option.allowHalf"
+                            :show-text="item.option.showText" :show-score="item.option.showScore">
+                          </el-rate>
+                        </div> -->
                         <div v-else>
                             {{ getDataName(scope.row,item)}}
                           <!-- <span v-if="item.inputType == 'switch' && !item.colorStyle">
@@ -756,8 +768,8 @@ export default {
       // 将特殊参数值urlcode处理
       // let params = this.urlEncodeObject(this.queryParams, "order,sort");
       let object=this.deepClone(this.queryParams)
-      console.log('queryParams',this.queryParams);
-      console.log(this.option.columns);
+      // console.log('queryParams',this.queryParams);
+      // console.log(this.option.columns);
       let params ={}
       for (const key in object) {
         if (object.hasOwnProperty(key)&&!!key) {
@@ -1212,8 +1224,17 @@ export default {
           if(row[item.field]!= null) {
             return row[item.field].split('|')[0]
           }
-        }
-      else {
+        }else if (item.inputType == 'time-range'||item.inputType == 'date-range' ) {
+          if(!!row[item.field]) {          
+            return  `${row[item.field][0]} - ${row[item.field][1]}`        
+          }
+        }else if (item.inputType == 'slider'||item.inputType =='rate' ) {
+          if(!!row[item.field]) {          
+            return  `${row[item.field]}/${item.option.max}`        
+          }
+        }else {
+          console.log('rowitem',row,item);
+          
         return row[item.field]
       }
     },
