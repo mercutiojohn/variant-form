@@ -13,7 +13,7 @@ function errorCreat(msg) {
 function errorLog(err) {
 
   // 打印到控制台
-  log.danger('>>>>>> Error >>>>>>')
+  console.error('>>>>>> Error >>>>>>')
   console.log(err)
   Message({
     message: err.message,
@@ -84,24 +84,25 @@ const axiosInstance = axios.create({
 
 function doHandle(config) {
 
-  // config.params = {
-  //   _time: Date.parse(new Date()) / 1000,
-  //   ...config.params
-  // }
-  // if (!/^https:\/\/|http:\/\//.test(config.url)) {
-  //   let token = store.state.session.token
+  config.params = {
+    _time: Date.parse(new Date()) / 1000,
+    ...config.params
+  }
+  if (!/^https:\/\/|http:\/\//.test(config.url)) {
+    let token = ''
+    if(localStorage.getItem('userInfo')){
+      let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+      token = userInfo.token
+    } else {
+      // token = util.cookies.get('X-Token')
+    }
 
-  //   if (!token) {
-  //     token = util.cookies.get('X-Token')
-  //   }
-
-  //   // 在token刷新时，会自己放一个名为X-Token的header，此处判断一下，不能覆盖
-  //   if (token && !config.headers['X-Token']) {
-  //     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-  //     config.headers['X-Token'] = token
-  //   }
-  // }
-  // }
+    // 在token刷新时，会自己放一个名为X-Token的header，此处判断一下，不能覆盖
+    if (token && !config.headers['X-Token']) {
+      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+      config.headers['X-Token'] = token
+    }
+  }
   return config
 }
 

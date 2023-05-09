@@ -2,7 +2,7 @@
   <div id="app">
     <VFormDesigner ref="vfDesignerRef" :designer-config="designerConfig" :global-dsv="globalDsv" :template-data="getTemplateData()">
       <template #customToolButtons>
-        <!-- <el-button type="normal" @click="printFormJson">测试按钮</el-button> -->
+        <el-button type="normal" @click="login">获取登录态</el-button>
         <el-button type="normal" @click="insertFormJson">外部导入</el-button>
         <el-button type="normal" @click="getFieldList">获取字段列表</el-button>
         <el-button type="primary" @click="printFormJson">外部导出</el-button>
@@ -17,6 +17,9 @@ import request from '@/plugin/axios'
 // 人员选择API
 import { getGroupUserTree, getPersonData, getParentId,getNodeData, getCommonUseData, addContacts } from '@/api/sys/transferunit'
 import { treeData, PersonTreeData,lowTreeData } from '@/api/sys/tree'
+// 登录态获取
+import { AccountLogin } from '@/api/sys/login'
+const sm2 = require('sm-crypto').sm2
 export default {
   name: 'App',
   components: {
@@ -77,6 +80,19 @@ export default {
       globalDsv: {
         testApiHost: 'http://www.test.com/api',
         testPort: 8080,
+      },
+
+      // 获取登录态
+      publicQkey: '04d4d8ffdea4279d16d813c6899e4dce0695b0c8da3d0d47f111341cab4dba031a93c7fc5fece2f8deef06a5f4fdb242632a9da49b5a8e9dd5aea422da18be2049',
+      formLogin: {
+        username: 'admin',
+        password: '1'
+      },
+      userInfo: {
+        uuid: '',
+        token: '',
+        refreshToken: '',
+        user: ''
       }
     }
   },
@@ -97,7 +113,27 @@ export default {
     },
     testApi () {
       this.$message.success('外部API方法测试')
-    }
+    },
+    // 获取登录态
+    login () {
+      this.unlogined = true
+      AccountLogin({
+          username: this.formLogin.username,
+          password: sm2.doEncrypt(this.formLogin.password, this.publicQkey),
+      })
+      .then(async res => {
+          this.userInfo.uuid = res.user.uuid
+          this.userInfo.token = res.user.token
+          this.userInfo.refreshToken = res.user.refreshToken
+          this.userInfo.user = res.user
+          localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+          console.log(JSON.parse(localStorage.getItem('userInfo')))
+          this.$message.success(`已获取${JSON.parse(localStorage.getItem('userInfo')).user.name}登录态`)
+      })
+      .catch(err => {
+          console.log('err: ', err)
+      })
+    },
   }
 }
 </script>
