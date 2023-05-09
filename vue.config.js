@@ -33,7 +33,16 @@ if (IS_PROD && buildProdFlag) {
 module.exports = {
   publicPath: './',
   assetsDir: './',
-
+  devServer: {
+    publicPath: '/',
+    proxy: {
+      '/api': {
+        target: 'https://localhost:8000/xxzx',
+        changeOrigin: true
+      }
+    },
+    https: true
+  },
   /* 开启vue运行时模板编译功能！！ */
   runtimeCompiler: true,
 

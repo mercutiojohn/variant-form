@@ -364,6 +364,8 @@ export function getDefaultFormConfig() {
     customClass: [],
     functions: '',
     layoutType: 'PC',
+    useCustomInitApi: false,
+    customInitApi: '',
 
     onFormCreated: '',
     onFormMounted: '',

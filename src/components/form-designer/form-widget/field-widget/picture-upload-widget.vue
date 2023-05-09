@@ -7,7 +7,7 @@
                :action="field.options.uploadURL" :headers="uploadHeaders" :data="uploadData"
                :with-credentials="field.options.withCredentials"
                :multiple="field.options.multipleSelect" :file-list="fileList" :show-file-list="field.options.showFileList"
-               list-type="picture-card" :class="{'hideUploadDiv': uploadBtnHidden}"
+               list-type="picture-card" :class="{'hideUploadDiv': uploadBtnHidden || field.options.disabled}"
                :limit="field.options.limit" :on-exceed="handlePictureExceed" :on-preview="handlePicturePreview"
                :before-upload="beforePictureUpload"
                :on-success="handlePictureUpload" :on-error="handleUploadError" :on-remove="handlePictureRemove">
@@ -74,7 +74,9 @@
 
         uploadHeaders: {},
         uploadData: {
-          key: '',  //七牛云上传文件名
+          name: '',  //七牛云上传文件名
+          fileType:'picture',
+          relativeNumber:''
           //token: '',  //七牛云上传token
 
           //policy: '',  //又拍云上传policy
@@ -150,7 +152,8 @@
           return false;
         }
 
-        this.uploadData.key = file.name
+        this.uploadData.name = file.name
+        this.uploadData.relativeNumber = this.field.options.name
         return this.handleOnBeforeUpload(file)
       },
 
@@ -173,12 +176,16 @@
         if (!!customResult && !!customResult.name && !!customResult.url) {
           this.fieldModel.push({
             name: customResult.name,
-            url: customResult.url
+            url: customResult.url,
+            filePath: customResult.filePath,
+            fileName: customResult.fileName
           })
         } else if (!!defaultResult && !!defaultResult.name && !!defaultResult.url) {
           this.fieldModel.push({
             name: defaultResult.name,
-            url: defaultResult.url
+            url: defaultResult.url,
+            filePath: defaultResult.filePath,
+            fileName: defaultResult.fileName
           })
         } else {
           this.fieldModel = deepClone(fileList)
@@ -193,10 +200,29 @@
           let customResult = null
           if (!!this.field.options.onUploadSuccess) {
             let customFn = new Function('result', 'file', 'fileList', this.field.options.onUploadSuccess)
-            customResult = customFn.call(this, res, file, fileList)
+            customResult = customFn.call(this, res.data, file, fileList)
           }
-
-          this.updateFieldModelAndEmitDataChangeForUpload(fileList, customResult, res)
+          this.updateFieldModelAndEmitDataChangeForUpload(fileList, customResult, res.data)
+          if (!!customResult && !!customResult.name) {
+            file.name = customResult.name
+          } else {
+            file.name = file.name || res.data.name
+          }
+          if (!!customResult && !!customResult.url) {
+            file.url = customResult.url
+          } else {
+            file.url = file.url || res.data.url
+          }
+          if (!!customResult && !!customResult.filePath) {
+            file.filePath = customResult.filePath
+          } else {
+            file.filePath = file.filePath || res.data.filePath
+          }
+          if (!!customResult && !!customResult.fileName) {
+            file.fileName = customResult.fileName
+          } else {
+            file.fileName = file.fileName || res.data.fileName
+          }
           this.fileList = deepClone(fileList)
           this.uploadBtnHidden = fileList.length >= this.field.options.limit
         }

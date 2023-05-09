@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form-item label="绑定表单" label-width="150px">
-      <el-select v-model="optionModel.formId">
+      <el-select v-model="optionModel.formId" clearable >
         <el-option v-for="(sf, sfIdx) in list" :key="sf.id" :label="sf.label" :value="sf.value"></el-option>
       </el-select>
     </el-form-item>

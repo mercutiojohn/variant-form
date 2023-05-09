@@ -131,7 +131,7 @@
         listData: [],
         num: 1,
         lodding:false,
-        inputType:['input','user-choose','textarea','number','select','radio','checkbox','switch','time','time-range','date','date-range']
+        inputType:['input','user-choose','group-choose','textarea','number','select','radio','checkbox','switch','time','time-range','date','date-range']
       }
     },
     methods: {
@@ -140,7 +140,7 @@
         //查询条件
         let columns=this.columns
         const optionType=['select','radio','checkbox','switch']
-        const inputType=['input','user-choose','textarea','number']
+        const inputType=['input','user-choose','textarea','number','group-choose']
         const dataType=['time','time-range','date','date-range']
         for (let index = 0; index < columns.length; index++) {
           if(columns[index].code==row.field){
@@ -148,13 +148,15 @@
             row.label=columns[index].name
             if(optionType.includes(columns[index].type)){
               if(!!columns[index].anjiSelectOption){
-                row.anjiSelectOption=columns[index].anjiSelectOption
+                row.anjiSelectOption=columns[index].anjiSelectOption||[]
               }  
             }else if(inputType.includes(columns[index].type)){
+              row.anjiSelectOption=[]
 
             }else if(dataType.includes(columns[index].type)){
               row.format=columns[index].format
               row.valueFormat=columns[index].valueFormat||columns[index].format
+              row.anjiSelectOption=[]
             }
             // else if(columns[index].type=="switch"){
             //   row.disableValue=columns[index].activeText

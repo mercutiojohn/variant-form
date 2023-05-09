@@ -42,6 +42,7 @@
                             item.inputType == 'number'
                             ||item.inputType=='textarea'
                             ||item.inputType=='user-choose'
+                            ||item.inputType=='group-choose'
                         "
                         v-model.trim="queryParams[item.field]"
                         :placeholder="item.placeholder || '请输入'"
@@ -106,7 +107,7 @@
                       /> -->
                       <!-- 日期时间框  -->
                       <el-date-picker
-                        v-else-if="item.inputType == 'date'"
+                        v-else-if="item.inputType == 'date---'"
                         v-model="queryParams[item.field]"
                         style="width: 100%"
                         :placeholder="item.placeholder || '请选择'"
@@ -117,7 +118,7 @@
                         @change="value => queryFormChange(item.field, value)"
                       />
                       <el-date-picker
-                        v-else-if="item.inputType == 'date-range'"
+                        v-else-if="item.inputType == 'date-range'||item.inputType == 'date'"
                         v-model="queryParams[item.field]"
                         style="width: 100%"
                         :placeholder="item.placeholder || '请选择'"
@@ -131,7 +132,7 @@
                         @change="value => queryFormChange(item.field, value)"
                       ></el-date-picker>
                       <el-time-picker
-                        v-else-if="item.inputType == 'time'"
+                        v-else-if="item.inputType == 'time---'"
                         v-model="queryParams[item.field]"
                         style="width: 100%"                       
                         :placeholder="item.placeholder || '请选择'"
@@ -141,7 +142,7 @@
                         @change="value => queryFormChange(item.field, value)"
                       />
                       <el-time-picker 
-                        v-else-if="item.inputType == 'time-range'"
+                        v-else-if="item.inputType == 'time-range'||item.inputType == 'time'"
                         v-model="queryParams[item.field]"
                         style="width: 100%"                       
                         :placeholder="item.placeholder || '请选择'"
@@ -498,7 +499,7 @@ import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, R
 import common from './mixins/common'
 import queryform from './mixins/queryform'
 export default {
-  inject: ['listVformPages','openForm','setFunction','dataHandling'],
+  inject: ['listVformPages','openForm','setFunction','dataHandling','request'],
   mixins: [
     common,
     queryform,
@@ -628,14 +629,9 @@ export default {
       this.queryParams={}
       this.option.queryFormFields.forEach(item => {
         // 动态添加属性
-        if(item.inputType=='checkbox'){
-          this.$set(this.queryParams, item.field, item.defaultValue || []);
-        }else{
-          this.$set(this.queryParams, item.field, item.defaultValue || null);
-        }
-      
+          this.$set(this.queryParams, item.field, item.defaultValue || null);             
       });
-      console.log('this.option.queryFormFields',this.option.queryFormFields);
+      // console.log('this.option.queryFormFields',this.option.queryFormFields);
       
       let treeFields =this.option.queryFormFieldsFlag?(this.option.queryFormFields.filter(
         item => item["inputType"] != "anji-tree"
@@ -671,12 +667,9 @@ export default {
     this.itemId=this.option.itemId
     // 为查询框中所有input加上默认值   
     this.option.queryFormFields.forEach(item => {
-      // 动态添加属性
-      if(item.inputType=='checkbox'){
-        this.$set(this.queryParams, item.field, item.defaultValue || []);
-      }else{
-        this.$set(this.queryParams, item.field, item.defaultValue || null);
-      }
+      // 动态添加属性   
+      this.$set(this.queryParams, item.field, item.defaultValue || null);
+      
      
     });
     // 查询列表
@@ -778,9 +771,7 @@ export default {
           for (let index = 0; index < this.option.columns.length; index++) {
             if(this.option.columns[index].field==key&&!!object[key]){
               type=this.option.columns[index].inputType
-              if(type=='date'){
-                // query= object[key]
-              }else if(type=='date-range'||type=='time-range'){
+              if(type=='date'||type=='time'||type=='date-range'||type=='time-range'){
                 // let data=[]
                 // object[key].forEach((item)=>{
                 //   data.push(this.dataHandling.parseTime(item,this.option.columns[index].option.format))               
@@ -799,7 +790,16 @@ export default {
       }
       console.log(params);
       if(!!this.formId){
-        this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,queryParams:params}).then(response => {
+        // this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,queryParams:params}).then(response => {
+        //   if (response.data.code != "200") return;
+        //   this.records = response.data.rows;
+        //   this.params.pageQueryData.total = response.data.total;
+        // });
+        this.request({
+            url: '/dyn/vf/queryListCond/' + this.formId,
+            method: 'post',
+            data:{pageQueryData:this.params.pageQueryData,queryParams:params}
+          }).then(response => {
           if (response.data.code != "200") return;
           this.records = response.data.rows;
           this.params.pageQueryData.total = response.data.total;
@@ -1199,44 +1199,41 @@ export default {
           return row[item.field]
         }
       }else if(item.inputType == 'switch' ){
-          if (row[item.field]=='true') {
-            return item.option.activeText
-          } else {
-            return item.option.inactiveText
-          }
-        }else if(item.inputType == 'checkbox'){
-          if (row[item.field]!= null) {
-            let tempStrList = row[item.field]
-            let tempStr=''
-            tempStrList.forEach((data)=>{
-              for (let index = 0; index < item.option.optionItems.length; index++) {
-                if (data == item.option.optionItems[index].value) {
-                    tempStr = tempStr?tempStr+','+item.option.optionItems[index].label:item.option.optionItems[index].label
-                    break;
-                  }                         
-              }
-            })        
-            return tempStr
-          }else{
-            return row[item.field]
-          }
-        }else if (item.inputType == 'user-choose' ) {
-          if(row[item.field]!= null) {
-            return row[item.field].split('|')[0]
-          }
-        }else if (item.inputType == 'time-range'||item.inputType == 'date-range' ) {
-          if(!!row[item.field]) {          
-            return  `${row[item.field][0]} - ${row[item.field][1]}`        
-          }
-        }else if (item.inputType == 'slider'||item.inputType =='rate' ) {
-          if(!!row[item.field]) {          
-            return  `${row[item.field]}/${item.option.max}`        
-          }
-        }else {
-          console.log('rowitem',row,item);
-          
-        return row[item.field]
-      }
+        if (row[item.field]=='true') {
+          return item.option.activeText
+        } else {
+          return item.option.inactiveText
+        }
+      }else if(item.inputType == 'checkbox'){
+        if (row[item.field]!= null) {
+          let tempStrList = row[item.field]
+          let tempStr=''
+          tempStrList.forEach((data)=>{
+            for (let index = 0; index < item.option.optionItems.length; index++) {
+              if (data == item.option.optionItems[index].value) {
+                  tempStr = tempStr?tempStr+','+item.option.optionItems[index].label:item.option.optionItems[index].label
+                  break;
+                }                         
+            }
+          })        
+          return tempStr
+        }else{
+          return row[item.field]
+        }
+      }else if (item.inputType == 'user-choose'|| item.inputType == 'group-choose') {
+        if(row[item.field]!= null) {
+          return row[item.field].split('|')[0]
+        }
+      }else if (item.inputType == 'time-range'||item.inputType == 'date-range' ) {
+        if(!!row[item.field]) {          
+          return  `${row[item.field][0]} - ${row[item.field][1]}`        
+        }
+      }else if (item.inputType == 'slider'||item.inputType =='rate' ) {
+        if(!!row[item.field]) {          
+          return  `${row[item.field]}/${item.option.max}`        
+        }
+      }         
+        return row[item.field]     
     },
   }
 };

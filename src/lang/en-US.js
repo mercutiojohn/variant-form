@@ -305,6 +305,8 @@ export default {
       deleteEntireRow: 'delete entire row',
       widgetName: 'Unique Name',
       formSize: 'Size',
+      useCustomInitApi: 'Use custom init API',
+      customInitApi: 'Init URI',
       labelPosition: 'Position Of Label',
       topPosition: 'Top',
       leftPosition: 'Left',

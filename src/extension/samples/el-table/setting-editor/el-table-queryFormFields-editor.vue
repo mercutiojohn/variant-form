@@ -57,7 +57,7 @@
         let columns= this.selectedWidget.options.crudOption.columns
         let data=[]
         const optionType=['select','radio','checkbox']
-        const inputType=['input','user-choose','textarea','number']
+        const inputType=['input','user-choose','textarea','number','group-choose']
         const dataType=['time','time-range','date','date-range']
         columns.forEach((item)=>{
           if(!!item.label&&!!item.field){
@@ -68,14 +68,14 @@
               type:item.inputType,
               anjiSelectOption: {
                   dictCode: "",
-                  option:item.option.optionItems
+                  option:item.option.optionItems||[]
                 },
               })
             }else if(inputType.includes(item.inputType)){
               data.push({
               name:item.label,
               code:item.field,
-              type:item.inputType,           
+              type:item.inputType,         
               })
             }else if(dataType.includes(item.inputType)){
               data.push({
@@ -83,7 +83,7 @@
               code:item.field,
               type:item.inputType,
               format:item.option.format,
-              valueFormat:item.option.valueFormat||item.option.format           
+              valueFormat:item.option.valueFormat||item.option.format,          
               })             
             }else if(item.inputType=="switch"){
               let option=[]

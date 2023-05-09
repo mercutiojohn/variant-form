@@ -355,6 +355,7 @@
         let crudOption={
 
         }
+        //传入增删改查组件的属性
         crudOption=this.deepClone(this.crudOption)
         crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
         crudOption.columns=this.widget.options.crudOption.columns
@@ -370,7 +371,7 @@
       },
       formId(){
         let formId=this.widget.options.formId
-        if(this.flag){
+        if(this.flag&&!!formId){
           this.getLatestData(formId)
         }else{
           this.flag=true

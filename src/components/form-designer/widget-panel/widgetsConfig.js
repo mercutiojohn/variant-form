@@ -762,14 +762,14 @@ export const advancedFields = [
       customRule: '',
       customRuleHint: '',
       //-------------------
-      uploadURL: '',
+      uploadURL: '/api/file/fileManager/uploadFile2',
       uploadTip: '',
       withCredentials: false,
       multipleSelect: false,
       showFileList: true,
-      limit: 3,
+      limit: 5,
       fileMaxSize: 5, //MB
-      fileTypes: ['jpg', 'jpeg', 'png'],
+      fileTypes: ['jpg', 'jpeg', 'png','bmp','gif'],
       //headers: [],
       //-------------------
       customClass: '',  //自定义css类名
@@ -807,14 +807,14 @@ export const advancedFields = [
       customRule: '',
       customRuleHint: '',
       //-------------------
-      uploadURL: '',
+      uploadURL: '/api/file/fileManager/uploadFile2',
       uploadTip: '',
       withCredentials: false,
       multipleSelect: false,
       showFileList: true,
-      limit: 3,
-      fileMaxSize: 5, //MB
-      fileTypes: ['doc', 'docx', 'xls', 'xlsx'],
+      limit: 5,
+      fileMaxSize: 50, //MB
+      fileTypes: ['doc', 'docx', 'xls', 'xlsx','pdf','ofd','txt'],
       //headers: [],
       //-------------------
       customClass: '',  //自定义css类名

@@ -308,6 +308,8 @@ export default {
 
       widgetName: '组件唯一名称',
       formSize: '全局组件大小',
+      useCustomInitApi: '自定义初始化接口',
+      customInitApi: '接口地址',
       labelPosition: '字段标签位置',
       topPosition: '顶部',
       leftPosition: '左边',

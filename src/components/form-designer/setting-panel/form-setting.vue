@@ -4,6 +4,14 @@
              class="setting-form" @submit.native.prevent>
       <el-collapse v-model="formActiveCollapseNames" class="setting-collapse">
         <el-collapse-item name="1" :title="i18nt('designer.setting.basicSetting')">
+          <el-form-item :label="i18nt('designer.setting.useCustomInitApi')">
+            <el-switch
+              v-model="formConfig.useCustomInitApi">
+            </el-switch>
+          </el-form-item>
+          <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitApi')" :required="formConfig.useCustomInitApi">
+            <el-input type="text" v-model="formConfig.customInitApi" placeholder="/testApi"></el-input>
+          </el-form-item>
           <el-form-item :label="i18nt('designer.setting.formSize')">
             <el-select v-model="formConfig.size">
               <el-option v-for="item in formSizes" :key="item.value" :label="item.label"

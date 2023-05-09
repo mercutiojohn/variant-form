@@ -13,6 +13,7 @@
 
 <script>
 import VFormDesigner from './components/form-designer/index.vue'
+import request from '@/plugin/axios'
 // 人员选择API
 import { getGroupUserTree, getPersonData, getParentId,getNodeData, getCommonUseData, addContacts } from '@/api/sys/transferunit'
 import { treeData, PersonTreeData,lowTreeData } from '@/api/sys/tree'
@@ -25,7 +26,7 @@ export default {
     return {
       testApi: this.testApi,
       // 通用请求
-      request: window.axios,
+      request,
       // d2调用
       mapState: this.testApi,
       mapActions: this.testApi,

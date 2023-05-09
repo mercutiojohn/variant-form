@@ -37,11 +37,12 @@ export function createDesigner(vueInstance) {
       this.formConfig = deepClone(defaultFormConfig)
 
       //输出版本信息和语雀链接
-      console.info(`%cVariantForm %cVer${VARIANT_FORM_VERSION} %chttps://www.yuque.com/visualdev/vform`,
-          "color:#409EFF;font-size: 22px;font-weight:bolder",
-          "color:#999;font-size: 12px",
-          "color:#333"
-      )
+      // console.info(`%cVariantForm %cVer${VARIANT_FORM_VERSION} %chttps://www.yuque.com/visualdev/vform`,
+      //     "color:#409EFF;font-size: 22px;font-weight:bolder",
+      //     "color:#999;font-size: 12px",
+      //     "color:#333"
+      // )
+      console.info("\n".concat("%c 表单设计器 ").concat(`%c Ver ${VARIANT_FORM_VERSION} `).concat("%c \n"), "color: #fff; background: #409EFF; padding:5px 3px;border-radius:5px 0 0 5px;font-family:'Microsoft Yahei',sans;", "background: #eee; padding:5px 3px;border-radius:0 5px 5px 0;font-family:'Microsoft Yahei',sans;","color:#333");
 
       if (!resetFormJson) {
         this.initHistoryData()

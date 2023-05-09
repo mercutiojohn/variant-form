@@ -8,7 +8,7 @@
                :action="field.options.uploadURL" :headers="uploadHeaders" :data="uploadData"
                :with-credentials="field.options.withCredentials"
                :multiple="field.options.multipleSelect" :file-list="fileList"
-               :show-file-list="field.options.showFileList" :class="{'hideUploadDiv': uploadBtnHidden}"
+               :show-file-list="field.options.showFileList" :class="{'hideUploadDiv': uploadBtnHidden || field.options.disabled }"
                :limit="field.options.limit" :on-exceed="handleFileExceed" :before-upload="beforeFileUpload"
                :on-success="handleFileUpload" :on-error="handleUploadError">
       <div slot="tip" class="el-upload__tip"
@@ -17,8 +17,9 @@
       <template #file="{ file }">
         <div class="upload-file-list">
           <span class="upload-file-name" :title="file.name">{{file.name}}</span>
-          <a :href="file.url" download="" target="_blank">
-            <i class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i></a>
+          <!-- <a :href="file.url" download="" target="_blank"> -->
+            <i  @click="downloadFile(file.name, file.url, file.uid)" class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i>
+          <!-- </a> -->
           <i class="el-icon-delete file-action" :title="i18nt('render.hint.removeFile')" v-if="!field.options.disabled"
              @click="removeUploadFile(file.name, file.url, file.uid)"></i>
         </div>
@@ -69,7 +70,7 @@
     components: {
       FormItemWrapper,
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel','request'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值
@@ -78,7 +79,9 @@
 
         uploadHeaders: {},
         uploadData: {
-          key: '',  //七牛云上传文件名
+          name: '',  //七牛云上传文件名
+          fileType:'file',
+          relativeNumber:''
           //token: '',  //七牛云上传token
 
           //policy: '',  //又拍云上传policy
@@ -119,6 +122,34 @@
     },
 
     methods: {
+      //附件下载
+      // 下载
+      downloadFile(fileName, fileUrl, fileUid) {
+        this.request({
+          method:"GET",
+          url:fileUrl,
+          responseType: 'blob'
+        }).then(res => {
+          this.download(res, fileName)
+        }).catch(error => {
+          this.$message.error('下载失败:' + err)
+        })
+      },
+      download(data, fileName) {
+        if (!data) {
+          return this.$message.warning('文件为空')
+        }
+        let url = window.URL.createObjectURL(new Blob([data]))
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        // 获取文件名
+        // download 属性定义了下载链接的地址而不是跳转路径
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      },
       handleFileExceed() {
         let uploadLimit = this.field.options.limit
         this.$message.warning( this.i18nt('render.hint.uploadExceed').replace('${uploadLimit}', uploadLimit) )
@@ -151,7 +182,8 @@
           return false;
         }
 
-        this.uploadData.key = file.name
+        this.uploadData.name = file.name
+        this.uploadData.relativeNumber = this.field.options.name
         return this.handleOnBeforeUpload(file)
       },
 
@@ -174,12 +206,16 @@
         if (!!customResult && !!customResult.name && !!customResult.url) {
           this.fieldModel.push({
             name: customResult.name,
-            url: customResult.url
+            url: customResult.url,
+            filePath: customResult.filePath,
+            fileName: customResult.fileName
           })
         } else if (!!defaultResult && !!defaultResult.name && !!defaultResult.url) {
           this.fieldModel.push({
             name: defaultResult.name,
-            url: defaultResult.url
+            url: defaultResult.url,
+            filePath: defaultResult.filePath,
+            fileName: defaultResult.fileName
           })
         } else {
           this.fieldModel = deepClone(fileList)
@@ -195,19 +231,29 @@
           let customResult = null
           if (!!this.field.options.onUploadSuccess) {
             let mountFunc = new Function('result', 'file', 'fileList', this.field.options.onUploadSuccess)
-            customResult = mountFunc.call(this, res, file, fileList)
+            customResult = mountFunc.call(this, res.data, file, fileList)
           }
 
-          this.updateFieldModelAndEmitDataChangeForUpload(fileList, customResult, res)
+          this.updateFieldModelAndEmitDataChangeForUpload(fileList, customResult, res.data)
           if (!!customResult && !!customResult.name) {
             file.name = customResult.name
           } else {
-            file.name = file.name || res.name || res.fileName || res.filename
+            file.name = file.name || res.data.name
           }
           if (!!customResult && !!customResult.url) {
             file.url = customResult.url
           } else {
-            file.url = file.url || res.url
+            file.url = file.url || res.data.url
+          }
+          if (!!customResult && !!customResult.filePath) {
+            file.filePath = customResult.filePath
+          } else {
+            file.filePath = file.filePath || res.data.filePath
+          }
+          if (!!customResult && !!customResult.fileName) {
+            file.fileName = customResult.fileName
+          } else {
+            file.fileName = file.fileName || res.data.fileName
           }
           this.fileList = deepClone(fileList)
           this.uploadBtnHidden = fileList.length >= this.field.options.limit

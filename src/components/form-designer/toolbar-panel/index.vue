@@ -252,14 +252,24 @@
         activeSFCTab: 'vue2',
 
         testFormData: {
-          // 'userName': '666888',
-          // 'productItems': [
-          //   {'pName': 'iPhone12', 'pNum': 10},
-          //   {'pName': 'P50', 'pNum': 16},
-          // ]
-
-          'select62173': 2,
-        },
+  "input72529": "",
+  "pictureupload98297": [
+    {
+      "name": "web登录页(3).png",
+      "url": "/api/file/fileManager/getVideoPath?filePath=D:/file/pictureupload98297/picture/20230508143318web登录页(3).png&fileType=image/png",
+      "filePath": "D:/file/pictureupload98297/picture",
+      "fileName": "20230508143318web登录页(3).png"
+    }
+  ],
+  "fileupload12646": [
+    {
+      "name": "记录.txt",
+      "url": "/api/file/fileManager/download2?filePath=D:/file/fileupload12646/file&fileName=20230508143325记录.txt",
+      "filePath": "D:/file/fileupload12646/file",
+      "fileName": "20230508143325记录.txt"
+    }
+  ]
+},
         testOptionData: {
           'select62173': [
             {label: '01', value: 1},
