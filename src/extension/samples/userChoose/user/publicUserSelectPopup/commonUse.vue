@@ -82,8 +82,8 @@ export default {
       this.ids = array
       this.vis = true
     },
-    getCommonUseData() {
-      getCommonUseData().then(res => {
+    getCommonUse() {
+      this.getCommonUseData().then(res => {
         this.data = res.data
       })
     },
@@ -113,7 +113,7 @@ export default {
     }
   },
   mounted: function() {
-    this.getCommonUseData()
+    this.getCommonUse()
   },
   watch: {
   }

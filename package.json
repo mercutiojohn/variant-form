@@ -19,7 +19,8 @@
     "file-saver": "^2.0.5",
     "vue": "^2.6.11",
     "vue2-editor": "^2.10.2",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "sm-crypto": "0.3.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -14,7 +14,7 @@
 
     <div :key="widget.id" class="table-container"
          :class="[selected ? 'selected' : '', customClass]" @click.stop="selectWidget(widget)">
-         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId">
+         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId" :designState="designState">
           </anji-crud>
     </div>
 

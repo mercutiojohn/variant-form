@@ -9,8 +9,16 @@
               v-model="formConfig.useCustomInitApi">
             </el-switch>
           </el-form-item>
-          <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitApi')" :required="formConfig.useCustomInitApi">
-            <el-input type="text" v-model="formConfig.customInitApi" placeholder="/testApi"></el-input>
+           <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.loadInitApiInForm')">
+            <el-switch
+              v-model="formConfig.loadInitApiInForm">
+            </el-switch>
+          </el-form-item>
+          <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitApiEdit')">
+            <el-button type="info" icon="el-icon-set-up" plain round @click="editCustomInitApi">{{i18nt('designer.setting.customInitApiEditBtn')}}</el-button>
+          </el-form-item>
+          <el-form-item v-if="formConfig.useCustomInitApi" label-width="0">
+            <el-divider class="custom-divider"></el-divider>
           </el-form-item>
           <el-form-item :label="i18nt('designer.setting.formSize')">
             <el-select v-model="formConfig.size">
@@ -126,6 +134,36 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="i18nt('designer.setting.useCustomInitApi')" :visible.sync="showEditCustomInitApiDialogFlag"
+               v-if="showEditCustomInitApiDialogFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
+               :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
+        <el-form :model="customInitApiForm" ref="apiForm" :rules="rules" label-position="left" label-width="80px" size="medium"
+          @submit.native.prevent>
+          <el-form-item label="接口地址" prop="uri">
+            <el-input v-model="customInitApiForm.uri" type="text" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="请求方法" prop="method">
+            <el-select v-model="customInitApiForm.method" class="full-width-input" clearable>
+              <el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label" :value="item.value"
+                :disabled="item.disabled"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="请求体" prop="data">
+            <code-editor :mode="'json'" :readonly="false" v-model="customInitApiForm.data" ref="dataEditor"></code-editor>
+          </el-form-item>
+          <el-form-item label="请求参数" prop="params">
+            <code-editor :mode="'json'" :readonly="false" v-model="customInitApiForm.params" ref="paramsEditor"></code-editor>
+          </el-form-item>
+        </el-form>
+      
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showEditCustomInitApiDialogFlag = false">
+          {{i18nt('designer.hint.cancel')}}</el-button>
+        <el-button type="primary" @click="saveCustomInitApi">
+          {{i18nt('designer.hint.confirm')}}</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -159,6 +197,20 @@
           {label: 'mini', value: 'mini'},
         ],
 
+        methodOptions: [{
+          "label": "GET",
+          "value": "get"
+        }, {
+          "label": "POST",
+          "value": "post"
+        // }, {
+        //   "label": "DELETE",
+        //   "value": "delete"
+        // }, {
+        //   "value": "put",
+        //   "label": "PUT"
+        }],
+
         showEditFormCssDialogFlag: false,
         formCssCode: '',
         cssClassList: [],
@@ -169,6 +221,9 @@
         showFormEventDialogFlag: false,
         formEventHandlerCode: '',
         curEventName: '',
+
+        showEditCustomInitApiDialogFlag: false,
+        customInitApiForm: {},
 
         eventParamsMap: {
           'onFormCreated':      'onFormCreated() {',
@@ -311,6 +366,17 @@
 
         this.formConfig[this.curEventName] = this.formEventHandlerCode
         this.showFormEventDialogFlag = false
+      },
+
+      
+      editCustomInitApi() {
+        this.customInitApiForm = this.designer.formConfig.customInitApiForm
+        this.showEditCustomInitApiDialogFlag = true
+      },
+
+      saveCustomInitApi() {
+        this.designer.formConfig.customInitApiForm = this.customInitApiForm
+        this.showEditCustomInitApiDialogFlag = false
       },
 
     }

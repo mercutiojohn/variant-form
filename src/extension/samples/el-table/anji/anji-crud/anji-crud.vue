@@ -246,7 +246,7 @@
               :icon="item.icon"
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
-              @click="item.click"
+              @click="!!this.designState?'':item.click"
               style="font-size: 16px;"
               :size="item.size"
               >{{ handlegetLable(checkRecords, item.label) }}
@@ -372,7 +372,7 @@
                       :disabled="isDisabledButton(item, scope.row)"
                       :type="item.type || 'text'"
                       size="small"
-                      @click="item.click(scope.row)"
+                      @click="!!this.designState?'':item.click(scope.row)"
                     >{{ handlegetLable(scope.row, item.label) }}</el-button
                     >
                   </template>
@@ -405,7 +405,7 @@
                             :type="item.type || 'text'"
                             :disabled="isDisabledButton(item, scope.row)"
                             size="small"
-                            @click="item.click(scope.row)"
+                            @click="!!this.designState?'':item.click(scope.row)"
                           >{{
                               handlegetLable(scope.row, item.label)
                             }}</el-button
@@ -499,7 +499,7 @@ import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, R
 import common from './mixins/common'
 import queryform from './mixins/queryform'
 export default {
-  inject: ['listVformPages','openForm','setFunction','dataHandling','request'],
+  inject: ['listVformPages','addRedirect','editRedirect','setFunction','dataHandling','request','router'],
   mixins: [
     common,
     queryform,
@@ -517,6 +517,10 @@ export default {
     ...FieldComponents,
   },
   props: {
+    designState: {
+      type: Boolean,
+      default: false
+    },
     formId:{
 
     },
@@ -859,7 +863,7 @@ export default {
             this.editDialogOpen = true;
           }else{
             console.log(row);
-            this.openForm(this.formId,row.task_id)
+            this.editRedirect(this.formId, row[this.primaryKeyFieldName], this.primaryKeyFieldName, row)
           }       
       }
       this.editDialogModelType = modelType;
@@ -872,7 +876,7 @@ export default {
         if(this.option.dialogFlag){
             this.editDialogOpen = true;
           }else{
-            this.openForm(this.formId)
+            this.addRedirect(this.formId)
           }  
       }
       const obj = {

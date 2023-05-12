@@ -2,10 +2,11 @@
   <div id="app">
     <VFormDesigner ref="vfDesignerRef" :designer-config="designerConfig" :global-dsv="globalDsv" :template-data="getTemplateData()">
       <template #customToolButtons>
+        <el-button type="normal" @click="listVformPages">获取表单列表</el-button>
         <el-button type="normal" @click="login">获取登录态</el-button>
-        <el-button type="normal" @click="insertFormJson">外部导入</el-button>
-        <el-button type="normal" @click="getFieldList">获取字段列表</el-button>
-        <el-button type="primary" @click="printFormJson">外部导出</el-button>
+        <!-- <el-button type="normal" @click="insertFormJson">外部导入</el-button> -->
+        <!-- <el-button type="normal" @click="getFieldList">获取字段列表</el-button> -->
+        <!-- <el-button type="primary" @click="printFormJson">外部导出</el-button> -->
       </template>
     </VFormDesigner>
   </div>
@@ -20,6 +21,11 @@ import { treeData, PersonTreeData,lowTreeData } from '@/api/sys/tree'
 // 登录态获取
 import { AccountLogin } from '@/api/sys/login'
 const sm2 = require('sm-crypto').sm2
+// VForm页面管理
+import { getVformPages, addVformPages, updateVformPages, createTable, genTable, listVformPages, getVformPagesByPageId } from '@/api/vform/vformPages'
+// VForm通用增删改查
+import { addRecord, delRecordById,delRecordByIds, updateRecord, getRecordById, queryListCond } from '@/api/vform/dynGenerals'
+
 export default {
   name: 'App',
   components: {
@@ -35,11 +41,11 @@ export default {
       mapActions: this.testApi,
       mapMutations: this.testApi,
       // 通用增删改查
-      addRecord: this.testApi,
-      delRecordById: this.testApi,
-      updateRecord: this.testApi,
-      queryListCond: this.testApi,
-      getRecordById: this.testApi,
+      addRecord,
+      delRecordById,
+      updateRecord,
+      queryListCond,
+      getRecordById,
       // 人员选择与机构选择
       PersonTreeData,
       lowTreeData,
@@ -49,7 +55,23 @@ export default {
       getNodeData,
       getGroupUserTree,
       addContacts,
-      getCommonUseData
+      getCommonUseData,
+      // 增删改查组件
+      textAlert: this.textAlert, //功能测试
+      listVformPages: queryListCond, //增删改查查询
+      openForm: this.openForm,//增删改查新增、编辑跳转
+      setFunction: {
+        delRecordByIds, //增删改查多选删除
+        delRecordById, //增删改查单删
+        queryListCond, //增删改查列表查询
+        listVformPages: this.formList, //表单列表查询
+        getVformPagesByPageId, //vform通过pageid查询详情
+      },
+      //数据处理
+      dataHandling: {
+        parseTime: this.parseTime,//日期格式化
+        addDateRange: this.addDateRange,//添加日期范围
+      }
     }
   },
   data() {
@@ -93,8 +115,13 @@ export default {
         token: '',
         refreshToken: '',
         user: ''
-      }
+      },
+      formList:[]
     }
+  },
+  created () {
+    // this.login()
+    // this.listVformPages()
   },
   methods: {
     printFormJson() {
@@ -133,6 +160,39 @@ export default {
       .catch(err => {
           console.log('err: ', err)
       })
+    },
+    // 增删改查组件-获取表单列表
+    listVformPages () {
+      let queryParams = {
+        pageId: null,
+        title: null,
+        status: null,
+        pageType: "form",
+        genTableName: null,
+        genTableStatus: null,
+        bindPageId: null,
+        asTemplate: null,
+        createTime: null,
+        updateTime: null,
+      }
+      let pageQueryData = {
+          currentPage: 1,
+          pageSize: 1000,
+          total: 0,
+      }
+      listVformPages({
+        ...queryParams,
+        pageQueryData
+      }).then(response => {
+          response.data.rows.forEach((item)=>{
+            let data = {
+              id: item.id,
+              label: item.title,
+              value: item.pageId
+            }
+            this.formList.push(data)
+          })
+        })
     },
   }
 }

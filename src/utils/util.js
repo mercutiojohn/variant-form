@@ -365,7 +365,13 @@ export function getDefaultFormConfig() {
     functions: '',
     layoutType: 'PC',
     useCustomInitApi: false,
-    customInitApi: '',
+    loadInitApiInForm: false,
+    customInitApiForm: {
+      uri: '',
+      method: '',
+      data: '',
+      params: '',
+    },
 
     onFormCreated: '',
     onFormMounted: '',

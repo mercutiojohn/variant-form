@@ -1,6 +1,7 @@
 
 import axios from 'axios'
 import { Message } from 'element-ui'
+import { transParams } from '@/plugin/utils'
 
 axios.defaults.withCredentials = true
 // 创建一个错误
@@ -111,6 +112,18 @@ createRequestInterceptor()
 function createRequestInterceptor() {
   const requestInterceptor = axiosInstance.interceptors.request.use(
     config => {
+      if (config.method === 'get' && config.params) {
+        let url = config.url + '?' + transParams(config.params);
+        url = url.slice(0, -1);
+        config.params = {};
+        config.url = url;
+      }
+      if (config.method === 'get' && config.pageQueryData) {
+        let url = config.url + '?' + transParams(config.pageQueryData);
+        url = url.slice(0, -1);
+        config.params = {};
+        config.url = url;
+      }
       return doHandle(config)
     },
     error => {

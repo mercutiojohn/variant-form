@@ -13,7 +13,7 @@
 
     <div :key="widget.id" class="table-container"
     v-show="!widget.options.hidden">
-         <anji-crud ref="listPage" :option="crudOption" :formId="formId">
+         <anji-crud ref="listPage" :option="crudOption" :formId="formId"  :designState="designState">
           </anji-crud>
     </div>
 
