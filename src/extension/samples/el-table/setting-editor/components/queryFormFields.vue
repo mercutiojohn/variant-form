@@ -9,6 +9,20 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
+        <TableColumn
+            align="center"
+            label="拖拽排序"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+                <el-button
+                style="font-size:30px;"
+                type="text"
+                icon="el-icon-menu"
+                class="drag"
+              />
+            </template>
+        </TableColumn>
         <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="名称" >
             <template slot-scope="scope" >
                 <el-input  v-model="scope.row.label" ></el-input>
@@ -240,7 +254,9 @@
             const el = this.$refs.multipleTable.$el.querySelector('.el-table__body-wrapper tbody')
             const _this=this
             sortable.create(el,{
-            ghostClass:'sortable-ghost',
+              draggable:".el-table__row",
+              handle:'.drag', 
+            // ghostClass:'sortable-ghost',
                 // setData:function(dataTransfer){
                 //     dataTransfer.setData('Text', '')
                 // },

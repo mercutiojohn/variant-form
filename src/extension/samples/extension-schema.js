@@ -38,6 +38,303 @@ export const subFormSchema = {
   }
 }
 
+export const tableSchema = { 
+  formItemFlag: true, 
+  type: 'el-table',
+  category: 'container',
+  icon: 'table',
+  options: {
+    name: '',
+    hidden: false,
+    customClass: '',  //自定义css类名
+    onCreated: '',
+    onMounted: '',
+    tableEdit:[],
+    crudOption: {
+      //自定义表格列css样式
+      columnsCss: "  // if(row.pageType=='form'&&item.field=='pageType'){\r\n  //         return {\r\n  //           color:'blue !important',\r\n  //           'background-color':'green',\r\n  //           padding:'5px 10px',\r\n  //         }\r\n  //       }",
+      // 使用菜单做为页面标题
+      //是否使用内部弹窗（不要修改）
+      dialogFlag:false,
+      //查询条件控制（不包括查询重置按钮）
+      queryFormFieldsFlag:true,
+      //查询条件显隐
+      queryFormHide:true,
+      title: "数据集",
+      labelWidth: "120px",
+      queryFormFields: [
+        {
+          inputType: "input",
+          label: "",
+          field: "",
+          disabled:false
+        },
+      ],
+      // 表格列
+      columns: [
+        {
+          label: "",
+          field: "id",
+          primaryKey: true, // 根据主键查询详情或者根据主键删除时, 主键的
+          tableHide: true, // 表格中不显示
+          editHide: true, // 编辑弹框中不显示
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "数据集编码", //数据集编码
+          placeholder: "",
+          field: "setCode",
+          editField: "setCode",
+          inputType: "input",
+          rules: [
+            { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "数据集名称", //数据集名称
+          placeholder: "",
+          field: "setName",
+          editField: "setName",
+          inputType: "input",
+          rules: [
+            { min: 1, max: 100, message: "不超过100个字符", trigger: "blur" }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "描述", //数据集描述
+          placeholder: "",
+          field: "setDesc",
+          editField: "setDesc",
+          inputType: "input",
+          rules: [
+            { min: 1, max: 255, message: "不超过255个字符", trigger: "blur" }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "数据源编码", //数据源编码
+          placeholder: "",
+          field: "sourceCode",
+          editField: "sourceCode",
+          inputType: "input",
+          rules: [
+            { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "数据集类型", //数据源编码
+          placeholder: "",
+          field: "setType",
+          editField: "setType",
+          inputType: "input",
+          rules: [
+            { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "动态查询sql或者接口中的请求体", //动态查询sql或者接口中的请求体
+          placeholder: "",
+          field: "dynSentence",
+          editField: "dynSentence",
+          tableHide: true,
+          inputType: "input",
+          rules: [
+            {
+              min: 1,
+              max: 2048,
+              message: "不超过2048个字符",
+              trigger: "blur"
+            }
+          ],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        },
+        {
+          label: "删除标记", //0--未删除 1--已删除 DIC_NAME=DELETE_FLAG
+          placeholder: "",
+          field: "deleteFlag",
+          editField: "deleteFlag",
+          tableHide: true,
+          inputType: "input",
+          rules: [],
+          disabled: false,
+          contentAlign:'center',
+          headerAlign:'center',
+          sortable:true,
+          customCode: {
+            template: '',
+            methods: {}
+          }
+        }
+      ],
+      //表格列按钮
+      rowButtons: [
+        {
+          id:'edit',
+          label: "编辑",
+          permission: "resultsetManage:update",
+          click: row => {
+            return 'handleOpenEditView("edit")'
+            // return this.operateDataset("edit", row);
+          },
+          isHide:'',
+          tableHide:false,
+          setting:false,
+          settingData:'',
+        },
+        // {
+        //   label: "数据预览",
+        //   permission: "resultsetManage:query",
+        //   click: this.dataView
+        // },
+        {
+          id:'delete',
+          label: "删除",
+          permission: "resultsetManage:delete",
+          click: row => {
+            return this.$refs.listPage.handleDeleteBatch(row);
+          },
+          isHide:'',
+          tableHide:false,
+          setting:false,
+          settingData:'',
+        }
+      ],
+       // 表头按钮
+       tableButtons: [
+        {
+          id:'add',
+          label: "新增",
+          type: "primary",
+          permission: "resultsetManage:add",
+          icon: "el-icon-plus",
+          plain: false,
+          tableHide:false,
+          size:'medium',
+          setting:false,
+          settingData:'',
+          // click: () => {
+          //   return this.$refs.listPage.handleOpenEditView("add");
+          // }
+        },
+        {
+          id:'delete',
+          label: "删除",
+          type: "danger",
+          permission: "resultsetManage:delete",
+          icon: "el-icon-delete",
+          plain: false,
+          tableHide:false,
+          size:'medium',
+          setting:false,
+          settingData:'',
+          // click: () => {
+          //   return this.$refs.listPage.handleDeleteBatch();
+          // }
+        },
+        
+      ],
+      itemId:'3',
+      // 操作按钮
+      buttons: {
+        rowButtonsWidth: 180, // row自定义按钮表格宽度
+        query: {
+          api: "reportDataSetList",
+          permission: "resultsetManage:query",
+          sort: "update_time",
+          order: "DESC"
+        },
+        queryByPrimarykey: {
+          api: "reportDataSetDetail",
+          permission: "resultsetManage:detail"
+        },
+        add: {
+          api: "reportDataSetAdd",
+          permission: "resultsetManage:insert",
+          isShow: false
+        },
+        delete: {
+          api: "reportDataSetDeleteBatch",
+          permission: "resultsetManage:delete"
+        },
+        edit: {
+          api: "reportDataSetUpdate",
+          permission: "resultsetManage:update",
+          isShow: false
+        }
+      },
+    },
+    formId:'',
+    tableButtonEdit:[],
+    rowButtonEdit:[],
+    queryFormFields:[],
+    cuatomQuery:{
+      apiUrl:'',
+      apiType:'',
+      apiData:'',
+      setting:'0',
+      urlData:'',
+      parameterType:'',
+      dataConversion:'',
+    },
+    pageQueryDataFlag:true,
+    //查询条件控制（不包括查询重置按钮）
+    queryFormFieldsFlag:true,
+    //查询条件显隐
+    queryFormHide:true,
+  },
+
+
+}
+
 // 原子组件
 
 export const alertSchema = {
@@ -186,304 +483,6 @@ export const groupChooseSchema = {
     onValidate: '',
     onAppendButtonClick: '',
   }
-}
-
-
-export const tableSchema = { 
-    formItemFlag: true, 
-    type: 'el-table',
-    category: 'container',
-    icon: 'table',
-    options: {
-      name: '',
-      hidden: false,
-      customClass: '',  //自定义css类名
-      onCreated: '',
-      onMounted: '',
-      tableEdit:[],
-      crudOption: {
-        //自定义表格列css样式
-        columnsCss: "  // if(row.pageType=='form'&&item.field=='pageType'){\r\n  //         return {\r\n  //           color:'blue !important',\r\n  //           'background-color':'green',\r\n  //           padding:'5px 10px',\r\n  //         }\r\n  //       }",
-        // 使用菜单做为页面标题
-        //是否使用内部弹窗（不要修改）
-        dialogFlag:false,
-        //查询条件控制（不包括查询重置按钮）
-        queryFormFieldsFlag:true,
-        //查询条件显隐
-        queryFormHide:true,
-        title: "数据集",
-        labelWidth: "120px",
-        queryFormFields: [
-          {
-            inputType: "input",
-            label: "",
-            field: "",
-            disabled:false
-          },
-        ],
-        // 表格列
-        columns: [
-          {
-            label: "",
-            field: "id",
-            primaryKey: true, // 根据主键查询详情或者根据主键删除时, 主键的
-            tableHide: true, // 表格中不显示
-            editHide: true, // 编辑弹框中不显示
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "数据集编码", //数据集编码
-            placeholder: "",
-            field: "setCode",
-            editField: "setCode",
-            inputType: "input",
-            rules: [
-              { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "数据集名称", //数据集名称
-            placeholder: "",
-            field: "setName",
-            editField: "setName",
-            inputType: "input",
-            rules: [
-              { min: 1, max: 100, message: "不超过100个字符", trigger: "blur" }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "描述", //数据集描述
-            placeholder: "",
-            field: "setDesc",
-            editField: "setDesc",
-            inputType: "input",
-            rules: [
-              { min: 1, max: 255, message: "不超过255个字符", trigger: "blur" }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "数据源编码", //数据源编码
-            placeholder: "",
-            field: "sourceCode",
-            editField: "sourceCode",
-            inputType: "input",
-            rules: [
-              { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "数据集类型", //数据源编码
-            placeholder: "",
-            field: "setType",
-            editField: "setType",
-            inputType: "input",
-            rules: [
-              { min: 1, max: 50, message: "不超过50个字符", trigger: "blur" }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "动态查询sql或者接口中的请求体", //动态查询sql或者接口中的请求体
-            placeholder: "",
-            field: "dynSentence",
-            editField: "dynSentence",
-            tableHide: true,
-            inputType: "input",
-            rules: [
-              {
-                min: 1,
-                max: 2048,
-                message: "不超过2048个字符",
-                trigger: "blur"
-              }
-            ],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          },
-          {
-            label: "删除标记", //0--未删除 1--已删除 DIC_NAME=DELETE_FLAG
-            placeholder: "",
-            field: "deleteFlag",
-            editField: "deleteFlag",
-            tableHide: true,
-            inputType: "input",
-            rules: [],
-            disabled: false,
-            contentAlign:'center',
-            headerAlign:'center',
-            sortable:true,
-            customCode: {
-              template: '',
-              methods: {}
-            }
-          }
-        ],
-        //表格列按钮
-        rowButtons: [
-          {
-            id:'edit',
-            label: "编辑",
-            permission: "resultsetManage:update",
-            click: row => {
-              return 'handleOpenEditView("edit")'
-              // return this.operateDataset("edit", row);
-            },
-            isHide:'',
-            tableHide:false,
-            setting:false,
-            settingData:'',
-          },
-          // {
-          //   label: "数据预览",
-          //   permission: "resultsetManage:query",
-          //   click: this.dataView
-          // },
-          {
-            id:'delete',
-            label: "删除",
-            permission: "resultsetManage:delete",
-            click: row => {
-              return this.$refs.listPage.handleDeleteBatch(row);
-            },
-            isHide:'',
-            tableHide:false,
-            setting:false,
-            settingData:'',
-          }
-        ],
-         // 表头按钮
-         tableButtons: [
-          {
-            id:'add',
-            label: "新增",
-            type: "primary",
-            permission: "resultsetManage:add",
-            icon: "el-icon-plus",
-            plain: false,
-            tableHide:false,
-            size:'medium',
-            setting:false,
-            settingData:'',
-            // click: () => {
-            //   return this.$refs.listPage.handleOpenEditView("add");
-            // }
-          },
-          {
-            id:'delete',
-            label: "删除",
-            type: "danger",
-            permission: "resultsetManage:delete",
-            icon: "el-icon-delete",
-            plain: false,
-            tableHide:false,
-            size:'medium',
-            setting:false,
-            settingData:'',
-            // click: () => {
-            //   return this.$refs.listPage.handleDeleteBatch();
-            // }
-          },
-          
-        ],
-        itemId:'3',
-        // 操作按钮
-        buttons: {
-          rowButtonsWidth: 180, // row自定义按钮表格宽度
-          query: {
-            api: "reportDataSetList",
-            permission: "resultsetManage:query",
-            sort: "update_time",
-            order: "DESC"
-          },
-          queryByPrimarykey: {
-            api: "reportDataSetDetail",
-            permission: "resultsetManage:detail"
-          },
-          add: {
-            api: "reportDataSetAdd",
-            permission: "resultsetManage:insert",
-            isShow: false
-          },
-          delete: {
-            api: "reportDataSetDeleteBatch",
-            permission: "resultsetManage:delete"
-          },
-          edit: {
-            api: "reportDataSetUpdate",
-            permission: "resultsetManage:update",
-            isShow: false
-          }
-        },
-      },
-      formId:'',
-      tableButtonEdit:[],
-      rowButtonEdit:[],
-      queryFormFields:[],
-      cuatomQuery:{
-        apiUrl:'',
-        apiType:'',
-        apiData:'',
-        setting:'0',
-        urlData:'',
-        parameterType:'',
-        dataConversion:'',
-      },
-      pageQueryDataFlag:true,
-      //查询条件控制（不包括查询重置按钮）
-      queryFormFieldsFlag:true,
-      //查询条件显隐
-      queryFormHide:true,
-    },
-
-  
 }
 
 //柱状图

@@ -34,7 +34,7 @@
                 <el-select v-model="scope.row.inputType" placeholder="请选择">
                   <el-option
                     v-for="dict in inputType"
-                    :key="dict"
+                    :key="dict.label"
                     :label="dict.label"
                     :value="dict.value"
                  ></el-option>

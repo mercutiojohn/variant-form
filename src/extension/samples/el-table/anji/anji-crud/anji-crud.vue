@@ -229,7 +229,7 @@
               :icon="item.icon"
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
-              @click="item.click"
+              @click="item.click('',item)"
               style="font-size: 16px;"
               :size="item.size"
               >{{ handlegetLable(checkRecords, item.label) }}
@@ -469,6 +469,7 @@ export default {
   ],
   components: {
     Select,
+    Option,
     EditDialog,
     // AnjiTree,
     anjiContextMenu,
@@ -787,7 +788,7 @@ export default {
           api['data']={queryParams:params}
         }     
          this.request(api).then(response => {
-          if (response.data.code != "200") return;
+          // if (response.data.code != "200") return;
           this.records = response.data.rows;
           this.params.pageQueryData.total = response.data.total;
         });
@@ -854,10 +855,13 @@ export default {
           }   
           console.log('api最终的值',api);               
           this.request(api).then(response => {
-            if (response.data.code != "200") return;
+            // if (response.data.code != "200") return;
+            console.log(this.option.cuatomQuery.dataConversion);
             if(!!this.option.cuatomQuery.dataConversion){
               let mountFunc = new Function('response',this.option.cuatomQuery.dataConversion)
               this.records= mountFunc(response)
+              console.log(this.records);
+              
             }else{
               this.records = response.data.rows;
             }                        
@@ -1072,7 +1076,19 @@ export default {
         if(this.option.dialogFlag){
             this.editDialogOpen = true;
           }else{
-            this.addRedirect(this.formId)
+            if(item.setting){
+            if(!!item.settingData){
+                // settingData= eval("("+item.settingData+")") 
+                console.log(item.settingData);                
+                let newFunction =  new Function('item','_this',item.settingData)
+                console.log(newFunction);               
+                let data= newFunction(item,this)
+                console.log(data);               
+                this.router.push(data)
+              }
+            }else{
+                this.addRedirect(this.formId)
+            }       
           }  
       }
       const obj = {
@@ -1131,7 +1147,7 @@ export default {
       this.$refs.edit.$refs.mainForm.$refs.editForm.resetFields();
     },
     // 批量删除
-    handleDeleteBatch(row) {
+    handleDeleteBatch(row,item) {
       let ids = [];
       if (row != null) {
         ids.push(row[this.primaryKeyFieldName]); // 删除指定的行
@@ -1160,11 +1176,26 @@ export default {
             console.log(jsonIds);
             // jsonIds=JSON.parse(jsonIds)
             // console.log(jsonIds);
-            let delRecordByIds=this.setFunction.delRecordByIds
-            delRecordByIds(this.formId,{ids:jsonIds}).then(response => {
+            if(item.setting){
+              let settingData=''
+              if(!!item.settingData){
+                // settingData= eval("("+item.settingData+")") 
+                console.log(item.settingData);                
+                let newFunction =  new Function('row','item','ids','_this',item.settingData)
+                console.log(newFunction);               
+                let api= newFunction(row,item,jsonIds,this)
+                console.log(api);  
+                this.request(api).then(response => {
+                  this.handleQueryPageList();
+                });             
+              }
+            }else{
+              let delRecordByIds=this.setFunction.delRecordByIds
+              delRecordByIds(this.formId,{ids:jsonIds}).then(response => {
 
-              this.handleQueryPageList();
-            })
+                this.handleQueryPageList();
+              })
+            }
             // this.option.buttons.delete.api({ids:ids}).then(res => {
             //   // {code: "200", message: "操作成功", data: true}
             //   this.checkRecords = [];

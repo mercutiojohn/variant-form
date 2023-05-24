@@ -134,10 +134,8 @@
               permission: "resultsetManage:delete",
               icon: "el-icon-delete",
               plain: false,
-              setting:false,
-              settingData:'',
-              click: () => {
-                return this.$refs.listPage.handleDeleteBatch();
+              click: (row,item) => {
+                return this.$refs.listPage.handleDeleteBatch(row,item);
               }
             },
             {
@@ -149,22 +147,10 @@
               plain: false,
               setting:false,
               settingData:'',
-              click: () => {
-                return this.$refs.listPage.handleOpenEditView("add");
+              click: (row,item) => {
+                return this.$refs.listPage.handleOpenEditView("add",row,item);
               }
-            },
-            {
-              label: "查询",
-              type: "primary",
-              id:'query',
-              permission: "resultsetManage:query",
-              icon: "el-icon-search",
-              plain: false,
-              click: '',
-              setting:false,
-              settingData:'',
-            },
-            
+            },          
           ],
           // 表格行按钮
           rowButtons: [
@@ -396,7 +382,7 @@
         if(this.flag&&!!formId){
           this.getLatestData(formId)
         }else{
-          this.flag=true
+          // this.flag=true
         }    
         return  formId
       }

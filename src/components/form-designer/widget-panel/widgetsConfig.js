@@ -738,12 +738,6 @@ export const basicFields = [
       onMounted: '',
     },
   },
-
-  //
-
-]
-
-export const advancedFields = [
   {
     type: 'picture-upload',
     icon: 'picture-upload-field',
@@ -911,6 +905,10 @@ export const advancedFields = [
     },
   },
 
+]
+
+export const advancedFields = [
+  
 ]
 
 export const customFields = [

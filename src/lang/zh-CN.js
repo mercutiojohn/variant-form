@@ -18,8 +18,8 @@ export default {
     dragHandlerHint: '鼠标拖拽容器组件或字段组件并放置于表单中',
     dragAction: '拖动',
     basicFieldTitle: '基础字段',
-    advancedFieldTitle: '高级字段',
-    customFieldTitle: '自定义扩展字段',
+    advancedFieldTitle: '高级组件',
+    customFieldTitle: '扩展组件',
 
     noWidgetHint: '请从左侧列表中选择一个组件, 然后用鼠标拖动组件放置于此处.',
 

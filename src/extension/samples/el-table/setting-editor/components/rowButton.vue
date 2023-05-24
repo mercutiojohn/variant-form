@@ -9,12 +9,26 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn  prop="label" header-align="center" align="left" label="字段名称" >
+        <TableColumn
+            align="center"
+            label="拖拽排序"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+                <el-button
+                style="font-size:30px;"
+                type="text"
+                icon="el-icon-menu"
+                class="drag"
+              />
+            </template>
+        </TableColumn>
+        <TableColumn  prop="label" header-align="center" align="left"  min-width="100" label="字段名称" >
             <template slot-scope="scope" >
                 <el-input  v-model="scope.row.label" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="id" header-align="center" align="left"  label="按钮类型" >
+        <TableColumn  prop="id" header-align="center" align="left"   min-width="100" label="按钮类型" >
             <template slot-scope="scope"  >
                 <el-select v-model="scope.row.id" placeholder="请选择">
                     <el-option label="edit" value='edit'></el-option>
@@ -31,7 +45,7 @@
               </el-select>
             </template>
         </TableColumn> -->
-        <TableColumn  prop="tableHide" header-align="center" align="left"  label="是否隐藏" >
+        <TableColumn  prop="tableHide" header-align="center" align="left"   min-width="100"  label="是否隐藏" >
           <template slot-scope="scope"  >
               <el-select v-model="scope.row.tableHide" placeholder="请选择">
                   <el-option label="隐藏" :value='true'></el-option>
@@ -39,12 +53,12 @@
               </el-select>
           </template>
         </TableColumn>
-        <TableColumn  prop="isHide" header-align="center" align="left" label="字段控制" >
+        <TableColumn  prop="isHide" header-align="center" align="left" min-width="180" label="字段控制" >
             <template slot-scope="scope"  >
                 <el-input  v-model="scope.row.isHide"  placeholder="示例：row.task_id=='SWT00000000000000272'"></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="setting" header-align="center" align="left"  label="是否自定义配置" >
+        <TableColumn  prop="setting" header-align="center" align="left"    min-width="100" label="是否自定义配置" >
             <template slot-scope="scope"  >
                 <el-select v-model="scope.row.setting" placeholder="请选择">
                     <el-option label="是" :value='true'></el-option>
@@ -52,16 +66,17 @@
                 </el-select>
             </template>
         </TableColumn>
-        <TableColumn  prop="settingData" min-width="100"  header-align="center" align="left"  label="自定义配置" >
+        <TableColumn  prop="settingData" min-width="120"  header-align="center" align="left"  label="自定义配置" >
             <template slot-scope="scope"  >
                 <el-button type="info" icon="el-icon-edit"  :disabled="!scope.row.setting" plain round @click="editData(scope.row.settingData,scope.$index)">
                     自定义配置</el-button>
             </template>
         </TableColumn>
         <TableColumn
-        label="操作"
-        width="150px"
-        align="center"
+          label="操作"
+          width="150px"
+          align="center"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button
@@ -206,7 +221,9 @@
             const el = this.$refs.multipleTable.$el.querySelector('.el-table__body-wrapper tbody')
             const _this=this
             sortable.create(el,{
-            ghostClass:'sortable-ghost',
+              draggable:".el-table__row",
+              handle:'.drag', 
+            // ghostClass:'sortable-ghost',
                 // setData:function(dataTransfer){
                 //     dataTransfer.setData('Text', '')
                 // },

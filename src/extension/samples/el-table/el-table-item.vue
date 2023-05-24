@@ -112,8 +112,10 @@
               icon: "el-icon-delete",
               plain: false,
               id:'delete',
-              click: () => {
-                return this.$refs.listPage.handleDeleteBatch();
+              setting:false,
+              settingData:'',
+              click: (row,item) => {
+                return this.$refs.listPage.handleDeleteBatch(row,item);
               }
             },
             {
@@ -122,9 +124,11 @@
               permission: "resultsetManage:add",
               icon: "el-icon-plus",
               plain: false,
+              setting:false,
+              settingData:'',
               id:'add',
-              click: () => {
-                return this.$refs.listPage.handleOpenEditView("add");
+              click: (row,item) => {
+                return this.$refs.listPage.handleOpenEditView("add",row,item);
               }
             },
           ],
@@ -134,6 +138,8 @@
               id:'edit',
               label: "编辑",
               permission: "resultsetManage:update",
+              setting:false,
+              settingData:'',
               click: (row,item) => {
                 return this.$refs.listPage.handleOpenEditView("edit",row,item);
               }
@@ -147,6 +153,8 @@
               id:'delete',
               label: "删除",
               permission: "resultsetManage:delete",
+              setting:false,
+              settingData:'',
               click: (row,item) => {
                 return this.$refs.listPage.handleDeleteBatch(row,item);
               }

@@ -2,7 +2,9 @@ import Vue from 'vue'
 
 import {
   addContainerWidgetSchema,
-  addCustomWidgetSchema
+  addCustomWidgetSchema,
+  addAdvancedFieldSchema,
+  addBasicFieldSchema
 } from '@/components/form-designer/widget-panel/widgetsConfig'
 import * as PERegister from '@/components/form-designer/setting-panel/propertyRegister'
 import * as PEFactory from '@/components/form-designer/setting-panel/property-editor-factory'
@@ -26,6 +28,7 @@ import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generato
 import {submitButtonSchema} from "@/extension/samples/extension-schema"
 import SubmitButtonWidget from '@/extension/samples/submitButton/submit-button-widget'
 import customApiFormEditor from '@/extension/samples/submitButton/editor/customApiForm-editor'
+import submitButtonTypeEditor from '@/extension/samples/submitButton/editor/submit-button-type-editor'
 // UserChoose 人员选择
 import {userChooseSchema} from "@/extension/samples/extension-schema"
 import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
@@ -107,7 +110,7 @@ export const loadExtension = function () {
    * 4. 注册字段组件的代码生成器；
    * 5. 加载完毕。
    */
-  addCustomWidgetSchema(alertSchema)  //加载组件Json Schema
+  addBasicFieldSchema(alertSchema)  //加载组件Json Schema
 
   /* -------------------------------------------------- */
   Vue.component(AlertWidget.name, AlertWidget)  //注册组件
@@ -160,10 +163,16 @@ export const loadExtension = function () {
   /* 字段组件加载完毕 end */
   
   /* SubmitButton 组件加载 start */
-  addCustomWidgetSchema(submitButtonSchema)  //加载组件Json Schema
+  addBasicFieldSchema(submitButtonSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(SubmitButtonWidget.name, SubmitButtonWidget)  //注册组件
   /* -------------------------------------------------- */
+  PERegister.registerCPEditor(
+    'submit-button-type', 
+    'submit-button-type-editor',
+    submitButtonTypeEditor
+  )
+
   PERegister.registerCPEditor(
     'submit-button-useCustomApi', 
     'submit-button-useCustomApi-editor',
@@ -182,16 +191,13 @@ export const loadExtension = function () {
     customApiFormEditor
   )
 
+
   /* SubmitButton 组件加载完毕 end */
 
   /* UserChoose 组件加载 start */
-  addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
-  addCustomWidgetSchema(lineChartSchema)  //加载组件Json Schema
+  addBasicFieldSchema(userChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
-  Vue.component(LineChartWidget.name, LineChartWidget)  //注册组件
-  Vue.component(LineChartItem.name, LineChartItem)  //注册组件
-
   /* -------------------------------------------------- */
   // PERegister.registerCPEditor('test-testName', 'test-testName-editor',
   //     PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
@@ -201,18 +207,25 @@ export const loadExtension = function () {
   /* UserChoose 组件加载完毕 end */
 
   /* GroupChoose 组件加载 start */
-  addCustomWidgetSchema(groupChooseSchema)  //加载组件Json Schema
+  addBasicFieldSchema(groupChooseSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(GroupChooseWidget.name, GroupChooseWidget)  //注册组件
   /* GroupChoose 组件加载完毕 end */
 
 
   /* BarChart 组件加载 start */
-  addCustomWidgetSchema(barChartSchema)  //加载组件Json Schema
+  addAdvancedFieldSchema(barChartSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(BarChartWidget.name, BarChartWidget)  //注册设计期的容器组件
   Vue.component(BarChartItem.name, BarChartItem)  //注册运行期的容器组件
   /* BarChart 组件加载完毕 end */
+
+  /* LineChart 组件加载 start */
+  addAdvancedFieldSchema(lineChartSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(LineChartWidget.name, LineChartWidget)  //注册组件
+  Vue.component(LineChartItem.name, LineChartItem)  //注册组件
+  /* LineChart 组件加载完毕 end */
 
   /* SubForm 容器组件加载 start */
   addContainerWidgetSchema(subFormSchema)  //加载组件Json Schema
@@ -242,7 +255,7 @@ export const loadExtension = function () {
   /* SubForm 容器组件加载完毕 end */
 
   /* 表格组件加载 start */
-  addCustomWidgetSchema(tableSchema)  //加载组件Json Schema
+  addAdvancedFieldSchema(tableSchema)  //加载组件Json Schema
   Vue.component(elTableWidget.name, elTableWidget)
   Vue.component(elTableItem.name, elTableItem)
   Vue.component(elTableEditEditor.name, elTableEditEditor)

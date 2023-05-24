@@ -16,7 +16,7 @@
       </draggable>
     </el-radio-group>
     <el-checkbox-group v-else-if="(selectedWidget.type === 'checkbox') || ((selectedWidget.type === 'select') && selectedWidget.options.multiple)"
-                    v-model="optionModel.defaultValue" @change="emitDefaultValueChange">
+                    v-model="defaultValueCheckbox" @change="emitDefaultValueChange">
       <draggable tag="ul" :list="optionModel.optionItems"
                  v-bind="{group:'optionsGroup', ghostClass: 'ghost', handle: '.drag-option'}">
         <li v-for="(option, idx) in optionModel.optionItems" :key="idx">
@@ -97,19 +97,29 @@
 
         //separator: '||',
         separator: ',',
+        defaultValueCheckbox: []
       }
     },
     computed: {
       optionModel() {
         return this.selectedWidget.options
       },
-
     },
     watch: {
       'selectedWidget.options': {
         deep: true,
         handler(val) {
           //console.log('888888', 'Options change!')
+        }
+      },
+      defaultValueCheckbox(val) {
+        this.optionModel.defaultValue = JSON.stringify(val)
+      },
+      'optionModel.defaultValue': {
+        deep: true,
+        handler(val) {
+          // this.checkboxFieldModel = val ? val.split(',') : []
+          this.defaultValueCheckbox = val.length ? JSON.parse(val) : []
         }
       },
     },
@@ -122,7 +132,6 @@
           }
         }
       },
-
       deleteOption(option, index) {
         this.optionModel.optionItems.splice(index, 1)
       },
@@ -180,7 +189,8 @@
       resetDefault() {
         if ((this.selectedWidget.type === 'checkbox') ||
             ((this.selectedWidget.type === 'select') && this.selectedWidget.options.multiple)) {
-          this.optionModel.defaultValue = []
+          // this.optionModel.defaultValue = []
+          this.optionModel.defaultValue = "[]"
         } else {
           this.optionModel.defaultValue = ''
         }
