@@ -97,7 +97,23 @@ input[type="password"]::-ms-reveal {
   scrollbar-color: #e5e5e5 #f7f7f9; //滚动条轨道颜色、滚动条滑块的颜色
   scrollbar-width: thin; //thin模式下滚动条两端的三角按钮会消失
 }
-
+.code-wrapper {
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+}
+.code-wrapper .el-alert__title {
+  font-size: 12px;
+}
+.code-wrapper, .code-wrapper * {
+  line-height: normal;
+}
+.code-wrapper.top {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.code-wrapper.bottom {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 
 /*
 body {//IE浏览器滚动条样式

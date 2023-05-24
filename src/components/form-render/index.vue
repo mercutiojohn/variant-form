@@ -39,6 +39,7 @@
 <script>
   //import ElForm from 'element-ui/packages/form/src/form.vue'  /* 用于源码调试Element UI */
   import emitter from '@/utils/emitter'
+  import { assembleAxiosConfig, replaceParams } from '@/utils/util'
   import './container-item/index'
   import FieldComponents from '@/components/form-designer/form-widget/field-widget/index'
   import {
@@ -53,6 +54,7 @@
     name: "VFormRender",
     componentName: 'VFormRender',
     mixins: [emitter, i18n],
+    inject: ['request', 'router', 'currentRoute'],
     components: {
       //ElForm,
 
@@ -156,6 +158,7 @@
     },
     mounted() {
       this.initLocale()
+      this.initFormEditData()
       this.handleOnMounted()
     },
     methods: {
@@ -378,6 +381,50 @@
         }
 
         return result
+      },
+
+      async initFormEditData() {
+        const query = this.currentRoute?.query || {}
+        const params = this.currentRoute?.params || {}
+        const customInitStatus = this.formConfig.customInitStatus ? eval(this.formConfig.customInitStatus) : true
+        if (!!this.formConfig.useCustomInitApi && !!this.formConfig.customInitApiForm && customInitStatus ) {
+          // console.log('[自定义接口] useCustomInitApi:', this.formConfig.useCustomInitApi)
+          // console.log('[自定义接口] customInitApiForm:', this.formConfig.customInitApiForm)
+          const customURIForm = this.formConfig.customInitApiForm
+          this.disableForm()
+
+          const replacementParams = {
+            ...query,
+            ...params
+          }
+          // console.log('[自定义接口] queryParams:', replacementParams, this.$route)
+
+          const url = replaceParams(customURIForm.uri, replacementParams)
+          const method = customURIForm.method
+          const customParams = assembleAxiosConfig(customURIForm.params, replacementParams)
+          const transformedData = replaceParams(customURIForm.data, replacementParams)
+          let data = {}
+          try {
+            data = JSON.parse(transformedData)
+          } catch (e) {
+            // console.info(e)
+          }
+          // console.log('[自定义接口] 请求', 'url:', url, 'method:', method, 'params:', params, 'data:', data)
+          let response = await this.request({
+            url, 
+            method, 
+            customParams,
+            data
+          })
+          if(customURIForm.dataHandlerCode){
+            let dhFn = new Function('response', customURIForm.dataHandlerCode)
+            const interceptedData = dhFn.call(null, response)
+            this.setFormData(interceptedData)
+          } else {
+            this.setFormData(response)
+          }
+          this.enableForm()
+        }
       },
 
       //--------------------- 以下为组件支持外部调用的API方法 begin ------------------//

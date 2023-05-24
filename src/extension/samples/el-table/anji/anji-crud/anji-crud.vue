@@ -26,9 +26,9 @@
               <el-row :span="24">
                 <template v-for="(item, index) in queryFormFieldExcludeTree">
                   <el-col
-                    v-if="index < 5 || showMoreSearch"
+                    v-if="index < 9999 || showMoreSearch"
                     :key="item.field"
-                    :span="7"
+                    :span="6"
                   >
                     <el-form-item
                       :label="item.label"
@@ -192,40 +192,23 @@
                   {{ queryParams.showMoreSearch == true ? "展开" : "收起" }}
                 </el-button> -->
                 </template>
-                <ElCol :span="2"  v-if="queryFormFieldExcludeTree.length > 5"> 
+                <ElCol :span="2"  v-if="queryFormFieldExcludeTree.length > 9999"> 
                   <div style="height:1px;"></div>                 
                 </ElCol>
-                <ElCol :span="3"  v-if="queryFormFieldExcludeTree.length > 5">
+                <ElCol :span="3"  v-if="queryFormFieldExcludeTree.length > 9999">
                     <el-button size="medium" type="text" :icon=" showMoreSearch?'':'el-icon-search'" @click="handleToggleMoreSearch">
                         {{ showMoreSearch == true ? "收起": "高级查询" }}
                           </el-button>
                 </ElCol>
+                <ElCol :span="6" style="margin-top: 1px;" >
+                  <el-button style="float:right;margin-right: 15px;height: 32px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
+                  <el-button style="float:right;margin-right: 15px;height: 32px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
+                </ElCol>
               </el-row>
-              <el-row :span="24">
+              <!-- <el-row :span="24">
                   <el-button style="float:right;margin-right: 15px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
                   <el-button style="float:right;margin-right: 15px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
-              </el-row>
-            <!-- <el-row :span="24">
-                <ELCol :span="24" style="text-align: center;">
-                  <div >
-                    <el-button
-                      class="button"
-                      size="medium"
-                      icon="el-icon-search"
-                      type="primary"
-                      @click="handleQueryForm('query')"
-                      >搜索</el-button
-                    >
-                    <el-button
-                      class="button"
-                      size="medium"
-                      icon="el-icon-delete" type="primary"
-                      @click="handleResetForm()"
-                      >重置</el-button
-                    >
-                  </div>
-                </ELCol>
-          </el-row> -->
+              </el-row> -->
           </div>
         </el-form>
       
@@ -246,7 +229,7 @@
               :icon="item.icon"
               :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
-              @click="!!this.designState?'':item.click"
+              @click="item.click"
               style="font-size: 16px;"
               :size="item.size"
               >{{ handlegetLable(checkRecords, item.label) }}
@@ -277,7 +260,10 @@
                       :header-align="item.headerAlign"
                     >
                       <template slot-scope="scope">
-                        <div v-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
+                        <div v-if="item.inputType == 'custom'" >
+                          <component :is="'custom-slot-' + item.field" :item="item" :scope="scope" :data="scope.row[item.field]"></component>
+                        </div>
+                        <div v-else-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
                           <!-- 图片缩略图-->
                           <el-image
                             style="width: 25%; height: 50%"
@@ -298,8 +284,21 @@
                             :show-text="item.option.showText" :show-score="item.option.showScore">
                           </el-rate>
                         </div> -->
-                        <div v-else>
-                            {{ getDataName(scope.row,item)}}
+                        <div v-else :style="getDataStyle(scope.row,item)" >
+                        {{ getDataName(scope.row,item)}} 
+                          <!-- <div v-else :style="getDataStyle(scope.row,item)"  v-html="`<div style=''>${scope.row[item.field]||''} <div style='width:14px;height:14px;'><svg viewBox='0 0 100 100'><path d='
+                            M 50 50
+                            m 0 -39
+                            a 39 39 0 1 1 0 78
+                            a 39 39 0 1 1 0 -78
+                            ' stroke='#e5e9f2' stroke-width='21.4' fill='none' class='el-progress-circle__track' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px;'></path><path d='
+                            M 50 50
+                            m 0 -39
+                            a 39 39 0 1 1 0 78
+                            a 39 39 0 1 1 0 -78
+                            ' stroke='#20a0ff' fill='none' stroke-linecap='round' stroke-width='21.4' class='el-progress-circle__path' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px; transition: stroke-dasharray 0.6s ease 0s, stroke 0.6s ease 0s;'></path></svg>
+                          </div> </div>`">
+                          </div> -->
                           <!-- <span v-if="item.inputType == 'switch' && !item.colorStyle">
                             <el-switch
                               v-model.trim="scope.row[item.field]"
@@ -364,7 +363,7 @@
               :width="option.buttons.rowButtonsWidth || 100"
             >
               <template slot-scope="scope">
-                <div v-if="option.rowButtons.length <= 3">
+                <div >
                   <template v-for="(item, index) in option.rowButtons">
                     <el-button
                       v-if="isHide(item, scope.row)"
@@ -372,48 +371,10 @@
                       :disabled="isDisabledButton(item, scope.row)"
                       :type="item.type || 'text'"
                       size="small"
-                      @click="!!this.designState?'':item.click(scope.row)"
+                      @click="item.click(scope.row,item)"
                     >{{ handlegetLable(scope.row, item.label) }}</el-button
                     >
                   </template>
-
-                </div>
-                <div v-else>
-                  <el-button
-                    :type="option.rowButtons[0].type || 'text'"
-                    :disabled="
-                      isDisabledButton(option.rowButtons[0], scope.row)
-                    "
-                    @click="option.rowButtons[0].click(scope.row)"
-                    >{{
-                      handlegetLable(scope.row, option.rowButtons[0].label)
-                    }}</el-button
-                  >
-                  <el-dropdown trigger="click">
-                    <span class="el-dropdown-link">
-                      更多
-                      <i class="el-icon-caret-bottom el-icon--right" />
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item class="clearfix">
-                        <template v-for="(item, index) in option.rowButtons.filter(
-                            (el, index) => index > 0
-                          )">
-                          <el-button
-                            v-if="isHide(item, scope.row)"
-                            :key="index"
-                            :type="item.type || 'text'"
-                            :disabled="isDisabledButton(item, scope.row)"
-                            size="small"
-                            @click="!!this.designState?'':item.click(scope.row)"
-                          >{{
-                              handlegetLable(scope.row, item.label)
-                            }}</el-button
-                          >
-                        </template>
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
                 </div>
               </template>
             </el-table-column>
@@ -426,7 +387,7 @@
                 <slot name="tableSelectionBtn" :selection="checkRecords" />
               </div> -->
               <el-pagination
-                v-if="params.pageQueryData.total >= 0"
+                v-show="pageQueryDataFlag"
                 :current-page.sync="params.pageQueryData.currentPage"
                 :page-sizes="[10, 15, 20]"
                 :page-size="params.pageQueryData.pageSize"
@@ -488,7 +449,6 @@
 <script>
 // import AnjiTree from "@/components/anji/anji-tree.vue";
 import EditDialog from "./edit";
-// import request from "@/utils/request";
 import Draggable from 'vuedraggable'
 import i18n from "@/utils/i18n"
 import FieldComponents from '@/components/form-designer/form-widget/field-widget/index'
@@ -498,6 +458,8 @@ import AnjiSelect from "../anji-select.vue";
 import { Form, Row, Col, Input,Button, Table, TableColumn, Pagination, Dialog, Radio, RadioGroup, Option, Select, Cascader,CheckboxGroup, Checkbox  } from 'element-ui'
 import common from './mixins/common'
 import queryform from './mixins/queryform'
+import Vue from 'vue'
+
 export default {
   inject: ['listVformPages','addRedirect','editRedirect','setFunction','dataHandling','request','router'],
   mixins: [
@@ -506,6 +468,7 @@ export default {
     i18n, refMixinDesign
   ],
   components: {
+    Select,
     EditDialog,
     // AnjiTree,
     anjiContextMenu,
@@ -517,10 +480,6 @@ export default {
     ...FieldComponents,
   },
   props: {
-    designState: {
-      type: Boolean,
-      default: false
-    },
     formId:{
 
     },
@@ -567,7 +526,6 @@ export default {
               currentPage: 1
             }
           },
-
       checkRecords: [], // 表格中当前选中的记录
       records: [], // 接口返回的记录列表
       // total: 0, // 接口返回的总条数
@@ -582,7 +540,8 @@ export default {
 
       isShowRowContextMenu: false,
       contextMenuConfigStyle: {},
-      contextMenuRow: {}
+      contextMenuRow: {},
+      pageQueryDataFlag:true
     };
   },
   watch: {
@@ -592,7 +551,29 @@ export default {
       },
       deep: true
     },
+    'option.columns': {
+      handler(newVal) {
+        console.log('[OptionChanged]',newVal)
+        newVal.forEach(item => {
+          if(item.inputType == 'custom'){
+            this.register(item.field, item.customCode?.template ? item.customCode.template : '<div>{{data}}</div>', item.customCode?.methods ? item.customCode.methods : '')
+          }
+        })
+      },
+      deep: true
+    },
     formId:{
+      handler(val) {
+        this.handleResetForm()
+      },
+    },
+    'option.pageQueryDataFlag':{
+      handler(val) {
+        this.pageQueryDataFlag=this.option.pageQueryDataFlag
+        this.handleResetForm()
+      },
+    },
+    'option.queryFormHide':{
       handler(val) {
         this.handleResetForm()
       },
@@ -665,9 +646,25 @@ export default {
     // 是否可以批量删除
     disableBatchDelete() {
       return this.checkRecords.length <= 0;
+    },
+    //获取列表数据样式
+    getDataStyle(){
+      return(row,item)=>{
+        let mountFunc = new Function('row','item',this.option.columnsCss)
+        let newData= mountFunc(row,item)
+        return newData||{}
+        // if(row.pageType=='form'&&item.field=='pageType'){
+        //   return {
+        //     color:'blue !important',
+        //     'background-color':'green',
+        //     padding:'5px 10px',
+        //   }
+        // }
+      }
     }
   },
   created() {
+    this.pageQueryDataFlag=this.option.pageQueryDataFlag
     this.itemId=this.option.itemId
     // 为查询框中所有input加上默认值   
     this.option.queryFormFields.forEach(item => {
@@ -681,6 +678,11 @@ export default {
       this.handleQueryForm("query");
     }
     this.queryFormChange();
+    this.option.columns.forEach(item => {
+      if(item.inputType == 'custom'){
+        this.register(item.field, item.customCode?.template ? item.customCode.template : '<div>{{data}}</div>', item.customCode?.methods ? item.customCode.methods : {})
+      }
+    })
   },
   mounted() {
     if (this.$scopedSlots["rowButtonInMore"] != null) {
@@ -765,54 +767,234 @@ export default {
       // 将特殊参数值urlcode处理
       // let params = this.urlEncodeObject(this.queryParams, "order,sort");
       let object=this.deepClone(this.queryParams)
-      // console.log('queryParams',this.queryParams);
-      // console.log(this.option.columns);
-      let params ={}
-      for (const key in object) {
-        if (object.hasOwnProperty(key)&&!!key) {
-          let type=''
-          let query=''
-          for (let index = 0; index < this.option.columns.length; index++) {
-            if(this.option.columns[index].field==key&&!!object[key]){
-              type=this.option.columns[index].inputType
-              if(type=='date'||type=='time'||type=='date-range'||type=='time-range'){
-                // let data=[]
-                // object[key].forEach((item)=>{
-                //   data.push(this.dataHandling.parseTime(item,this.option.columns[index].option.format))               
-                // })           
-                query= this.dataHandling.addDateRange({},object[key],key)
-              }
-              break
-            }            
-          }
-          params[key]={
-            name:key,
-            type:type,
-            query:query||object[key],
-          }         
-        }
-      }
+      //对多条件查询date|time类型数据进行处理
+      let params= this.getNewParams(object)
       console.log(params);
-      if(!!this.formId){
+      //绑定formid后默认查询||vform查询   
+      if(!!this.formId&&(this.option.cuatomQuery.setting==='0'||!this.option.cuatomQuery.setting)){
         // this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,queryParams:params}).then(response => {
         //   if (response.data.code != "200") return;
         //   this.records = response.data.rows;
         //   this.params.pageQueryData.total = response.data.total;
-        // });
-        this.request({
-            url: '/dyn/vf/queryListCond/' + this.formId,
-            method: 'post',
-            data:{pageQueryData:this.params.pageQueryData,queryParams:params}
-          }).then(response => {
+        // }); 
+        let api={} 
+        api['method']= 'post'
+        if(this.pageQueryDataFlag){
+          api['url']='/dyn/vf/queryListCond/'+ this.formId,
+          api['data']={queryParams:params,pageQueryData:this.params.pageQueryData}
+        }else{
+          api['url']='/dyn/vf/queryListAll/'+ this.formId,
+          api['data']={queryParams:params}
+        }     
+         this.request(api).then(response => {
           if (response.data.code != "200") return;
           this.records = response.data.rows;
           this.params.pageQueryData.total = response.data.total;
         });
+      }else{
+        //自定义查询
+        let query={}
+        let url={}
+        let apiData={}
+        let urlData={}
+        //转为对象
+        if(!!this.option.cuatomQuery.apiData){
+          apiData= eval("("+this.option.cuatomQuery.apiData+")")  
+          console.log('apiData',apiData);   
+          // this.router.push(apiData)   
+        }
+        if(!!this.option.cuatomQuery.urlData){
+          urlData= eval("("+this.option.cuatomQuery.urlData+")")      
+          console.log('urlData',urlData);          
+        }  
+        //对参数进行处理
+        query=  this.getNewData(apiData,params,'query')
+        // console.log(query);
+        let api ={}
+        //如果是代码生成查询，url不需要传参并且为get方式
+        // if(this.option.cuatomQuery.setting==='1'){        
+        //   api['url']= (this.option.cuatomQuery.apiUrl||'/demo/genTestBasicDemo/list'),
+        //   api['method']='get',
+        //   api['params']=query,         
+        //   this.request(api).then(response => {
+        //     if (response.data.code != "200") return;
+        //     this.records = response.data.rows;
+        //     this.params.pageQueryData.total = response.data.total;  
+        //   });
+        // }else{      
+          api['method']=this.option.cuatomQuery.apiType
+          if(!!this.option.cuatomQuery.apiUrl){
+            // this.formId='vformGenTableTestForm'
+            //路径参数进行处理
+            url= this.getNewData(urlData,this,'url')
+            // console.log('url',url);
+            let allUrl=this.option.cuatomQuery.apiUrl
+            for (const key in url) {              
+              if (url.hasOwnProperty(key)) {  
+                allUrl=allUrl+'/'+url[key]
+              }
+            }
+            api['url']=allUrl 
+            // console.log('api[url]',allUrl);
+          }else{
+            api['url']=''
+          }
+          if(this.option.cuatomQuery.apiType=='get'){
+            api['params']=query 
+          }else{
+            // this.formId='vformGenTableTestForm'
+            if(this.option.cuatomQuery.parameterType=='params'){
+              api['params']=query 
+              api['data']=query 
+            }else{
+              api['params']=query 
+              api['data']=query 
+            }
+            
+          }   
+          console.log('api最终的值',api);               
+          this.request(api).then(response => {
+            if (response.data.code != "200") return;
+            if(!!this.option.cuatomQuery.dataConversion){
+              let mountFunc = new Function('response',this.option.cuatomQuery.dataConversion)
+              this.records= mountFunc(response)
+            }else{
+              this.records = response.data.rows;
+            }                        
+            this.params.pageQueryData.total = response.data.total;  
+          });
+        // }
       }
       // const { data } = await this.option.buttons.query.api({ pageQueryData: JSON.stringify(this.params.pageQueryData),condition: JSON.stringify(this.queryParams),});
       // if (code != "200") return;
       // this.records = data.list;
       // this.params.pageQueryData.total = data.total;
+    },
+    getNewParams(object){
+      let params ={}
+      let types=['date','time','date-range','time-range']
+      if(this.option.queryFormHide){
+        if(this.option.cuatomQuery.setting==='0'||!this.option.cuatomQuery.setting){
+          for (const key in object) {
+            if (object.hasOwnProperty(key)&&!!key) {
+              let type=''
+              let query=''
+              for (let index = 0; index < this.option.columns.length; index++) {
+                if(this.option.columns[index].field==key&&!!object[key]){
+                  type=this.option.columns[index].inputType
+                  if(types.includes(type)){         
+                    query= this.dataHandling.addDateRange({},object[key],key)
+                  }
+                  break
+                }            
+              }
+              params[key]={
+                name:key,
+                type:type,
+                query:query||object[key],
+              }         
+            }
+          }
+        }else{
+          // params=object
+          for (const key in object) {
+            if (object.hasOwnProperty(key)&&!!key) {
+              let type=''
+              let query=''
+              for (let index = 0; index < this.option.columns.length; index++) {
+                if(this.option.columns[index].field==key&&!!object[key]){
+                  type=this.option.columns[index].inputType
+                  if(types.includes(type)){      
+                    query= this.dataHandling.addDateRange({},object[key],key)
+                    if(!!query){
+                      for (const key in query.params) {
+                        params[key]=query.params[key]
+                      }
+                    }
+                  }else if(object[key]!=='null'){
+                    params[key]=object[key]
+                  }  
+                  break
+                }            
+              }        
+            }  
+          }
+        }           
+      }
+      return params
+    },
+    getNewData(data,param,status){
+      //递归替换数据
+      if(status=='query'){
+        //查询条件
+        if(this.option.queryFormHide){
+          let{apiData,params}=this.replaceParamsObject(data,param,status)
+          //分页条件
+          if(this.pageQueryDataFlag){
+              return{...params,pageQueryData:this.params.pageQueryData,...apiData}
+            }
+            return{...params,...apiData}
+        }else{
+          if(this.pageQueryDataFlag){
+              return{pageQueryData:this.params.pageQueryData}
+            }
+            return{}
+        }
+        
+      }else if(status=='url'){
+        let{apiData,params}= this.replaceParamsObject(data,param,status)     
+          return{...apiData}         
+      }        
+    },
+    replaceParamsObject(data,data1,status){
+      let apiData=data
+      let params=data1
+        for (const key in apiData) {
+          if (apiData.hasOwnProperty(key)) { 
+            if(Object.prototype.toString.call(apiData[key])=='[object Object]'){
+              // console.log('replaceParamsObject',this.replaceParamsObject(apiData[key],params,status)); 
+              let objectData=this.replaceParamsObject(apiData[key],params,status)
+              apiData[key]=objectData['apiData'] 
+              }else{     
+                let data=this.replaceParams(apiData[key], params) 
+                let newDataKey=''
+                let newData=''
+                // console.log(Object.prototype.toString.call(data)=='[object Object]');
+                // console.log('7878',data);
+                if(Object.prototype.toString.call(data)=='[object Object]'){
+                  newData=data['name']
+                  newDataKey=data['key']
+                }else{
+                  newData=data
+                }       
+                if(!!newData&&newData!=='undefined'){
+                  apiData[key]=newData
+                  if(status=='query'){
+                    !!newDataKey&&Reflect.deleteProperty(params,newDataKey)
+                  }           
+                }else{
+                  Reflect.deleteProperty(apiData,key)
+                }                  
+              }
+        }
+      }
+      //  console.log(apiData,params);      
+       return {apiData,params} 
+    },
+    replaceParams (str, replacements) {
+      const regex = /\$\{([^}]+)\}/g       
+        // console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
+        if(str==str.replace(regex, (_, match) => match) ){
+          return str 
+        }else{
+          return {name: str.replace(regex, (_, match) => replacements[match]),
+                  key:str.replace(regex, (_, match) => match) }
+        }    
+    },
+    replaceParams1 (str, replacements) {
+      const regex = /\$\{([^}]+)\}/g       
+        // console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
+          return str.replace(regex, (_, match) => replacements[match])   
     },
     // 重置
     handleResetForm() {
@@ -853,7 +1035,7 @@ export default {
       }
     },
     // 编辑和查看操作
-    handleOpenEditView(modelType,row) {
+    handleOpenEditView(modelType,row,item) {
       if (modelType == "view" || modelType == "edit") {
         //是否打开内部弹框
           if(this.option.dialogFlag){
@@ -863,7 +1045,21 @@ export default {
             this.editDialogOpen = true;
           }else{
             console.log(row);
-            this.editRedirect(this.formId, row[this.primaryKeyFieldName], this.primaryKeyFieldName, row)
+            console.log(item);
+            if(item.setting){
+              let settingData=''
+              if(!!item.settingData){
+                // settingData= eval("("+item.settingData+")") 
+                console.log(item.settingData);                
+                let newFunction =  new Function('row','item','_this',item.settingData)
+                console.log(newFunction);               
+                let data= newFunction(row,item,this)
+                console.log(data);               
+                this.router.push(data)
+              }
+            }else{
+              this.editRedirect(this.formId, row[this.primaryKeyFieldName], this.primaryKeyFieldName, row)
+            }
           }       
       }
       this.editDialogModelType = modelType;
@@ -1189,55 +1385,82 @@ export default {
       },
           // 表格参数名称转换
     getDataName(row,item) {
-      if (item.inputType == 'radio' || item.inputType == 'select') {
-        if (row[item.field]!= null) {
-          let tempStr = row[item.field]
-          for (let index = 0; index < item.option.optionItems.length; index++) {
-            if (tempStr == item.option.optionItems[index].value) {
-                tempStr = item.option.optionItems[index].label
-                break;
-              }                         
-          }
-          return tempStr
-        }else{
-          return row[item.field]
-        }
-      }else if(item.inputType == 'switch' ){
-        if (row[item.field]=='true') {
-          return item.option.activeText
-        } else {
-          return item.option.inactiveText
-        }
-      }else if(item.inputType == 'checkbox'){
-        if (row[item.field]!= null) {
-          let tempStrList = row[item.field]
-          let tempStr=''
-          tempStrList.forEach((data)=>{
+      try {
+        if (item.inputType == 'radio' || item.inputType == 'select') {
+          if (row[item.field]!= null) {
+            let tempStr = row[item.field]
             for (let index = 0; index < item.option.optionItems.length; index++) {
-              if (data == item.option.optionItems[index].value) {
-                  tempStr = tempStr?tempStr+','+item.option.optionItems[index].label:item.option.optionItems[index].label
+              if (tempStr == item.option.optionItems[index].value) {
+                  tempStr = item.option.optionItems[index].label
                   break;
                 }                         
             }
-          })        
-          return tempStr
-        }else{
-          return row[item.field]
-        }
-      }else if (item.inputType == 'user-choose'|| item.inputType == 'group-choose') {
-        if(row[item.field]!= null) {
-          return row[item.field].split('|')[0]
-        }
-      }else if (item.inputType == 'time-range'||item.inputType == 'date-range' ) {
-        if(!!row[item.field]) {          
-          return  `${row[item.field][0]} - ${row[item.field][1]}`        
-        }
-      }else if (item.inputType == 'slider'||item.inputType =='rate' ) {
-        if(!!row[item.field]) {          
-          return  `${row[item.field]}/${item.option.max}`        
-        }
-      }         
-        return row[item.field]     
+            return tempStr
+          }else{
+            return row[item.field]
+          }
+        }else if(item.inputType == 'switch' ){
+          if (row[item.field]=='true') {
+            return item.option.activeText
+          } else {
+            return item.option.inactiveText
+          }
+        }else if(item.inputType == 'checkbox'){
+          if (row[item.field]!= null) {
+            let tempStrList = row[item.field]
+            let tempStr=''
+            tempStrList.forEach((data)=>{
+              for (let index = 0; index < item.option.optionItems.length; index++) {
+                if (data == item.option.optionItems[index].value) {
+                    tempStr = tempStr?tempStr+','+item.option.optionItems[index].label:item.option.optionItems[index].label
+                    break;
+                  }                         
+              }
+            })        
+            return tempStr
+          }else{
+            return row[item.field]
+          }
+        }else if (item.inputType == 'user-choose'|| item.inputType == 'group-choose') {
+          if(row[item.field]!= null) {
+            return row[item.field].split('|')[0]
+          }
+        }else if (item.inputType == 'time-range'||item.inputType == 'date-range' ) {
+          if(!!row[item.field]) {          
+            return  `${row[item.field][0]} - ${row[item.field][1]}`        
+          }
+        }else if (item.inputType == 'slider'||item.inputType =='rate' ) {
+          if(!!row[item.field]) {          
+            return  `${row[item.field]}/${item.option.max}`        
+          }
+        }         
+          return row[item.field]   
+      } catch (error) {
+        return row[item.field]   
+      }
+        
+    },
+    register (field, dataTemplate, dataMethods) {
+      // console.log('[register]', field, dataTemplate, dataMethods)
+      let dataProps = {
+        item: {
+          type: Object,
+          default: () => {}
+        },
+        scope: {
+          type: Object,
+          default: () => {}
+        },
+        data: {
+          type: String,
+          default: () => {}
+        },
+      }
+      Vue.component('custom-slot-' + field, {
+        props: dataProps,
+        methods: new Function('{ return ' + dataMethods + '}').call(this),
+        template: dataTemplate
+      })
     },
   }
 };

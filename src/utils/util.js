@@ -1,4 +1,5 @@
 import Clipboard from 'clipboard'
+import axios from 'axios'
 
 export function isNull(value) {
   return (value === null) || (value === undefined);
@@ -11,6 +12,15 @@ export function isNotNull(value) {
 export function isEmptyStr(str) {
   //return (str === undefined) || (!str) || (!/[^\s]/.test(str));
   return (str === undefined) || (!str && (str !== 0) && (str !== '0')) || (!/[^\s]/.test(str));
+}
+
+export function isEmptyObj(obj) {
+  return obj === undefined || Object.keys(obj).length === 0
+}
+
+export function isTable(type) {
+  const tables = ['edit-table', 'data-table']
+  return tables.includes(type)
 }
 
 export const generateId = function() {
@@ -130,7 +140,6 @@ export function traverseFieldWidgets(widgetList, handler, parent = null) {
   if (!widgetList) {
     return
   }
-
   widgetList.forEach(w => {
     if (w.formItemFlag) {
       handler(w, parent)
@@ -160,6 +169,7 @@ export function traverseFieldWidgets(widgetList, handler, parent = null) {
       // }
       // traverseFieldWidgets(w.widgetList, handler, w)
     } else if (w.category === 'container') {  //自定义容器
+      console.log(w,"widgetqoyaoba");
       traverseFieldWidgets(w.widgetList, handler, w)
     }
   })
@@ -283,7 +293,6 @@ export function getAllFieldWidgets(widgetList) {
   if (!widgetList) {
     return []
   }
-
   let result = []
   let handlerFn = (w) => {
     result.push({
@@ -365,12 +374,13 @@ export function getDefaultFormConfig() {
     functions: '',
     layoutType: 'PC',
     useCustomInitApi: false,
-    loadInitApiInForm: false,
+    customInitStatus: '',
     customInitApiForm: {
       uri: '',
-      method: '',
+      method: 'get',
       data: '',
-      params: '',
+      params: [],
+      dataHandlerCode: 'return response',
     },
 
     onFormCreated: '',
@@ -383,5 +393,189 @@ export function buildDefaultFormJson() {
   return {
     widgetList: [],
     formConfig: deepClone( getDefaultFormConfig() )
+  }
+}
+
+/**
+ * 转译选择项数据
+ * @param rawData
+ * @param widgetType
+ * @param labelKey
+ * @param valueKey
+ * @returns {[]}
+ */
+export function translateOptionItems(rawData, widgetType, labelKey, valueKey) {
+  if (widgetType === 'cascader') { // 级联选择不转译
+    return deepClone(rawData)
+  }
+
+  let result = []
+  if (!!rawData && (rawData.length > 0)) {
+    rawData.forEach(ri => {
+      const label = ri[labelKey]
+      const value = ri[valueKey]
+      if (isNotNull(label) && isNotNull(value)) {
+        result.push({
+          ...ri,
+        })
+      } else {
+        result.push({
+          label,
+          value,
+        })
+      }
+    })
+  }
+
+  return result
+}
+
+/**
+ * 组装axios请求配置参数
+ * @param arrayObj
+ * @param DSV
+ * @returns {{}}
+ */
+export function assembleAxiosConfig(arrayObj, DSV) {
+  console.log("[assembleAxiosConfig] arrayObj & DSV", arrayObj, DSV)
+  let result = {}
+  if (!arrayObj || (arrayObj.length <= 0)) {
+    console.log("[assembleAxiosConfig]", "!arrayObj || (arrayObj.length <= 0)")
+    return result
+  }
+
+  arrayObj.map(ai => {
+    if (ai.type === 'String') {
+      result[ai.name] = String(ai.value)
+    } else if (ai.type === 'Number') {
+      result[ai.name] = Number(ai.value)
+    } else if (ai.type === 'Boolean') {
+      if ((ai.value.toLowerCase() === 'false') || (ai.value === '0')) {
+        result[ai.name] = false
+      } else if ((ai.value.toLowerCase() === 'true') || (ai.value === '1')) {
+        result[ai.name] = true
+      } else {
+        result[ai.name] = null
+      }
+    } else if (ai.type === 'Variable') {
+      result[ai.name] = eval(ai.value)
+    } else if (ai.type === 'RouterParam') {
+      result[ai.name] = replaceParams(ai.value, DSV)
+    }
+  })
+  console.log("[assembleAxiosConfig] result", arrayObj, DSV, result)
+  return result
+}
+
+export function replaceParams (str, replacements) {
+  const regex = /\$\{([^}]+)\}/g
+  console.log('[replaceParams] from:', str, 'datasource:', replacements, 'to:', str.replace(regex, (_, match) => replacements[match]))
+  return str ? str.replace(regex, (_, match) => replacements[match]) : ''
+}
+
+function buildRequestConfig(dataSource, DSV, isSandbox) {
+  let config = {}
+  if (dataSource.requestURLType === 'String') {
+    config.url = dataSource.requestURL
+  } else {
+    config.url = eval(dataSource.requestURL)
+  }
+  config.method = dataSource.requestMethod
+
+  config.headers = assembleAxiosConfig(dataSource.headers, DSV)
+  config.params = assembleAxiosConfig(dataSource.params, DSV)
+  config.data = assembleAxiosConfig(dataSource.data, DSV)
+
+  //let chFn = new Function('config', 'sandbox', 'form', 'widget', dataSource.configHandlerCode)
+  let chFn = new Function('config', 'isSandbox', 'DSV', dataSource.configHandlerCode)
+  return chFn.call(null, config, isSandbox, DSV)
+}
+
+export async function runDataSourceRequest(dataSource, DSV, isSandbox, $message) {
+  try {
+    let requestConfig = buildRequestConfig(dataSource, DSV, isSandbox)
+    //console.log('test------', requestConfig)
+    let result = await axios.request(requestConfig)
+
+    //let dhFn = new Function('result', 'sandbox', 'form', 'widget', dataSource.dataHandlerCode)
+    let dhFn = new Function('result', 'isSandbox', 'DSV', dataSource.dataHandlerCode)
+    return dhFn.call(null, result, isSandbox, DSV)
+  } catch (err) {
+    //let ehFn = new Function('error', 'sandbox', 'form', 'widget', '$message', dataSource.dataHandlerCode)
+    let ehFn = new Function('error', 'isSandbox', 'DSV', '$message', dataSource.errorHandlerCode)
+    ehFn.call(null, err, isSandbox, DSV, $message)
+    console.error(err)
+  }
+}
+
+export function getDSByName(formConfig, dsName) {
+  let resultDS = null
+  if (!!dsName && !!formConfig.dataSources) {
+    formConfig.dataSources.forEach(ds => {
+      if (ds.uniqueName === dsName) {
+        resultDS = ds
+      }
+    })
+  }
+
+  return resultDS
+}
+
+export function uuid2(len, radix) {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyz'.split('');
+  const uuid = []
+
+  radix = radix || chars.length;
+
+  if (len) {
+    // Compact form
+    for (let i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+  } else {
+    // rfc4122, version 4 form
+    let r;
+
+    // rfc4122 requires these characters
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+    uuid[14] = '4';
+
+    // Fill in random data.  At i==19 set the high bits of clock sequence as
+    // per rfc4122, sec. 4.1.5
+    for (let i = 0; i < 36; i++) {
+      if (!uuid[i]) {
+        r = 0 | Math.random() * 16;
+        uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r];
+      }
+    }
+  }
+
+  return uuid.join('');
+}
+
+// uuid2(16, 16) // "277571702EE33E11"
+
+/**
+ * 判断一个对象中是否包含某值
+ * @param obj
+ * @param value
+ * @param scope
+ * @returns {string|boolean}
+ */
+export function inObject(obj, value, scope) {
+  if (scope === 'key') {
+    return Object.keys(obj).includes(value)
+  } else if (scope === 'value') {
+    return !!Object.keys(obj).find(key => obj[key] === value)
+  } else {
+    return Object.keys(obj).includes(value) || !!Object.keys(obj).find(key => obj[key] === value)
+  }
+}
+
+export function debounce(fn, wait) {
+  let timer = null;
+  return function () {
+    if (timer !== null) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(fn, wait);
   }
 }

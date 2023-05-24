@@ -11,12 +11,14 @@ import './icons'
 import '@/styles/index.scss'
 import '@/styles/theme/index.scss'
 import '@/iconfont/iconfont.css'
+import ECharts from 'vue-echarts'
 
 import {loadExtension} from '@/extension/extension-loader'
 
 loadExtension()
 
 Vue.use(ElementUI, { size: 'small' })
+Vue.component('v-chart', ECharts)
 
 if (typeof window !== 'undefined') {
   window.axios = axios

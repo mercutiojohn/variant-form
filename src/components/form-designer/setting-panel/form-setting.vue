@@ -3,23 +3,21 @@
     <el-form :model="formConfig" size="mini" label-position="left" label-width="120px"
              class="setting-form" @submit.native.prevent>
       <el-collapse v-model="formActiveCollapseNames" class="setting-collapse">
-        <el-collapse-item name="1" :title="i18nt('designer.setting.basicSetting')">
+        <el-collapse-item name="1" :title="i18nt('designer.setting.customInitApiCollapse')">
           <el-form-item :label="i18nt('designer.setting.useCustomInitApi')">
             <el-switch
               v-model="formConfig.useCustomInitApi">
             </el-switch>
           </el-form-item>
-           <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.loadInitApiInForm')">
-            <el-switch
-              v-model="formConfig.loadInitApiInForm">
-            </el-switch>
+          <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitStatus')">
+            <el-input type="text" v-model="formConfig.customInitStatus"></el-input>
           </el-form-item>
           <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitApiEdit')">
             <el-button type="info" icon="el-icon-set-up" plain round @click="editCustomInitApi">{{i18nt('designer.setting.customInitApiEditBtn')}}</el-button>
           </el-form-item>
-          <el-form-item v-if="formConfig.useCustomInitApi" label-width="0">
-            <el-divider class="custom-divider"></el-divider>
-          </el-form-item>
+        </el-collapse-item>
+
+        <el-collapse-item name="2" :title="i18nt('designer.setting.basicSetting')">
           <el-form-item :label="i18nt('designer.setting.formSize')">
             <el-select v-model="formConfig.size">
               <el-option v-for="item in formSizes" :key="item.value" :label="item.label"
@@ -71,7 +69,7 @@
           </el-form-item>
         </el-collapse-item>
 
-        <el-collapse-item v-if="showEventCollapse()" name="2" :title="i18nt('designer.setting.eventSetting')">
+        <el-collapse-item v-if="showEventCollapse()" name="3" :title="i18nt('designer.setting.eventSetting')">
           <el-form-item label="onFormCreated" label-width="150px">
             <el-button type="info" icon="el-icon-edit" plain round @click="editFormEventHandler('onFormCreated')">
               {{i18nt('designer.setting.addEventHandler')}}</el-button>
@@ -137,22 +135,60 @@
     <el-dialog :title="i18nt('designer.setting.useCustomInitApi')" :visible.sync="showEditCustomInitApiDialogFlag"
                v-if="showEditCustomInitApiDialogFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
                :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
-        <el-form :model="customInitApiForm" ref="apiForm" :rules="rules" label-position="left" label-width="80px" size="medium"
+        <el-form :model="customInitApiForm" ref="apiForm" :rules="rules" label-position="left" label-width="130px" size="medium"
           @submit.native.prevent>
-          <el-form-item label="接口地址" prop="uri">
+          <el-form-item :label="i18nt('designer.setting.dsRequestURL')" prop="uri">
             <el-input v-model="customInitApiForm.uri" type="text" clearable></el-input>
           </el-form-item>
-          <el-form-item label="请求方法" prop="method">
-            <el-select v-model="customInitApiForm.method" class="full-width-input" clearable>
+          <el-form-item :label="i18nt('designer.setting.dsRequestMethod')" prop="method">
+            <el-select v-model="customInitApiForm.method" class="full-width-input">
               <el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label" :value="item.value"
                 :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="请求体" prop="data">
+          <el-form-item v-if="customInitApiForm.method !== 'get'" :label="i18nt('designer.setting.dsRequestData')" prop="data">
+            <el-alert class="code-wrapper top" type="info" :closable="false" title="{"></el-alert>
             <code-editor :mode="'json'" :readonly="false" v-model="customInitApiForm.data" ref="dataEditor"></code-editor>
+            <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
           </el-form-item>
-          <el-form-item label="请求参数" prop="params">
-            <code-editor :mode="'json'" :readonly="false" v-model="customInitApiForm.params" ref="paramsEditor"></code-editor>
+          <el-form-item :label="i18nt('designer.setting.dsRequestParams')">
+            <el-row>
+              <el-col :span="6">
+                <el-button type="text" icon="el-icon-plus" @click="addRequestParam">
+                  {{i18nt('designer.setting.addRequestParam')}}</el-button>
+              </el-col>
+            </el-row>
+            <el-row v-for="(rp, pIdx) in customInitApiForm.params" :key="pIdx" class="rd-row" :gutter="8">
+              <el-col :span="8">
+                <el-form-item :prop="'params.' + pIdx + '.name'" :rules="nameRules" :label-width="0">
+                  <el-input v-model="rp.name" :placeholder="i18nt('designer.setting.dsRequestNameInputPlaceholder')"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item :prop="'params.' + pIdx + '.type'" :label-width="0">
+                  <el-select v-model="rp.type" :placeholder="i18nt('designer.setting.dsRequestTypeInputPlaceholder')">
+                    <el-option :label="i18nt('designer.setting.dsRequestValueStringType')" value="String"></el-option>
+                    <el-option :label="i18nt('designer.setting.dsRequestValueNumberType')" value="Number"></el-option>
+                    <el-option :label="i18nt('designer.setting.dsRequestValueBooleanType')" value="Boolean"></el-option>
+                    <el-option :label="i18nt('designer.setting.dsRequestValueRouterVariableType')" value="RouterParam"></el-option>
+                    <!-- <el-option :label="i18nt('designer.setting.dsRequestValueVariableType')" value="Variable"></el-option> -->
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :prop="'params.' + pIdx + '.value'" :rules="valueRules" :label-width="0">
+                  <el-input v-model="rp.value" :placeholder="i18nt('designer.setting.dsRequestValueInputPlaceholder')"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-button icon="el-icon-delete" plain circle @click="deleteRequestParam(pIdx)"></el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="响应数据处理" prop="dataHandlerCode">
+            <el-alert class="code-wrapper top" type="info" :closable="false" title="(response) => {"></el-alert>
+            <code-editor :mode="'javascript'" :readonly="false" v-model="customInitApiForm.dataHandlerCode" ref="resInterceptorEditor"></code-editor>
+            <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
           </el-form-item>
         </el-form>
       
@@ -170,8 +206,7 @@
 <script>
   import i18n from "@/utils/i18n"
   import CodeEditor from '@/components/code-editor/index'
-  import {deepClone, insertCustomCssToHead, insertGlobalFunctionsToHtml} from "@/utils/util"
-
+  import {deepClone, insertCustomCssToHead, insertGlobalFunctionsToHtml, assembleAxiosConfig} from "@/utils/util"
   export default {
     name: "form-setting",
     mixins: [i18n],
@@ -187,7 +222,7 @@
       return {
         designerConfig: this.getDesignerConfig(),
 
-        formActiveCollapseNames: ['1', '2'],
+        formActiveCollapseNames: ['2', '3'],
 
         formSizes: [
           {label: 'default', value: ''},
@@ -231,6 +266,14 @@
           'onFormDataChange':   'onFormDataChange(fieldName, newValue, oldValue, formModel, subFormName, subFormRowIndex) {',
           //'onFormValidate':     'onFormValidate() {',
         },
+
+        nameRules: [
+          { required: true, trigger: ['blur', 'change'], message: this.i18nt('designer.setting.fieldValueRequired') },
+        ],
+        // valueRules: [
+        //   { required: true, trigger: ['blur', 'change'], message: this.i18nt('designer.setting.fieldValueRequired') },
+        //   { validator: this.validateValueInput, trigger: ['blur', 'change'] }
+        // ],
 
       }
     },
@@ -379,6 +422,17 @@
         this.showEditCustomInitApiDialogFlag = false
       },
 
+      addRequestParam() {
+        this.customInitApiForm.params.push({
+          name: '',
+          type: 'String',
+          value: ''
+        })
+      },
+
+      deleteRequestParam(idx) {
+        this.customInitApiForm.params.splice(idx, 1)
+      },
     }
   }
 </script>

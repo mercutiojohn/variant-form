@@ -1,5 +1,5 @@
 // import miment from 'miment'
-// import {getData} from '@/api/dataAnalysis/bigscreen'
+import {getData} from '@/api/dataAnalysis/bigscreen'
 
 export default {
   data() {

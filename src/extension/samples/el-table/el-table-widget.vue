@@ -14,7 +14,7 @@
 
     <div :key="widget.id" class="table-container"
          :class="[selected ? 'selected' : '', customClass]" @click.stop="selectWidget(widget)">
-         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId" :designState="designState">
+         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId">
           </anji-crud>
     </div>
 
@@ -56,10 +56,6 @@
       parentList: Array,
       indexOfParentList: Number,
       designer: Object,
-      designState: {
-        type: Boolean,
-        default: false
-      },
     },
     data() {
       return {
@@ -86,6 +82,8 @@
         //   total: 0,
         // },
         crudOption: {
+          //自定义表格列css样式
+          columnsCss:'',
           //是否使用内部弹窗（不要修改）
           dialogFlag:false,
           //查询条件控制（不包括查询重置按钮）
@@ -136,6 +134,8 @@
               permission: "resultsetManage:delete",
               icon: "el-icon-delete",
               plain: false,
+              setting:false,
+              settingData:'',
               click: () => {
                 return this.$refs.listPage.handleDeleteBatch();
               }
@@ -147,9 +147,22 @@
               permission: "resultsetManage:add",
               icon: "el-icon-plus",
               plain: false,
+              setting:false,
+              settingData:'',
               click: () => {
                 return this.$refs.listPage.handleOpenEditView("add");
               }
+            },
+            {
+              label: "查询",
+              type: "primary",
+              id:'query',
+              permission: "resultsetManage:query",
+              icon: "el-icon-search",
+              plain: false,
+              click: '',
+              setting:false,
+              settingData:'',
             },
             
           ],
@@ -159,12 +172,14 @@
               id:'edit',
               label: "编辑",
               permission: "resultsetManage:update",
-              click: row => {
-                return this.$refs.listPage.handleOpenEditView("edit",row);
+              click: (row,item) => {
+                return this.$refs.listPage.handleOpenEditView("edit",row,item);
                 // return this.operateDataset("edit", row);
               },
               isHide:'',
-              tableHide:false
+              tableHide:false,
+              setting:false,
+              settingData:'',
             },
             // {
             //   label: "数据预览",
@@ -175,11 +190,13 @@
               id:'delete',
               label: "删除",
               permission: "resultsetManage:delete",
-              click: row => {
-                return this.$refs.listPage.handleDeleteBatch(row);
+              click: (row,item) => {
+                return this.$refs.listPage.handleDeleteBatch(row,item);
               },
               isHide:'',
-              tableHide:false
+              tableHide:false,
+              setting:false,
+              settingData:'',
             }
           ],
           // 操作按钮
@@ -357,6 +374,7 @@
         }
         //传入增删改查组件的属性
         crudOption=this.deepClone(this.crudOption)
+        crudOption.cuatomQuery=this.widget.options.cuatomQuery
         crudOption.queryFormFields=this.widget.options.crudOption.queryFormFields
         crudOption.columns=this.widget.options.crudOption.columns
         crudOption.itemId=this.widget.options.crudOption.itemId   
@@ -365,6 +383,10 @@
         crudOption.tableButtons=tableButtons
         let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
         crudOption.rowButtons=rowButtons
+        crudOption.pageQueryDataFlag=this.widget.options.pageQueryDataFlag
+        crudOption.queryFormFieldsFlag=this.widget.options.queryFormFieldsFlag
+        crudOption.queryFormHide=this.widget.options.queryFormHide
+        crudOption.columnsCss=this.widget.options.crudOption.columnsCss
         console.log(crudOption);
         // let formId=this.formId
         return  crudOption

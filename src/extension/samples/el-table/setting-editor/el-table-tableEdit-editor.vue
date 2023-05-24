@@ -12,6 +12,7 @@
           windowHight="700px"
           @close="toClose"
           :formId="formId"
+          :columnsCss="columnsCss"
         ></editTable>
     </el-dialog>
   </div>
@@ -51,6 +52,9 @@
       formId(){
         return  this.selectedWidget.options.formId;
       },
+      columnsCss(){
+        return  this.selectedWidget.options.crudOption.columnsCss;
+      },
     },
     data() {
       return {
@@ -63,15 +67,14 @@
       editData(){
         this.editNumberVisible=true
       },
-      toClose(data){
-        this.selectedWidget.options.crudOption.columns=data
+      toClose(data,cssData){
+        this.selectedWidget.options.crudOption.columns=data  
+        this.selectedWidget.options.crudOption.columnsCss=cssData
         this.editNumberVisible=false
       }
     },
     created(){
       // this.newSelectedWidget=this.selectedWidget
-      console.log(this.selectedWidget,'1111111111');
-      
     }
 
   }

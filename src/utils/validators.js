@@ -125,3 +125,17 @@ const FormValidators = {
 }
 
 export default FormValidators
+
+/*验证内容是否英文数字以及下划线*/
+export function validateEngOrNum(rule, value, callback) {
+  const reg =/^[_a-zA-Z0-9]+$/;
+  if(value==''||value==undefined||value==null){
+    callback();
+  } else {
+    if (!reg.test(value)){
+      callback(new Error('英文字母、数字或下划线'));
+    } else {
+      callback();
+    }
+  }
+}

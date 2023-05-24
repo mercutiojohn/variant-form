@@ -254,7 +254,6 @@
         if (!!this.$options.components[ownPropEditorName]) {  //局部注册的属性编辑器组件
           return ownPropEditorName
         }
-
         return !!this.$root.$options.components[ownPropEditorName] ? ownPropEditorName : editorName  //全局注册的属性编辑器组件
       },
 

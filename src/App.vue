@@ -36,6 +36,9 @@ export default {
       testApi: this.testApi,
       // 通用请求
       request,
+      // 通用路由
+      router: this.$router,
+      currentRoute: this.testRoute,
       // d2调用
       mapState: this.testApi,
       mapActions: this.testApi,
@@ -59,7 +62,8 @@ export default {
       // 增删改查组件
       textAlert: this.textAlert, //功能测试
       listVformPages: queryListCond, //增删改查查询
-      openForm: this.openForm,//增删改查新增、编辑跳转
+      addRedirect: this.addRedirect,//增删改查新增跳转
+      editRedirect: this.editRedirect,//增删改查编辑跳转
       setFunction: {
         delRecordByIds, //增删改查多选删除
         delRecordById, //增删改查单删
@@ -116,7 +120,15 @@ export default {
         refreshToken: '',
         user: ''
       },
-      formList:[]
+      formList:[],
+      testRoute: {
+        query: {
+          // id: 4,
+        },
+        params: {
+          idTest: '1234'
+        }
+      }
     }
   },
   created () {
@@ -193,6 +205,25 @@ export default {
             this.formList.push(data)
           })
         })
+    },
+    // 增删改查组件
+    addRedirect (route) {
+      console.log('[addRedirect]', route)
+      this.$router.push({
+        path: '/dyn/vform/' + route
+      })
+    },
+    editRedirect (route, id, idFieldName, row) {
+      console.log('[editRedirect]', route, id, idFieldName, row)
+      let params = {
+        // [idFieldName]: id,
+        ...row,
+        type: 'edit'
+      }
+      this.$router.push({
+        path: '/dyn/vform/' + route,
+        query: params
+      })
     },
   }
 }

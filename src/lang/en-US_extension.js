@@ -3,8 +3,10 @@ export default {
     widgetLabel: {
       card: 'Card',
       alert: 'Alert',
-      'user-choose': '人员选择',
-      'group-choose': '机构选择',
+      'user-choose': 'User Choose',
+      'group-choose': 'Group Choose',
+      'bar-chart': 'Bar Chart',
+      'submit-button': 'Submit Button',
     },
 
     setting: {

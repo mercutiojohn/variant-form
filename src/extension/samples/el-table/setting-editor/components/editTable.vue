@@ -28,9 +28,27 @@
                 <el-input  v-model="scope.row.label" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="inputType" header-align="center" align="left" min-width="120" label="类型" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.inputType" ></el-input>
+        <TableColumn  prop="inputType" header-align="center" align="left" min-width="180" label="类型" >
+            <template slot-scope="scope">
+              <div style="display: flex; gap:5px; align-items:center">
+                <el-select v-model="scope.row.inputType" placeholder="请选择">
+                  <el-option
+                    v-for="dict in inputType"
+                    :key="dict"
+                    :label="dict.label"
+                    :value="dict.value"
+                 ></el-option>
+                </el-select>
+                <el-button
+                  type="info"
+                  icon="el-icon-edit"
+                  plain
+                  size="mini"
+                  @click="editCustomCodeData(scope.row.customCode,scope.$index)"
+                  v-if="scope.row.inputType == 'custom'"
+                >
+                </el-button>
+              </div>
             </template>
         </TableColumn>
         <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="字段" >
@@ -73,9 +91,10 @@
           </template>
         </TableColumn>
         <TableColumn
-        label="操作"
-        width="150px"
-        align="center"
+          label="操作"
+          width="150px"
+          align="center"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button
@@ -131,14 +150,58 @@
         <Button  size="medium" type="primary" @click="getLatestData">
           更新字段
         </Button>
+        <el-button  size="medium" type="primary" @click="editData">
+          自定义css样式</el-button>
       </div>
+      <el-dialog title="自定义样式" :visible.sync="showWidgetEventDialogFlag"
+              v-if="showWidgetEventDialogFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
+              :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
+        <!-- <el-alert type="info" :closable="false" :title="eventHeader"></el-alert> -->
+        <code-editor :mode="'javascript'" :readonly="false" v-model="cssData" ref="ecEditor"></code-editor>
+        <!-- <el-alert type="info" :closable="false" title="}"></el-alert> -->
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showWidgetEventDialogFlag = false">
+          取消</el-button>
+          <el-button type="primary" @click="saveEventHandler">
+          确定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog 
+        title="自定义回显" 
+        :visible.sync="showTableCustomCodeFlag"
+        v-if="showTableCustomCodeFlag"
+        :show-close="true"
+        class="small-padding-dialog"
+        append-to-body
+        v-dialog-drag
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :destroy-on-close="true"
+      >
+        <el-divider content-position="left">可使用<code>data</code>, <code>scope</code>, <code>item</code>属性</el-divider>
+        <el-alert type="info" :closable="false" title="<template>"></el-alert>
+        <code-editor :mode="'html'" :readonly="false" v-model="customCodeEditing.template" ref="customCodeEditor"></code-editor>
+        <el-alert type="info" :closable="false" title="</template>"></el-alert>
+        <el-divider></el-divider>
+        <el-alert type="info" :closable="false" title="methods:"></el-alert>
+        <code-editor :mode="'javascript'" :readonly="false" v-model="customCodeEditing.methods" ref="customMethodsEditor"></code-editor>
+        <el-alert type="info" :closable="false" title=""></el-alert>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showTableCustomCodeFlag = false">
+          取消</el-button>
+          <el-button type="primary" @click="saveCustomCode">
+          确定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </template>
   <script>
+  import CodeEditor from '@/components/code-editor/index'
   import { Button, Table, TableColumn,Input } from 'element-ui'
   import {getAllFieldWidgets} from "@/utils/util"
   import sortable from './Sortable.js'
   import Vue from 'vue'
+  import common from '../../anji/anji-crud/mixins/common'
   export default {
     name: 'edit-table',
     inject: ['setFunction'],
@@ -147,12 +210,19 @@
       TableColumn,
       Button,
       ELInput: Input,
+      CodeEditor
     },
+    mixins: [
+      common
+    ],
     props: {
       list: {
         type: [Array]
       },
       formId:{
+
+      },
+      columnsCss:{
 
       }
     },
@@ -161,9 +231,126 @@
         listData: [],
         num: 1,
         lodding:false,
+        inputType:[
+          {
+            value: 'input',
+            label: '单行文本'
+          },
+          {
+            value: 'user-choose',
+            label: '人员选择'
+          },
+          {
+            value: 'group-choose',
+            label: '组织选择'
+          },
+          {
+            value: 'textarea',
+            label: '多行文本'
+          },
+          {
+            value: 'number',
+            label: '数字'
+          },
+          {
+            value: 'select',
+            label: '下拉选择'
+          },
+          {
+            value: 'radio',
+            label: '单选'
+          },
+          {
+            value: 'checkbox',
+            label: '复选框'
+          },
+          {
+            value: 'switch',
+            label: '开关'
+          },
+          {
+            value: 'time',
+            label: '时间'
+          },
+          {
+            value: 'time-range',
+            label: '时间范围'
+          },
+          {
+            value: 'date',
+            label: '日期'
+          },
+          {
+            value: 'date-range',
+            label: '日期范围'
+          },
+          {
+            value: 'custom',
+            label: '自定义'
+          }
+        ],
+        showWidgetEventDialogFlag:false,
+        cssData:'',
+        showTableCustomCodeFlag: false,
+        customCodeEditing: '',
+        customCodeIndex: -1
       }
     },
     methods: {
+      saveEventHandler() {
+        const codeHints = this.$refs.ecEditor.getEditorAnnotations()       
+        let syntaxErrorFlag = false
+        if (!!codeHints && (codeHints.length > 0)) {
+          codeHints.forEach((chItem) => {
+            if (chItem.type === 'error') {
+              syntaxErrorFlag = true
+            }
+          })
+
+          if (syntaxErrorFlag) {
+            this.$message.error(this.i18nt('designer.setting.syntaxCheckWarning'))
+            this.cssData=''
+            return
+          }
+        }  
+        this.showWidgetEventDialogFlag = false
+      },
+      saveCustomCode() {
+        /* const codeHints = this.$refs.ecEditor.getEditorAnnotations()       
+        let syntaxErrorFlag = false
+        if (!!codeHints && (codeHints.length > 0)) {
+          codeHints.forEach((chItem) => {
+            if (chItem.type === 'error') {
+              syntaxErrorFlag = true
+            }
+          })
+
+          if (syntaxErrorFlag) {
+            this.$message.error(this.i18nt('designer.setting.syntaxCheckWarning'))
+            this.cssData=''
+            return
+          }
+        }  */
+        /* this.listData[this.customCodeIndex].customCode = {
+          template: this.deepClone(this.customCodeEditing.template),
+          methods: JSON.parse(this.customCodeEditing.template)
+        } */
+        this.listData[this.customCodeIndex].customCode = this.deepClone(this.customCodeEditing)
+        this.showTableCustomCodeFlag = false
+        this.customCodeEditing = ''
+        this.customCodeIndex = -1
+      },
+      editCustomCodeData(data, index) {
+        this.customCodeEditing = data ? this.deepClone(data) : {
+          template: "<div>\n  {{ getData(data, scope) }}\n</div>",
+          methods: "{\n  getData(data, scope){\n    return scope.$index + ' - ' + data;\n  }\n}\n        "
+        }
+        this.customCodeIndex = index
+        this.showTableCustomCodeFlag = true
+      },
+      editData(data){
+        this.showWidgetEventDialogFlag=true        
+      },
       async getLatestData(){
         this.lodding=true
         const {data} = await this.setFunction.getVformPagesByPageId(this.formId);
@@ -190,7 +377,11 @@
                 contentAlign:'center',
                 headerAlign:'left',
                 sortable:false,
-                optionItems:item.field.options.optionItems
+                optionItems:item.field.options.optionItems,
+                customCode: {
+                  template: '',
+                  methods: {}
+                }
               }
           newTable.push(data)        
         })
@@ -212,6 +403,7 @@
           inputType: "input",
           label: "",
           placeholder: "",
+          customCode: ""
         });
       },
       delDict(index,rows) {
@@ -236,7 +428,7 @@
       },
       // 保存份号编辑
       toSave () {
-          this.$emit('close', this.listData)
+          this.$emit('close', this.listData,this.cssData)
       },
       setSort(){
             const el = this.$refs.multipleTable.$el.querySelector('.el-table__body-wrapper tbody')
@@ -263,7 +455,8 @@
     },
     // 页面初始化调用方法
     mounted: function () {
-      this.listData = JSON.parse(JSON.stringify(this.list))
+      this.listData = this.deepClone(this.list)
+      this.cssData=this.deepClone(this.columnsCss)
       console.log(this.listData);
       document.body.ondrag=function(event){
         event.preventDefault()

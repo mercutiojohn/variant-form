@@ -22,13 +22,24 @@ import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
 import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+// SubmitButton 表单提交按钮
+import {submitButtonSchema} from "@/extension/samples/extension-schema"
+import SubmitButtonWidget from '@/extension/samples/submitButton/submit-button-widget'
+import customApiFormEditor from '@/extension/samples/submitButton/editor/customApiForm-editor'
 // UserChoose 人员选择
 import {userChooseSchema} from "@/extension/samples/extension-schema"
 import UserChooseWidget from '@/extension/samples/userChoose/user-choose-widget'
-// import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 // groupChoose 机构选择
 import {groupChooseSchema} from "@/extension/samples/extension-schema"
 import GroupChooseWidget from '@/extension/samples/groupChoose/group-choose-widget'
+// barChart 柱状图
+import {barChartSchema} from "@/extension/samples/extension-schema"
+import BarChartWidget from '@/extension/samples/barChart/bar-chart-widget'
+import BarChartItem from '@/extension/samples/barChart/bar-chart-item'
+// barChart 柱状图
+import {lineChartSchema} from "@/extension/samples/extension-schema"
+import LineChartWidget from '@/extension/samples/lineChart/line-chart-widget'
+import LineChartItem from '@/extension/samples/lineChart/line-chart-item'
 
 // subForm 子表
 import {subFormSchema} from "@/extension/samples/extension-schema"
@@ -45,6 +56,11 @@ import elTableButtonEditEditor from '@/extension/samples/el-table/setting-editor
 import elRowButtonEditEditor from '@/extension/samples/el-table/setting-editor/el-table-rowButtonEdit-editor'
 import elQueryFormFieldsEditor from '@/extension/samples/el-table/setting-editor/el-table-queryFormFields-editor'
 import elTableFormIdEditor from '@/extension/samples/el-table/setting-editor/el-table-formId-editor'
+import elTableCuatomQueryEditor from '@/extension/samples/el-table/setting-editor/el-table-cuatomQuery-editor'
+//柱状图编辑
+import barChartAttributeEditor from '@/extension/samples/barChart/setting-editor/bar-chart-attribute-editor'
+//折线图编辑
+import lineChartAttributeEditor from '@/extension/samples/lineChart/setting-editor/line-chart-attribute-editor'
 export const loadExtension = function () {
 
   /**
@@ -143,20 +159,60 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
   
-  /* UserChoose 组件加载测试 start */
+  /* SubmitButton 组件加载 start */
+  addCustomWidgetSchema(submitButtonSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(SubmitButtonWidget.name, SubmitButtonWidget)  //注册组件
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor(
+    'submit-button-useCustomApi', 
+    'submit-button-useCustomApi-editor',
+    PEFactory.createBooleanEditor('useCustomApi', 'extension.setting.useCustomApi')
+  )
+
+  PERegister.registerCPEditor(
+    'submit-button-customApiStatus', 
+    'submit-button-customApiStatus-editor',
+    PEFactory.createInputTextEditor('customApiStatus', 'extension.setting.customApiStatus')
+  )
+
+  PERegister.registerCPEditor(
+    'submit-button-customApiForm', 
+    'submit-button-customApiForm-editor',
+    customApiFormEditor
+  )
+
+  /* SubmitButton 组件加载完毕 end */
+
+  /* UserChoose 组件加载 start */
   addCustomWidgetSchema(userChooseSchema)  //加载组件Json Schema
-  addCustomWidgetSchema(groupChooseSchema)  //加载组件Json Schema
+  addCustomWidgetSchema(lineChartSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
-  Vue.component(GroupChooseWidget.name, GroupChooseWidget)  //注册组件
+  Vue.component(LineChartWidget.name, LineChartWidget)  //注册组件
+  Vue.component(LineChartItem.name, LineChartItem)  //注册组件
 
   /* -------------------------------------------------- */
-  PERegister.registerCPEditor('test-testName', 'test-testName-editor',
-      PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
+  // PERegister.registerCPEditor('test-testName', 'test-testName-editor',
+  //     PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
   /* -------------------------------------------------- */
   //  registerFWGenerator('userChoose', alertTemplateGenerator)  //注册字段组件的代码生成器
   /* -------------------------------------------------- */
-  /* UserChoose 组件加载测试完毕 end */
+  /* UserChoose 组件加载完毕 end */
+
+  /* GroupChoose 组件加载 start */
+  addCustomWidgetSchema(groupChooseSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(GroupChooseWidget.name, GroupChooseWidget)  //注册组件
+  /* GroupChoose 组件加载完毕 end */
+
+
+  /* BarChart 组件加载 start */
+  addCustomWidgetSchema(barChartSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(BarChartWidget.name, BarChartWidget)  //注册设计期的容器组件
+  Vue.component(BarChartItem.name, BarChartItem)  //注册运行期的容器组件
+  /* BarChart 组件加载完毕 end */
 
   /* SubForm 容器组件加载 start */
   addContainerWidgetSchema(subFormSchema)  //加载组件Json Schema
@@ -194,6 +250,9 @@ export const loadExtension = function () {
   Vue.component(elRowButtonEditEditor.name, elRowButtonEditEditor)
   Vue.component(elQueryFormFieldsEditor.name, elQueryFormFieldsEditor)
   Vue.component(elTableFormIdEditor.name, elTableFormIdEditor)  
+  Vue.component(elTableCuatomQueryEditor.name, elTableCuatomQueryEditor) 
+  Vue.component(barChartAttributeEditor.name, barChartAttributeEditor)
+  Vue.component(lineChartAttributeEditor.name, lineChartAttributeEditor)       
   PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
   PEFactory.createEventHandlerEditor('tableEdit', [])) 
   PERegister.registerCPEditor('tableButtonEdit', 'tableButtonEdit-editor',
@@ -204,5 +263,15 @@ export const loadExtension = function () {
   PEFactory.createEventHandlerEditor('queryFormFields', [])) 
   PERegister.registerCPEditor('formId', 'formId-editor',
   PEFactory.createInputTextEditor('formId', [])) 
-  /* 表格组件加载 end */
+  PERegister.registerCPEditor('cuatomQuery', 'cuatomQuery-editor',
+  PEFactory.createInputTextEditor('cuatomQuery', []))   
+  PERegister.registerCPEditor('attribute', 'attribute-editor',
+  PEFactory.createInputTextEditor('attribute', [])) 
+  PERegister.registerCPEditor('pageQueryDataFlag', 'pageQueryDataFlag-editor',
+  PEFactory.createBooleanEditor('pageQueryDataFlag', 'extension.setting.pageQueryDataFlag'))
+  // PERegister.registerCPEditor('queryFormFieldsFlag', 'queryFormFieldsFlag-editor',
+  // PEFactory.createBooleanEditor('queryFormFieldsFlag', 'extension.setting.queryFormFieldsFlag'))
+  PERegister.registerCPEditor('queryFormHide', 'queryFormHide-editor',
+  PEFactory.createBooleanEditor('queryFormHide', 'extension.setting.queryFormHide'))
+   /* 表格组件加载 end */
 }

@@ -128,7 +128,6 @@
     },
     created(){
       // this.newSelectedWidget=this.selectedWidget
-      console.log(this.selectedWidget,'1111111111');
       
     }
 

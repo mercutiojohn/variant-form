@@ -10,12 +10,13 @@
   /* 启用此行后webpack打包回生成很多动态加载的js文件，不便于部署，故禁用！！
      特别提示：禁用此行后，需要调用ace.config.set('basePath', 'path...')指定动态js加载URL！！
    */
-  //import 'ace-builds/webpack-resolver'
+  // import 'ace-builds/webpack-resolver'
 
   //import 'ace-builds/src-min-noconflict/theme-monokai' // 默认设置的主题
   import 'ace-builds/src-min-noconflict/theme-sqlserver' // 新设主题
   import 'ace-builds/src-min-noconflict/mode-javascript' // 默认设置的语言模式
   import 'ace-builds/src-min-noconflict/mode-json' //
+  import 'ace-builds/src-min-noconflict/mode-html' //
   import 'ace-builds/src-min-noconflict/mode-css' //
   import 'ace-builds/src-min-noconflict/ext-language_tools'
   import {ACE_BASE_PATH} from "@/utils/config";
@@ -69,6 +70,8 @@
         this.setJsonMode()
       } else if (this.mode === 'css') {
         this.setCssMode()
+      } else if (this.mode === 'html') {
+        this.setHtmlMode()
       }
 
       if (!this.userWorker) {
@@ -118,7 +121,11 @@
       setCssMode() {
         this.aceEditor.getSession().setMode('ace/mode/css')
       },
-
+      
+      setHtmlMode() {
+        this.aceEditor.getSession().setMode('ace/mode/html')
+      },
+      
       getEditorAnnotations() {
         return this.aceEditor.getSession().getAnnotations()
       },

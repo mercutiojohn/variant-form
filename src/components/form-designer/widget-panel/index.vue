@@ -68,19 +68,7 @@
       <el-tab-pane v-if="showFormTemplates()" name="formLib" style="padding: 8px">
         <span slot="label"><i class="el-icon-c-scale-to-original"></i> {{i18nt('designer.formLib')}}</span>
         <el-scrollbar class="side-scroll-bar" :style="{height: scrollerHeight}">
-        <template v-for="(ft, idx) in formTemplates">
-          <el-card :key="idx" :bord-style="{ padding: '0' }" shadow="hover" class="ft-card">
-            <el-popover placement="right" trigger="hover">
-              <img slot="reference" :src="ft.imgUrl" style="width: 200px">
-              <img :src="ft.imgUrl" style="height: 600px;width: 720px">
-            </el-popover>
-            <div class="bottom clear-fix">
-              <span class="ft-title">#{{idx+1}} {{ft.title}}</span>
-              <el-button type="text" class="right-button" @click="loadFormTemplate(ft.jsonUrl)">
-                {{i18nt('designer.hint.loadFormTemplate')}}</el-button>
-            </div>
-          </el-card>
-        </template>
+        <templates-view />
         </el-scrollbar>
       </el-tab-pane>
     </el-tabs>
@@ -94,6 +82,7 @@
   import i18n from "@/utils/i18n"
   import axios from "axios"
   import SvgIcon from '@/components/svg-icon'
+  import TemplatesView from './templates-view'
 
   // import ftImg1 from '@/assets/ft-images/t1.png'
   // import ftImg2 from '@/assets/ft-images/t2.png'
@@ -110,11 +99,17 @@
     components: {
       Draggable,
       SvgIcon,
+      TemplatesView,
     },
     props: {
       designer: Object,
     },
     inject: ['getBannedWidgets', 'getDesignerConfig','getTemplateData'],
+    provide() { 
+      return {
+        useFormTemplate: this.useFormTemplate
+      }
+    },
     data() {
       return {
         designerConfig: this.getDesignerConfig(),
@@ -262,6 +257,18 @@
         }).catch(error => {
           console.error(error)
         })
+      },
+
+      useFormTemplate(jsonObj) {
+        let modifiedFlag = false
+        if (typeof jsonObj === 'string') {
+          modifiedFlag = this.designer.loadFormJson( JSON.parse(jsonObj) )
+        } else if (jsonObj.constructor === Object) {
+          modifiedFlag = this.designer.loadFormJson(jsonObj)
+        }
+        if (modifiedFlag) {
+          this.designer.emitHistoryChange()
+        }
       },
 
       // Tree
