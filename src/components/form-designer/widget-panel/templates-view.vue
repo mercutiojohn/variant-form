@@ -79,23 +79,6 @@
         </div>
       </el-card>
     </template>
-    <!-- VForm模板管理列表 -->
-    <!-- <el-table v-loading="loading" :data="formTemplates" @selection-change="handleSelectionChange" border>
-      <el-table-column type="selection" width="55" align="center" show-overflow-tooltip />
-      <el-table-column label="序号" align="center" width="55" type="index" header-align="center"  width="65"/>
-      <el-table-column label="编号" align="center" width="75" prop="id" show-overflow-tooltip />
-      <el-table-column label="模板标题" align="left" prop="title" show-overflow-tooltip />
-      <el-table-column label="模板ID" align="center" prop="templateId" show-overflow-tooltip />
-      <el-table-column label="模板分类" align="center" prop="category" :formatter="formTemplateCatgoryFormatter" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column label="是否启用" align="center" width="100" prop="isActive" :formatter="sysYesNoFormatter" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column label="操作" width="160" align="center" class-name="small-padding fixed-width" fixed="right">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">使用</el-button>
-        </template>
-      </el-table-column>
-    </el-table> -->
     <el-pagination
       small
       @size-change="handleSizeChange"
@@ -174,10 +157,6 @@ export default {
     };
   },
   created() {
-    const pageNum = this.$route.params && this.$route.params.pageNum
-    if (pageNum) {
-      this.pageQueryData.currentPage = pageNum
-    }
     this.getList();
   },
   mounted() {
@@ -252,34 +231,6 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加VForm模板管理";
-    },
-    /** 新增按钮跳转操作 */
-    handleToAdd() {
-      const params = {
-        title: '添加VForm模板管理',
-        pageNum: this.pageQueryData.currentPage,
-      }
-      this.$router.push({
-        name: 'vform-vformTemplateForm',
-        params: params
-      })
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      console.log(row)
-      // this.reset();
-      // const id = row.id || this.ids
-      // this.getVformTemplate(id).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.title = "修改VForm模板管理";
-      // });
     },
     getVformTemplate(id) {
       return this.request({

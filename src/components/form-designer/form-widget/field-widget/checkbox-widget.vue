@@ -2,9 +2,9 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-checkbox-group ref="fieldEditor" v-model="fieldModel"
+    <el-checkbox-group ref="fieldEditor" v-model="checkboxFieldModel"
                        :disabled="field.options.disabled" :size="field.options.size"
-                       @change="handleChangeEvent">
+                       @change="handleChangeEvent(fieldModel)">
       <template v-if="!!field.options.buttonStyle">
         <el-checkbox-button v-for="(item, index) in field.options.optionItems" :key="index" :label="item.value"
                             :disabled="item.disabled" :border="field.options.border"
@@ -64,6 +64,7 @@
         oldFieldValue: null, //field组件change之前的值
         fieldModel: null,
         rules: [],
+        checkboxFieldModel: []
       }
     },
     computed: {
@@ -72,7 +73,17 @@
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */
     },
+    watch: {
+      checkboxFieldModel(val) {
+        // this.fieldModel = val.join(',')
+        this.fieldModel = JSON.stringify(val)
+      },
+      fieldModel(val) {
+        // this.checkboxFieldModel = val ? val.split(',') : []
+        this.checkboxFieldModel = val.length ? JSON.parse(val) : []
 
+      }
+    },
     created() {
       /* 注意：子组件mounted在父组件created之后、父组件mounted之前触发，故子组件mounted需要用到的prop
          需要在父组件created中初始化！！ */
