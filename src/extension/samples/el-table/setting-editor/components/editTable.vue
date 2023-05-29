@@ -74,6 +74,11 @@
               </el-select>
           </template>
         </TableColumn>
+        <TableColumn  prop="minWidth" header-align="center" align="left" min-width="80" label="最小宽度" >
+          <template slot-scope="scope"  >
+              <el-input  v-model="scope.row.minWidth" ></el-input>
+          </template>
+        </TableColumn>
         <TableColumn  prop="sortable" header-align="center" align="left" min-width="120" label="是否可排序" >
           <template slot-scope="scope"  >
               <el-select v-model="scope.row.sortable" placeholder="请选择">

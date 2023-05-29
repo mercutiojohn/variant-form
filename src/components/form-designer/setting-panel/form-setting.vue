@@ -135,10 +135,32 @@
     <el-dialog :title="i18nt('designer.setting.useCustomInitApi')" :visible.sync="showEditCustomInitApiDialogFlag"
                v-if="showEditCustomInitApiDialogFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
                :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
-        <el-form :model="customInitApiForm" ref="apiForm" :rules="rules" label-position="left" label-width="130px" size="medium"
+        <el-form :model="customInitApiForm" ref="apiForm" label-position="left" label-width="130px" size="medium"
           @submit.native.prevent>
           <el-form-item :label="i18nt('designer.setting.dsRequestURL')" prop="uri">
-            <el-input v-model="customInitApiForm.uri" type="text" clearable></el-input>
+            <span slot="label">
+              {{i18nt('designer.setting.dsRequestURL')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
+            <!-- <el-input v-model="customInitApiForm.uri" type="text" clearable></el-input> -->
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              class="inline-input"
+              v-model="customInitApiForm.uri"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入内容"
+              clearable
+            >
+              <template slot-scope="{ item }">
+                <div class="summary">{{ item.summary }}</div>
+                <div style="display: flex; gap:5px; align-items: center;">
+                  <el-tag class="method" size="mini">{{ item.method.toUpperCase() }}</el-tag>
+                  <span class="url">{{ item.url }}</span>
+                </div>
+              </template>
+            </el-autocomplete>
           </el-form-item>
           <el-form-item :label="i18nt('designer.setting.dsRequestMethod')" prop="method">
             <el-select v-model="customInitApiForm.method" class="full-width-input">
@@ -147,6 +169,12 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="customInitApiForm.method !== 'get'" :label="i18nt('designer.setting.dsRequestData')" prop="data">
+            <span slot="label">
+              {{i18nt('designer.setting.dsRequestData')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
             <el-alert class="code-wrapper top" type="info" :closable="false" title="{"></el-alert>
             <code-editor :mode="'json'" :readonly="false" v-model="customInitApiForm.data" ref="dataEditor"></code-editor>
             <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
@@ -185,7 +213,13 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="响应数据处理" prop="dataHandlerCode">
+          <el-form-item prop="dataHandlerCode">
+            <span slot="label">
+              {{i18nt('designer.setting.dataHandler')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
             <el-alert class="code-wrapper top" type="info" :closable="false" title="(response) => {"></el-alert>
             <code-editor :mode="'javascript'" :readonly="false" v-model="customInitApiForm.dataHandlerCode" ref="resInterceptorEditor"></code-editor>
             <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
@@ -205,11 +239,12 @@
 
 <script>
   import i18n from "@/utils/i18n"
+  import formSettingMixin from "@/components/form-designer/setting-panel/formSettingMixin"
   import CodeEditor from '@/components/code-editor/index'
   import {deepClone, insertCustomCssToHead, insertGlobalFunctionsToHtml, assembleAxiosConfig} from "@/utils/util"
   export default {
     name: "form-setting",
-    mixins: [i18n],
+    mixins: [i18n, formSettingMixin],
     components: {
       CodeEditor,
     },
@@ -285,6 +320,7 @@
         this.extractCssClass()
         this.designer.emitEvent('form-css-updated', deepClone(this.cssClassList))
       })
+      this.getSwaggerApi()
     },
     mounted() {
       /* SettingPanel和FormWidget为兄弟组件, 在FormWidget加载formConfig时，
@@ -486,6 +522,37 @@
   .small-padding-dialog {
     ::v-deep .el-dialog__body {
       padding: 6px 15px 12px 15px;
+    }
+  }
+  .inline-input {
+    width: 100%;
+  }
+  .my-autocomplete {
+    li {
+      line-height: normal;
+      padding: 7px;
+
+      .url {
+        font-size: 12px;
+        color: #b4b4b4;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+      .method {
+        font-size: 12px;
+        width: 60px;
+        text-align: center;
+      }
+
+      .summary {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .highlighted .summary {
+        color: #ddd;
+      }
     }
   }
 

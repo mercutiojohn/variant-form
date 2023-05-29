@@ -335,6 +335,41 @@ export const tableSchema = {
 
 }
 
+export const flexBoxSchema = {
+  type: 'flex-box',
+  category: 'container',
+  icon: 'card',
+  widgetList: [],
+  options: {
+    name: '',
+    label: '弹性容器',
+    hidden: false,
+    customClass: '',
+    // cardWidth: '100%',
+    // cardHeight: '100%',
+    flex: {
+      flexDirection: "row",
+      flexWrap: "nowrap",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 10
+    },
+    boxBorder: {
+      width: 0,
+      style: "solid",
+      color: "#000000"
+    },
+    shadow: {
+      isInset: false,
+      offsetX: 0,
+      offsetY: 0,
+      blur: 0,
+      expand: 0,
+      color: "#00000023"
+    }
+  }
+}
+
 // 原子组件
 
 export const alertSchema = {

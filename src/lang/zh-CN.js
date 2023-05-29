@@ -427,6 +427,7 @@ export default {
       dsRequestParams: '请求参数 Params',
       addRequestParam: '新增请求参数',
       dsRequestData: '请求体 Data',
+      dataHandler: '响应数据处理',
       addRequestData: '新增发送数据',
       addDataSet: '新增数据集',
       dsRequestValueStringType: '字符串类型',

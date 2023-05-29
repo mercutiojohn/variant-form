@@ -679,6 +679,7 @@ export default {
       this.handleQueryForm("query");
     }
     this.queryFormChange();
+    console.log('[init-register]',this.option.columns)
     this.option.columns.forEach(item => {
       if(item.inputType == 'custom'){
         this.register(item.field, item.customCode?.template ? item.customCode.template : '<div>{{data}}</div>', item.customCode?.methods ? item.customCode.methods : {})
@@ -1149,7 +1150,7 @@ export default {
     // 批量删除
     handleDeleteBatch(row,item) {
       let ids = [];
-      if (row != null) {
+      if (!!row) {
         ids.push(row[this.primaryKeyFieldName]); // 删除指定的行
       } else {
         // 批量删除选中的行
@@ -1417,7 +1418,7 @@ export default {
           // 表格参数名称转换
     getDataName(row,item) {
       try {
-        if (item.inputType == 'radio' || item.inputType == 'select') {
+        if (item.inputType == 'radio' || (item.inputType == 'select'&&!item.option.multiple)) {
           if (row[item.field]!= null) {
             let tempStr = row[item.field]
             for (let index = 0; index < item.option.optionItems.length; index++) {
@@ -1436,7 +1437,7 @@ export default {
           } else {
             return item.option.inactiveText
           }
-        }else if(item.inputType == 'checkbox'){
+        }else if(item.inputType == 'checkbox'||(item.inputType == 'select'&&item.option.multiple)){
           if (row[item.field]!= null) {
             let tempStrList = row[item.field]
             let tempStr=''

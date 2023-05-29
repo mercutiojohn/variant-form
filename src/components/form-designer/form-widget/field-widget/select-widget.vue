@@ -2,7 +2,7 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-select ref="fieldEditor" v-model="fieldModel" class="full-width-input"
+    <el-select ref="fieldEditor" v-model="multiSelectFieldModel" class="full-width-input"
                :disabled="field.options.disabled"
                :size="field.options.size"
                :clearable="field.options.clearable"
@@ -14,7 +14,7 @@
                :placeholder="field.options.placeholder || i18nt('render.hint.selectPlaceholder')"
                :remote="field.options.remote" :remote-method="remoteMethod"
                @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-               @change="handleChangeEvent">
+               @change="handleChangeEvent(fieldModel)">
       <el-option v-for="item in field.options.optionItems" :key="item.value" :label="item.label"
                  :value="item.value" :disabled="item.disabled">
       </el-option>
@@ -66,6 +66,7 @@
       return {
         oldFieldValue: null, //field组件change之前的值
         fieldModel: null,
+        multiSelectFieldModel: null,
         rules: [],
       }
     },
@@ -82,6 +83,16 @@
         }
       },
 
+    },
+    watch: {
+      multiSelectFieldModel(val) {
+        // this.fieldModel = val.join(',')
+        this.fieldModel = JSON.stringify(val)
+      },
+      fieldModel(val) {
+        // this.multiSelectFieldModel = val ? val.split(',') : []
+        this.multiSelectFieldModel = val.length ? JSON.parse(val) : []
+      }
     },
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */

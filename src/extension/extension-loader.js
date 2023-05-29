@@ -19,6 +19,15 @@ import CardWidget from '@/extension/samples/card/card-widget'
 import CardItem from '@/extension/samples/card/card-item'
 import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
+// Flex Box 弹性布局容器
+import {flexBoxSchema} from "@/extension/samples/extension-schema"
+import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
+import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
+import FlexEditor from '@/extension/samples/flexBox/editor/flex-editor'
+import BorderEditor from '@/extension/samples/flexBox/editor/border-editor'
+import ShadowEditor from '@/extension/samples/flexBox/editor/shadow-editor'
+// import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+
 /* Widget 字段组件 */
 // Alert 提示
 import {alertSchema} from "@/extension/samples/extension-schema"
@@ -161,7 +170,23 @@ export const loadExtension = function () {
   registerFWGenerator('alert', alertTemplateGenerator)  //注册字段组件的代码生成器
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
-  
+
+  /* 弹性布局容器组件加载 start */
+  addContainerWidgetSchema(flexBoxSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(FlexBoxWidget.name, FlexBoxWidget)  //注册设计期的容器组件
+  Vue.component(FlexBoxItem.name, FlexBoxItem)  //注册运行期的容器组件
+
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor('flex', 'flex-editor', FlexEditor)
+  PERegister.registerCPEditor('boxBorder', 'boxBorder-editor', BorderEditor)
+  PERegister.registerCPEditor('shadow', 'shadow-editor', ShadowEditor)
+
+  /* -------------------------------------------------- */
+  // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
+  /* -------------------------------------------------- */
+  /* 弹性布局容器组件加载 end */
+
   /* SubmitButton 组件加载 start */
   addBasicFieldSchema(submitButtonSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */

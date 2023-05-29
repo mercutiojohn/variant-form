@@ -10,7 +10,29 @@
         <el-form :model="optionModel.customApiForm" ref="apiForm" :rules="rules" label-position="right" label-width="130px" size="medium"
           @submit.native.prevent>
           <el-form-item :label="i18nt('designer.setting.dsRequestURL')" prop="uri">
-            <el-input v-model="optionModel.customApiForm.uri" type="text" clearable></el-input>
+            <span slot="label">
+              {{i18nt('designer.setting.dsRequestURL')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
+            <!-- <el-input v-model="optionModel.customApiForm.uri" type="text" clearable></el-input> -->
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              class="inline-input"
+              v-model="customApiForm.uri"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入内容"
+              clearable
+            >
+              <template slot-scope="{ item }">
+                <div class="summary">{{ item.summary }}</div>
+                <div style="display: flex; gap:5px; align-items: center;">
+                  <el-tag class="method" size="mini">{{ item.method.toUpperCase() }}</el-tag>
+                  <span class="url">{{ item.url }}</span>
+                </div>
+              </template>
+            </el-autocomplete>
           </el-form-item>
           <el-form-item :label="i18nt('designer.setting.dsRequestMethod')" prop="method">
             <el-select v-model="optionModel.customApiForm.method" style="width:100%" v-if="!optionModel.customApiForm.methodAutoDetect" class="full-width-input">
@@ -19,15 +41,28 @@
             </el-select>
             <el-input v-model="optionModel.customApiForm.methodAutoDetectCondition" v-else class="code-input" type="text" clearable placeholder="如: !!query.id ? 'put' : 'post'"></el-input>
             <el-switch v-model="optionModel.customApiForm.methodAutoDetect" active-text="条件判断"></el-switch>
-            <p class="description" v-if="optionModel.customApiForm.methodAutoDetect">可以使用 <code>params</code> 和 <code>query</code> 路由参数变量</p>
+            <el-tooltip placement="top">
+              <div slot="content">通过条件判断请求方法<br/>可使用 params 和 query 路由参数变量</div>
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+            <p class="description" v-if="optionModel.customApiForm.methodAutoDetect"></p>
           </el-form-item>
           <el-form-item v-if="optionModel.customApiForm.method !== 'get' || optionModel.customApiForm.method !== 'delete' || !!optionModel.customApiForm.methodAutoDetect" :label="i18nt('designer.setting.dsRequestData')" prop="data">
+            <span slot="label">
+              {{i18nt('designer.setting.dsRequestData')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
             <el-alert class="code-wrapper top" type="info" :closable="false" title="{ ...formData,"></el-alert>
             <code-editor :mode="'json'" :readonly="false" v-model="optionModel.customApiForm.data" ref="dataEditor" :userWorker="false"></code-editor>
             <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
             <el-switch v-model="optionModel.customApiForm.dataUseCondition" active-text="条件判断"></el-switch>
+            <el-tooltip placement="top">
+              <div slot="content">通过条件判断是否传递除 formData 内包含之外的请求体字段<br/>可使用 params 和 query 路由参数变量</div>
+                <i class="el-icon-question"></i>
+            </el-tooltip>
             <el-input v-model="optionModel.customApiForm.dataCondition" v-if="optionModel.customApiForm.dataUseCondition" class="code-input" type="text" clearable placeholder="如: !!query.id"></el-input>
-            <p class="description">可以使用形如 <code>${id}</code> 的形式来动态绑定路由 <code>param</code> 和 <code>query</code> 的变量，以及 <code>formData</code> 中的变量</p>
           </el-form-item>
           <el-form-item :label="i18nt('designer.setting.dsRequestParams')">
             <el-row>
@@ -63,7 +98,13 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="响应数据处理" prop="dataHandlerCode">
+          <el-form-item prop="dataHandlerCode">
+            <span slot="label">
+              {{i18nt('designer.setting.dataHandler')}}
+              <el-tooltip content="可以使用形如 ${id} 的形式来动态绑定路由 param 和 query 的变量，以及 formData 中的变量" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </span>
             <el-alert class="code-wrapper top" type="info" :closable="false" title="(response) => {"></el-alert>
             <code-editor :mode="'javascript'" :readonly="false" v-model="optionModel.customApiForm.dataHandlerCode" ref="resInterceptorEditor"></code-editor>
             <el-alert class="code-wrapper bottom" type="info" :closable="false" title="}"></el-alert>
@@ -81,13 +122,14 @@
 </template>
 
 <script>
+  import formSettingMixin from "@/components/form-designer/setting-panel/formSettingMixin"
   import i18n from "@/utils/i18n"
   import eventMixin from "@/components/form-designer/setting-panel/property-editor/event-handler/eventMixin"
   import CodeEditor from '@/components/code-editor/index'
 
   export default {
-    name: "cuatomApiForm-editor",
-    mixins: [i18n, eventMixin],
+    name: "customApiForm-editor",
+    mixins: [i18n, eventMixin, formSettingMixin],
     props: {
       designer: Object,
       selectedWidget: Object,
@@ -139,8 +181,8 @@
       },
     },
     created(){
+      this.getSwaggerApi()
     }
-
   }
 </script>
 
@@ -155,5 +197,36 @@
 }
 .description code {
   font-family: Consolas, monospace!important
+}
+.inline-input {
+  width: 100%;
+}
+.my-autocomplete {
+  li {
+    line-height: normal;
+    padding: 7px;
+
+    .url {
+      font-size: 12px;
+      color: #b4b4b4;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    
+    .method {
+      font-size: 12px;
+      width: 60px;
+      text-align: center;
+    }
+
+    .summary {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .highlighted .summary {
+      color: #ddd;
+    }
+  }
 }
 </style>
