@@ -3,9 +3,9 @@
     <el-collapse-item title="边框设置" name="1">
       <el-form-item label="边框颜色" label-width="70px">
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
-          <el-color-picker v-model="optionModel.shadow.color" show-alpha>
+          <el-color-picker v-model="optionModel.boxBorder.color" show-alpha>
           </el-color-picker>
-          {{optionModel.shadow.color}}
+          {{optionModel.boxBorder.color}}
         </div>
       </el-form-item>
       <el-form-item label="边框类型" label-width="70px">

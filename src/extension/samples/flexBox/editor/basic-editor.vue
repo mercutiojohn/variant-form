@@ -8,6 +8,7 @@
             <el-option label="vw" value="vw"></el-option>
             <el-option label="vh" value="vh"></el-option>
             <el-option label="%" value="%"></el-option>
+            <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
       </el-form-item>
@@ -18,6 +19,7 @@
             <el-option label="vw" value="vw"></el-option>
             <el-option label="vh" value="vh"></el-option>
             <el-option label="%" value="%"></el-option>
+            <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
       </el-form-item>
@@ -28,6 +30,7 @@
             <el-option label="vw" value="vw"></el-option>
             <el-option label="vh" value="vh"></el-option>
             <el-option label="%" value="%"></el-option>
+            <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
       </el-form-item>
@@ -38,27 +41,28 @@
             <el-option label="vw" value="vw"></el-option>
             <el-option label="vh" value="vh"></el-option>
             <el-option label="%" value="%"></el-option>
+            <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
       </el-form-item>
       <el-form-item label-width="0">
-        <svg-icon icon-class="corners" class-name="color-svg-icon" />
+        <svg-icon icon-class="corners" class-name="color-svg-icon" /> 圆角
         <el-row :gutter="10">
-          <el-col :span="12">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
             <svg-icon icon-class="corner-top-left" class-name="color-svg-icon" />
             <el-input-number controls-position="right" v-model="optionModel.basic.radius.topLeft"></el-input-number>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
             <svg-icon icon-class="corner-top-right" class-name="color-svg-icon" />
             <el-input-number controls-position="right" v-model="optionModel.basic.radius.topRight"></el-input-number>
           </el-col>
         </el-row>
         <el-row :gutter="10">
-          <el-col :span="12">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
             <svg-icon icon-class="corner-bottom-left" class-name="color-svg-icon" />
             <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomLeft"></el-input-number>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
             <svg-icon icon-class="corner-bottom-right" class-name="color-svg-icon" />
             <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomRight"></el-input-number>
           </el-col>

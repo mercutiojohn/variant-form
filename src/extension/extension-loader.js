@@ -19,7 +19,7 @@ import CardWidget from '@/extension/samples/card/card-widget'
 import CardItem from '@/extension/samples/card/card-item'
 import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
-// Flex Box 弹性布局容器
+// Flex Box 弹性布局
 import {flexBoxSchema} from "@/extension/samples/extension-schema"
 import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
 import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
@@ -172,7 +172,7 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
 
-  /* 弹性布局容器组件加载 start */
+  /* 弹性布局组件加载 start */
   addContainerWidgetSchema(flexBoxSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(FlexBoxWidget.name, FlexBoxWidget)  //注册设计期的容器组件
@@ -187,7 +187,7 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
   /* -------------------------------------------------- */
-  /* 弹性布局容器组件加载 end */
+  /* 弹性布局组件加载 end */
 
   /* SubmitButton 组件加载 start */
   addBasicFieldSchema(submitButtonSchema)  //加载组件Json Schema

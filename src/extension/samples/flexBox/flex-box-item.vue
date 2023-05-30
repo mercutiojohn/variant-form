@@ -1,8 +1,10 @@
 <template>
   <container-item-wrapper :widget="widget">
-    <div @click.native.stop="selectWidget(widget)" :style="{
-      width: widget.options.cardWidth || '',
-      height: widget.options.cardHeight || '',
+  <div @click.native.stop="selectWidget(widget)" :style="{
+      width: `${widget.options.basic.width}${widget.options.basic.widthMeasure}` || '',
+      height: `${widget.options.basic.height}${widget.options.basic.heightMeasure}` || '',
+      padding: `${widget.options.basic.padding}${widget.options.basic.paddingMeasure}` || '',
+      margin: `${widget.options.basic.margin}${widget.options.basic.marginMeasure}` || '',
       // Flex
       display: 'flex',
       'flex-direction': widget.options.flex.flexDirection  || '',
@@ -11,11 +13,11 @@
       'align-items': widget.options.flex.alignItems || '',
       gap: `${widget.options.flex.gap}px` || '',
       // Border
-      'border-width': widget.options.boxBorder.width || '',
+      'border-width': `${widget.options.boxBorder.width}px` || '',
       'border-style': widget.options.boxBorder.style || '',
       'border-color': widget.options.boxBorder.color || '',
-      // Radius        
-      'border-radius': `${widget.options.radius.topLeft}px ${widget.options.radius.topRight}px ${widget.options.radius.bottomRight}px ${widget.options.radius.bottomLeft}px` || '',
+      // Radius
+      'border-radius': `${widget.options.basic.radius.topLeft}px ${widget.options.basic.radius.topRight}px ${widget.options.basic.radius.bottomRight}px ${widget.options.basic.radius.bottomLeft}px` || '',
       // Shadow
       'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color}` || ''
     }">
