@@ -33,6 +33,8 @@
           {{i18nt('designer.toolbar.importJson')}}</el-button>
         <el-button v-if="showToolButton('exportJsonButton')" type="text" @click="exportJson">
           {{i18nt('designer.toolbar.exportJson')}}</el-button>
+        <el-button v-if="showToolButton('editJsonButton')" type="text" @click="editJson">
+          {{i18nt('designer.toolbar.editJson')}}</el-button>
         <el-button v-if="showToolButton('exportCodeButton')" type="text" @click="exportCode">
           {{i18nt('designer.toolbar.exportCode')}}</el-button>
         <el-button v-if="showToolButton('generateSFCButton')" type="text" @click="generateSFC">
@@ -96,6 +98,20 @@
           {{i18nt('designer.hint.copyJson')}}</el-button>
         <el-button @click="saveFormJson">{{i18nt('designer.hint.saveFormJson')}}</el-button>
         <el-button type="" @click="showExportJsonDialogFlag = false">
+          {{i18nt('designer.hint.closePreview')}}</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="i18nt('designer.toolbar.editJson')" :visible.sync="showEditJsonDialogFlag"
+               v-if="showEditJsonDialogFlag" :show-close="true" class="small-padding-dialog" center append-to-body v-dialog-drag
+               :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
+      <code-editor :mode="'json'" :readonly="false" v-model="jsonEditContent"></code-editor>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" class="copy-json-btn" :data-clipboard-text="jsonRawContent" @click="copyFormJson">
+          {{i18nt('designer.hint.copyJson')}}</el-button>
+        <el-button @click="exportEditJson">{{i18nt('designer.hint.saveFormJson')}}</el-button>
+        <el-button @click="saveEditJson">{{i18nt('designer.hint.saveEditJson')}}</el-button>
+        <el-button type="" @click="showEditJsonDialogFlag = false">
           {{i18nt('designer.hint.closePreview')}}</el-button>
       </div>
     </el-dialog>
@@ -223,6 +239,7 @@
         showPreviewDialogFlag: false,
         showImportJsonDialogFlag: false,
         showExportJsonDialogFlag: false,
+        showEditJsonDialogFlag: false,
         showExportCodeDialogFlag: false,
         showFormDataDialogFlag: false,
         showFieldListDataDialogFlag: false,
@@ -534,6 +551,35 @@
 
       saveFormJson() {
         this.saveAsFile(this.jsonContent, `vform${generateId()}.json`)
+      },
+
+      
+      editJson() {
+        let widgetList = deepClone(this.designer.widgetList)
+        let formConfig = deepClone(this.designer.formConfig)
+        this.jsonEditContent = JSON.stringify({widgetList, formConfig}, null, '  ')
+        this.jsonRawContent = JSON.stringify({widgetList, formConfig})
+        this.showEditJsonDialogFlag = true
+      },
+      
+      saveEditJson() {
+        try {
+          let importObj = JSON.parse(this.jsonEditContent)
+          this.designer.loadFormJson(importObj)
+
+          this.showEditJsonDialogFlag = false
+          this.$message.success(this.i18nt('designer.hint.editJsonSuccess'))
+
+          this.designer.emitHistoryChange()
+
+          this.designer.emitEvent('form-json-imported', [])
+        } catch(ex) {
+          this.$message.error(ex + '')
+        }
+      },
+
+      exportEditJson() {
+        this.saveAsFile(this.jsonEditContent, `vform${generateId()}.json`)
       },
 
       exportCode() {

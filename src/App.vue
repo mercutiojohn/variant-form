@@ -92,8 +92,9 @@ export default {
         // widgetNameReadonly: true,  //禁止修改组件名称
         // clearDesignerButton: true,  //是否显示清空设计器按钮
         // previewFormButton: true,  //是否显示预览表单按钮
-        // importJsonButton: true,  //是否显示导入JSON按钮
-        // exportJsonButton: true,  //是否显示导出JSON器按钮
+        importJsonButton: false,  //是否显示导入JSON按钮
+        exportJsonButton: false,  //是否显示导出JSON按钮
+        // editJsonButton: true,  //是否显示编辑JSON按钮
         // exportCodeButton: true,  //是否显示导出代码按钮
         // generateSFCButton: true,  //是否显示生成SFC按钮
         // toolbarMaxWidth: 420,  //设计器工具按钮栏最大宽度（单位像素）
