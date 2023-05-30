@@ -60,6 +60,11 @@
               <svg-icon :icon-class="`space-evenly-${optionModel.flex.flexDirection=='row'?'horizontally':'vertically'}`" class-name="color-svg-icon" />
             </el-tooltip>
           </el-radio-button>
+          <el-radio-button label="stretch">
+            <el-tooltip content="拉伸" placement="top">
+              <svg-icon :icon-class="`stretch-${optionModel.flex.flexDirection=='row'?'horizontally':'vertically'}`" class-name="color-svg-icon" />
+            </el-tooltip>
+          </el-radio-button>
         </el-radio-group>
         <!-- <el-select v-model="optionModel.flex.justifyContent">
           <el-option label="中心" value="center"></el-option>

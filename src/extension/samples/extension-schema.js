@@ -346,10 +346,10 @@ export const flexBoxSchema = {
     hidden: false,
     customClass: '',
     basic: {
-      width: 100,
-      widthMeasure:'%',
-      height: 200,
-      heightMeasure: 'px',
+      width: null,
+      widthMeasure:'',
+      height: null,
+      heightMeasure: '',
       margin: 10,
       marginMeasure: 'px',
       padding: 10,
@@ -359,7 +359,10 @@ export const flexBoxSchema = {
         topRight: 10,
         bottomRight: 10,
         bottomLeft: 10
-      }
+      },
+      backgroundType: 'none',
+      backgroundColor: '',
+      gradient: ''
     },
     flex: {
       flexDirection: "row",

@@ -1,26 +1,6 @@
 <template>
-  <container-item-wrapper :widget="widget">
-  <div @click.native.stop="selectWidget(widget)" :style="{
-      width: `${widget.options.basic.width}${widget.options.basic.widthMeasure}` || '',
-      height: `${widget.options.basic.height}${widget.options.basic.heightMeasure}` || '',
-      padding: `${widget.options.basic.padding}${widget.options.basic.paddingMeasure}` || '',
-      margin: `${widget.options.basic.margin}${widget.options.basic.marginMeasure}` || '',
-      // Flex
-      display: 'flex',
-      'flex-direction': widget.options.flex.flexDirection  || '',
-      'flex-wrap': widget.options.flex.flexWrap || '',
-      'justify-content': widget.options.flex.justifyContent || '',
-      'align-items': widget.options.flex.alignItems || '',
-      gap: `${widget.options.flex.gap}px` || '',
-      // Border
-      'border-width': `${widget.options.boxBorder.width}px` || '',
-      'border-style': widget.options.boxBorder.style || '',
-      'border-color': widget.options.boxBorder.color || '',
-      // Radius
-      'border-radius': `${widget.options.basic.radius.topLeft}px ${widget.options.basic.radius.topRight}px ${widget.options.basic.radius.bottomRight}px ${widget.options.basic.radius.bottomLeft}px` || '',
-      // Shadow
-      'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color}` || ''
-    }">
+  <container-item-wrapper :widget="widget" :style="styleOuterObj">
+  <div @click.native.stop="selectWidget(widget)" :style="styleObj" class="card-container" v-show="!widget.options.hidden" :ref="widget.id" :class="[customClass]">
       <template v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
         <template v-for="(subWidget, swIdx) in widget.widgetList">
           <template v-if="'container' === subWidget.category">
@@ -102,7 +82,38 @@
       customClass() {
         return this.widget.options.customClass || ''
       },
-
+      styleObj() {
+        return {
+          'box-sizing': 'border-box',
+          'overflow': 'hidden',
+          width: '100%',
+          height: '100%',
+          padding: `${this.widget.options.basic.padding}${this.widget.options.basic.paddingMeasure}` || '',
+          background: `${this.widget.options.basic.backgroundType === 'gradient' ? this.widget.options.basic.gradient : this.widget.options.basic.backgroundType === 'color' ? this.widget.options.basic.backgroundColor : 'none'}` || 'none',
+          // Flex
+          display: 'flex',
+          'flex-direction': this.widget.options.flex.flexDirection  || '',
+          'flex-wrap': this.widget.options.flex.flexWrap || '',
+          'justify-content': this.widget.options.flex.justifyContent || '',
+          'align-items': this.widget.options.flex.alignItems || '',
+          gap: `${this.widget.options.flex.gap}px` || '',
+          // Border
+          'border-width': `${this.widget.options.boxBorder.width}px` || '',
+          'border-style': this.widget.options.boxBorder.style || '',
+          'border-color': this.widget.options.boxBorder.color || '',
+          // Radius
+          'border-radius': `${this.widget.options.basic.radius.topLeft}px ${this.widget.options.basic.radius.topRight}px ${this.widget.options.basic.radius.bottomRight}px ${this.widget.options.basic.radius.bottomLeft}px` || '',
+          // Shadow
+          'box-shadow': `${this.widget.options.shadow.isInset ? 'inset' : ''} ${this.widget.options.shadow.offsetX}px ${this.widget.options.shadow.offsetY}px ${this.widget.options.shadow.blur}px ${this.widget.options.shadow.expand}px ${this.widget.options.shadow.color}` || ''
+        }
+      },
+      styleOuterObj() {
+        return {
+          width: `${this.widget.options.basic.width}${this.widget.options.basic.widthMeasure}` || 'unset',
+          height: `${this.widget.options.basic.height}${this.widget.options.basic.heightMeasure}` || 'unset',
+          margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+        }
+      }
     },
     created() {
       this.initRefList()
