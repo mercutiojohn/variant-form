@@ -88,7 +88,8 @@
           'overflow': 'hidden',
           width: '100%',
           height: '100%',
-          padding: `${this.widget.options.basic.padding}${this.widget.options.basic.paddingMeasure}` || '',
+          // padding: `${this.widget.options.basic.padding}${this.widget.options.basic.paddingMeasure}` || '',
+          padding: `${this.widget.options.basic.padding.top}px ${this.widget.options.basic.padding.right}px ${this.widget.options.basic.padding.bottom}px ${this.widget.options.basic.padding.left}px` || '',
           background: `${this.widget.options.basic.backgroundType === 'gradient' ? this.widget.options.basic.gradient : this.widget.options.basic.backgroundType === 'color' ? this.widget.options.basic.backgroundColor : 'none'}` || 'none',
           // Flex
           display: 'flex',
@@ -111,7 +112,8 @@
         return {
           width: `${this.widget.options.basic.width}${this.widget.options.basic.widthMeasure}` || 'unset',
           height: `${this.widget.options.basic.height}${this.widget.options.basic.heightMeasure}` || 'unset',
-          margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+          // margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+          margin: `${this.widget.options.basic.margin.top}px ${this.widget.options.basic.margin.right}px ${this.widget.options.basic.margin.bottom}px ${this.widget.options.basic.margin.left}px` || ''
         }
       }
     },

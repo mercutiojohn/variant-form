@@ -1,6 +1,9 @@
 <template>
-    <el-collapse class="sub-collapse" v-model="activeName">
+    <el-collapse class="sub-collapse" v-model="activeNames">
     <el-collapse-item title="基本样式" name="1">
+      <template slot="title">
+        <svg-icon icon-class="ruler-square" class-name="color-svg-icon" /> 宽高
+      </template>
       <el-form-item label="宽度">
         <el-input v-model="optionModel.basic.width">
           <el-select v-model="optionModel.basic.widthMeasure" slot="append" placeholder="请选择">
@@ -23,7 +26,7 @@
           </el-select>
         </el-input>
       </el-form-item>
-      <el-form-item label="内边距">
+      <!-- <el-form-item label="内边距">
         <el-input v-model="optionModel.basic.padding">
           <el-select v-model="optionModel.basic.paddingMeasure" slot="append" placeholder="请选择">
             <el-option label="px" value="px"></el-option>
@@ -33,8 +36,8 @@
             <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
-      </el-form-item>
-      <el-form-item label="外边距">
+      </el-form-item> -->
+      <!-- <el-form-item label="外边距">
         <el-input v-model="optionModel.basic.margin">
           <el-select v-model="optionModel.basic.marginMeasure" slot="append" placeholder="请选择">
             <el-option label="px" value="px"></el-option>
@@ -44,9 +47,55 @@
             <el-option label="无" value=""></el-option>
           </el-select>
         </el-input>
-      </el-form-item>
+      </el-form-item> -->
     </el-collapse-item>
-    <el-collapse-item>
+    <el-collapse-item name="2">
+      <template slot="title">
+        <svg-icon icon-class="padding" class-name="color-svg-icon" /> 内边距
+      </template>
+      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.padding.top"></el-input-number>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.padding.left"></el-input-number>
+        </el-col>
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.padding.right"></el-input-number>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.padding.bottom"></el-input-number>
+        </el-col>
+      </el-row>
+    </el-collapse-item>
+    <el-collapse-item name="3">
+      <template slot="title">
+        <svg-icon icon-class="margin" class-name="color-svg-icon" /> 外边距
+      </template>
+      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.margin.top"></el-input-number>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.margin.left"></el-input-number>
+        </el-col>
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.margin.right"></el-input-number>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+          <el-input-number controls-position="right" v-model="optionModel.basic.margin.bottom"></el-input-number>
+        </el-col>
+      </el-row>
+    </el-collapse-item>
+    <el-collapse-item name="4">
       <template slot="title">
         <svg-icon icon-class="corners" class-name="color-svg-icon" /> 圆角
       </template>
@@ -71,7 +120,7 @@
         </el-col>
       </el-row>
     </el-collapse-item>
-    <el-collapse-item>
+    <el-collapse-item name="5">
       <template slot="title">
         <svg-icon icon-class="blending-mode" class-name="color-svg-icon" /> 背景
       </template>
@@ -134,7 +183,7 @@
     },
     data() {
       return {
-        activeName: '1'
+        activeNames: ['1','5']
       }
     },
     methods: {

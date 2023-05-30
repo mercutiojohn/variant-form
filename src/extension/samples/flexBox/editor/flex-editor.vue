@@ -1,6 +1,9 @@
 <template>
   <el-collapse class="sub-collapse" v-model="activeName">
     <el-collapse-item title="布局设置" name="1">
+      <template slot="title">
+        <svg-icon icon-class="layout" class-name="color-svg-icon" /> 布局
+      </template>
       <el-form-item class="axis" label="布局轴向" label-width="70px">
         <!-- <el-select v-model="optionModel.flex.flexDirection">
           <el-option label="横向" value="row"></el-option>

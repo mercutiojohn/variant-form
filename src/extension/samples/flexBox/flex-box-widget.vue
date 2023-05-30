@@ -102,7 +102,8 @@
           'overflow': 'hidden',
           width: '100%',
           height: '100%',
-          padding: `${this.widget.options.basic.padding}${this.widget.options.basic.paddingMeasure}` || '',
+          // padding: `${this.widget.options.basic.padding}${this.widget.options.basic.paddingMeasure}` || '',
+          padding: `${this.widget.options.basic.padding.top}px ${this.widget.options.basic.padding.right}px ${this.widget.options.basic.padding.bottom}px ${this.widget.options.basic.padding.left}px` || '',
           background: `${this.widget.options.basic.backgroundType === 'gradient' ? this.widget.options.basic.gradient : this.widget.options.basic.backgroundType === 'color' ? this.widget.options.basic.backgroundColor : 'none'}` || 'none',
           // Flex
           display: 'flex',
@@ -112,9 +113,13 @@
           'align-items': this.widget.options.flex.alignItems || '',
           gap: `${this.widget.options.flex.gap}px` || '',
           // Border
-          'border-width': `${this.widget.options.boxBorder.width}px` || '',
-          'border-style': this.widget.options.boxBorder.style || '',
-          'border-color': this.widget.options.boxBorder.color || '',
+          // 'border-width': `${this.widget.options.boxBorder.width}px` || '',
+          // 'border-style': this.widget.options.boxBorder.style || '',
+          // 'border-color': this.widget.options.boxBorder.color || '',
+          'border-top': this.widget.options.boxBorder.visible.top ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-right': this.widget.options.boxBorder.visible.right ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-bottom': this.widget.options.boxBorder.visible.bottom ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-left': this.widget.options.boxBorder.visible.left ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
           // Radius
           'border-radius': `${this.widget.options.basic.radius.topLeft}px ${this.widget.options.basic.radius.topRight}px ${this.widget.options.basic.radius.bottomRight}px ${this.widget.options.basic.radius.bottomLeft}px` || '',
           // Shadow
@@ -125,7 +130,8 @@
         return {
           width: `${this.widget.options.basic.width}${this.widget.options.basic.widthMeasure}` || 'unset',
           height: `${this.widget.options.basic.height}${this.widget.options.basic.heightMeasure}` || 'unset',
-          margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+          // margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+          margin: `${this.widget.options.basic.margin.top}px ${this.widget.options.basic.margin.right}px ${this.widget.options.basic.margin.bottom}px ${this.widget.options.basic.margin.left}px` || '',
         }
       }
     },

@@ -350,15 +350,26 @@ export const flexBoxSchema = {
       widthMeasure:'',
       height: null,
       heightMeasure: '',
-      margin: 10,
-      marginMeasure: 'px',
-      padding: 10,
-      paddingMeasure: 'px',
+      // margin: 10,
+      margin: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      },
+      // marginMeasure: 'px',
+      padding: {
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+      },
+      // paddingMeasure: 'px',
       radius: {
-        topLeft: 10,
-        topRight: 10,
-        bottomRight: 10,
-        bottomLeft: 10
+        topLeft: 0,
+        topRight: 0,
+        bottomRight: 0,
+        bottomLeft: 0
       },
       backgroundType: 'none',
       backgroundColor: '',
@@ -372,9 +383,15 @@ export const flexBoxSchema = {
       gap: 10
     },
     boxBorder: {
-      width: 0,
-      style: "solid",
-      color: "#000000"
+      width: 2,
+      style: "dashed",
+      color: "rgba(0, 0, 0, 0.12)",
+      visible: {
+        top: true,
+        right: true,
+        bottom: true,
+        left: true
+      }
     },
     shadow: {
       isInset: false,

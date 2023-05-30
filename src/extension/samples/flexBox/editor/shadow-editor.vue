@@ -1,6 +1,9 @@
 <template>
   <el-collapse class="sub-collapse" v-model="activeName">
     <el-collapse-item title="阴影设置" name="1">
+      <template slot="title">
+        <svg-icon icon-class="shadow" class-name="color-svg-icon" /> 阴影
+      </template>
       <el-form-item label="颜色" label-width="70px">
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
           <el-color-picker v-model="optionModel.shadow.color" show-alpha>
