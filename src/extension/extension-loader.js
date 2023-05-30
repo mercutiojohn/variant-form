@@ -23,6 +23,7 @@ import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator
 import {flexBoxSchema} from "@/extension/samples/extension-schema"
 import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
 import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
+import BasicEditor from '@/extension/samples/flexBox/editor/basic-editor'
 import FlexEditor from '@/extension/samples/flexBox/editor/flex-editor'
 import BorderEditor from '@/extension/samples/flexBox/editor/border-editor'
 import ShadowEditor from '@/extension/samples/flexBox/editor/shadow-editor'
@@ -178,6 +179,7 @@ export const loadExtension = function () {
   Vue.component(FlexBoxItem.name, FlexBoxItem)  //注册运行期的容器组件
 
   /* -------------------------------------------------- */
+  PERegister.registerCPEditor('basic', 'basic-editor', BasicEditor)
   PERegister.registerCPEditor('flex', 'flex-editor', FlexEditor)
   PERegister.registerCPEditor('boxBorder', 'boxBorder-editor', BorderEditor)
   PERegister.registerCPEditor('shadow', 'shadow-editor', ShadowEditor)

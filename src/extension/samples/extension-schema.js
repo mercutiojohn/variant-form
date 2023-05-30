@@ -345,8 +345,22 @@ export const flexBoxSchema = {
     label: '弹性容器',
     hidden: false,
     customClass: '',
-    // cardWidth: '100%',
-    // cardHeight: '100%',
+    basic: {
+      width: 100,
+      widthMeasure:'%',
+      height: 200,
+      heightMeasure: 'px',
+      margin: 10,
+      marginMeasure: 'px',
+      padding: 10,
+      paddingMeasure: 'px',
+      radius: {
+        topLeft: 10,
+        topRight: 10,
+        bottomRight: 10,
+        bottomLeft: 10
+      }
+    },
     flex: {
       flexDirection: "row",
       flexWrap: "nowrap",

@@ -1,20 +1,23 @@
 <template>
   <container-item-wrapper :widget="widget">
     <div @click.native.stop="selectWidget(widget)" :style="{
-      display: 'flex',
-      width: widget.options.cardWidth + '!important' || '',
-      height: widget.options.cardHeight + '!important' || '',
+      width: widget.options.cardWidth || '',
+      height: widget.options.cardHeight || '',
       // Flex
-      'align-items': widget.options.alignItems + '!important' || '',
-      'justify-content': widget.options.justifyContent + '!important' || '',
-      gap: widget.options.gap + '!important' || '',
+      display: 'flex',
+      'flex-direction': widget.options.flex.flexDirection  || '',
+      'flex-wrap': widget.options.flex.flexWrap || '',
+      'justify-content': widget.options.flex.justifyContent || '',
+      'align-items': widget.options.flex.alignItems || '',
+      gap: `${widget.options.flex.gap}px` || '',
       // Border
-      'border-width': widget.options.boxBorder.width + '!important' || '',
-      'border-style': widget.options.boxBorder.style + '!important' || '',
-      'border-color': widget.options.boxBorder.color + '!important' || '',
-      //'border-radius': widget.options.boxBorder.borderRadius + '!important' || '',
+      'border-width': widget.options.boxBorder.width || '',
+      'border-style': widget.options.boxBorder.style || '',
+      'border-color': widget.options.boxBorder.color || '',
+      // Radius        
+      'border-radius': `${widget.options.radius.topLeft}px ${widget.options.radius.topRight}px ${widget.options.radius.bottomRight}px ${widget.options.radius.bottomLeft}px` || '',
       // Shadow
-      'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color} !important` || ''
+      'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color}` || ''
     }">
       <template v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
         <template v-for="(subWidget, swIdx) in widget.widgetList">
@@ -116,7 +119,7 @@
 
 <style lang="scss" scoped>
   ::v-deep .el-card__header {
-    padding: 10px 12px;
+    // padding: 10px 12px;
   }
 
   .folded ::v-deep .el-card__body {

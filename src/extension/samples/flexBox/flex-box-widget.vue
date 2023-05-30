@@ -10,32 +10,39 @@
       ]" 
       @click.stop="selectWidget(widget)" 
       :style="{
-        padding: '20px',
-        width: widget.options.cardWidth + '!important' || '',
-        height: widget.options.cardHeight + '!important' || '',
-        // Border
-        'border-width': `${widget.options.boxBorder.width}px` + '!important' || '',
-        'border-style': widget.options.boxBorder.style + '!important' || '',
-        'border-color': widget.options.boxBorder.color + '!important' || '',
-        //'border-radius': widget.options.boxBorder.borderRadius + '!important' || '',
-        // Shadow
-        'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color} !important` || ''
+        
       }"
     >
     <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
                  handle=".drag-handler"
                  @add="(evt) => onContainerDragAdd(evt, widget.widgetList)"
                  @update="onContainerDragUpdate" :move="checkContainerMove">
-        <transition-group name="fade" tag="div" class="form-widget-list" :style="{
-        padding: '20px',
-        // Flex
-        display: 'flex',
-        'flex-direction': widget.options.flex.flexDirection + '!important' || '',
-        'flex-wrap': widget.options.flex.flexWrap + '!important' || '',
-        'justify-content': widget.options.flex.justifyContent + '!important' || '',
-        'align-items': widget.options.flex.alignItems + '!important' || '',
-        gap: `${widget.options.flex.gap}px` + '!important' || '',
-      }">
+        <transition-group 
+          name="fade" 
+          tag="div" 
+          class="form-widget-list" 
+          :style="{
+            width: `${widget.options.basic.width}${widget.options.basic.widthMeasure}` || '',
+            height: `${widget.options.basic.height}${widget.options.basic.heightMeasure}` || '',
+            padding: `${widget.options.basic.padding}${widget.options.basic.paddingMeasure}` || '',
+            margin: `${widget.options.basic.margin}${widget.options.basic.marginMeasure}` || '',
+            // Flex
+            display: 'flex',
+            'flex-direction': widget.options.flex.flexDirection  || '',
+            'flex-wrap': widget.options.flex.flexWrap || '',
+            'justify-content': widget.options.flex.justifyContent || '',
+            'align-items': widget.options.flex.alignItems || '',
+            gap: `${widget.options.flex.gap}px` || '',
+            // Border
+            'border-width': `${widget.options.boxBorder.width}px` || '',
+            'border-style': widget.options.boxBorder.style || '',
+            'border-color': widget.options.boxBorder.color || '',
+            // Radius
+            'border-radius': `${widget.options.basic.radius.topLeft}px ${widget.options.basic.radius.topRight}px ${widget.options.basic.radius.bottomRight}px ${widget.options.basic.radius.bottomLeft}px` || '',
+            // Shadow
+            'box-shadow': `${widget.options.shadow.isInset ? 'inset' : ''} ${widget.options.shadow.offsetX}px ${widget.options.shadow.offsetY}px ${widget.options.shadow.blur}px ${widget.options.shadow.expand}px ${widget.options.shadow.color}` || ''
+          }"
+        >
           <template v-for="(subWidget, swIdx) in widget.widgetList">
             <template v-if="'container' === subWidget.category">
               <component :is="subWidget.type + '-widget'" :widget="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
