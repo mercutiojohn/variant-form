@@ -380,7 +380,7 @@ export function getDefaultFormConfig() {
       method: 'get',
       data: '',
       params: [],
-      dataHandlerCode: 'return response',
+      dataHandlerCode: 'return response.data',
     },
 
     onFormCreated: '',

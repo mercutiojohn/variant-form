@@ -54,12 +54,12 @@
             </el-tooltip>
           </el-radio-button>
           <el-radio-button label="space-around">
-            <el-tooltip content="Around分布" placement="top">
+            <el-tooltip content="均匀分布" placement="top">
               <svg-icon :icon-class="`space-evenly-${optionModel.flex.flexDirection=='row'?'horizontally':'vertically'}`" class-name="color-svg-icon" />
             </el-tooltip>
           </el-radio-button>
           <el-radio-button label="space-evenly">
-            <el-tooltip content="Evenly分布" placement="top">
+            <el-tooltip content="紧凑均匀分布" placement="top">
               <svg-icon :icon-class="`space-evenly-${optionModel.flex.flexDirection=='row'?'horizontally':'vertically'}`" class-name="color-svg-icon" />
             </el-tooltip>
           </el-radio-button>

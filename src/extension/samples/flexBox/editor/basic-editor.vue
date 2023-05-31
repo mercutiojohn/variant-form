@@ -156,7 +156,7 @@
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
           <el-color-picker v-model="optionModel.basic.backgroundColor" show-alpha>
           </el-color-picker>
-          {{optionModel.shadow.color}}
+          {{optionModel.basic.backgroundColor}}
         </div>
       </el-form-item>
     </el-collapse-item>

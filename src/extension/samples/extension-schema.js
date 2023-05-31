@@ -80,7 +80,7 @@ export const tableSchema = {
           editHide: true, // 编辑弹框中不显示
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -98,7 +98,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -116,7 +116,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -134,7 +134,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -152,7 +152,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -170,7 +170,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -194,7 +194,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         },
         {
@@ -211,7 +211,7 @@ export const tableSchema = {
           sortable:true,
           customCode: {
             template: '',
-            methods: {}
+            methods: ''
           }
         }
       ],

@@ -40,6 +40,10 @@
         type: Boolean,
         default: true
       },
+      maxLines: {  //最大行数，超过会自动出现滚动条
+        type: Number,
+        default: 20
+      },
 
     },
     mounted() {
@@ -49,7 +53,7 @@
       this.addAutoCompletion(ace)  //添加自定义代码提示！！
 
       this.aceEditor = ace.edit(this.$refs.ace, {
-        maxLines: 20, // 最大行数，超过会自动出现滚动条
+        maxLines: this.maxLines, // 最大行数，超过会自动出现滚动条
         minLines: 5, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
         fontSize: 12, // 编辑器内字体大小
         theme: this.themePath, // 默认设置的主题

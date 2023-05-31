@@ -102,19 +102,20 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="i18nt('designer.toolbar.editJson')" :visible.sync="showEditJsonDialogFlag"
-               v-if="showEditJsonDialogFlag" :show-close="true" class="small-padding-dialog" center append-to-body v-dialog-drag
-               :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
-      <code-editor :mode="'json'" :readonly="false" v-model="jsonEditContent"></code-editor>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" class="copy-json-btn" :data-clipboard-text="jsonRawContent" @click="copyFormJson">
+    <el-drawer size="40%" :title="i18nt('designer.toolbar.editJson')" :visible.sync="showEditJsonDialogFlag"
+               v-if="showEditJsonDialogFlag" :show-close="true" class="small-padding-drawer" center append-to-body v-dialog-drag
+               :wrapperClosable="false" :close-on-press-escape="false" :destroy-on-close="true" :modal="true">
+      <code-editor :mode="'json'" :maxLines="40" :readonly="false" v-model="jsonEditContent"></code-editor>
+      <div slot="title" class="dialog-footer">
+        <span style="margin-right: 10px">{{i18nt('designer.toolbar.editJson')}}</span>
+        <el-button type="primary" @click="saveEditJson">{{i18nt('designer.hint.saveEditJson')}}</el-button>
+        <el-button class="copy-json-btn" :data-clipboard-text="jsonRawContent" @click="copyFormJson">
           {{i18nt('designer.hint.copyJson')}}</el-button>
         <el-button @click="exportEditJson">{{i18nt('designer.hint.saveFormJson')}}</el-button>
-        <el-button @click="saveEditJson">{{i18nt('designer.hint.saveEditJson')}}</el-button>
-        <el-button type="" @click="showEditJsonDialogFlag = false">
-          {{i18nt('designer.hint.closePreview')}}</el-button>
+        <!-- <el-button type="" @click="showEditJsonDialogFlag = false">
+          {{i18nt('designer.hint.closePreview')}}</el-button> -->
       </div>
-    </el-dialog>
+    </el-drawer>
 
     <el-dialog :title="i18nt('designer.toolbar.exportCode')" :visible.sync="showExportCodeDialogFlag"
                v-if="showExportCodeDialogFlag" :show-close="true" class="small-padding-dialog" center append-to-body v-dialog-drag
@@ -867,6 +868,30 @@
 
     ::v-deep .ace-container {
       border: 1px solid #DCDFE6;
+    }
+  }
+
+  .small-padding-drawer {
+    ::v-deep .el-dialog__header {
+      //padding-top: 3px;
+      //padding-bottom: 3px;
+      background: #f1f2f3;
+    }
+
+    ::v-deep .el-dialog__body {
+      padding: 12px 15px 12px 15px;
+
+      .el-alert.alert-padding {
+        padding: 0 10px;
+      }
+    }
+
+    ::v-deep .ace-container {
+      border: 1px solid #DCDFE6;
+      height: 100%;
+      .ace-editor {
+        // height: 100%!important;
+      }
     }
   }
 
