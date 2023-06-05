@@ -16,7 +16,7 @@
           highlight-current-row
           border
         >
-          <el-table-column v-if="leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
+          <el-table-column v-if="leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left">
             <template slot-scope="scope">
               <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
                 <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
@@ -24,6 +24,19 @@
               <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
                 <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
               </el-tooltip>
+              <template v-for="(item, index) in widget.options.rowButtons">
+                <el-button
+                  v-if="showBtn(item, scope.row)"
+                  :icon="item.icon || ''"
+                  :key="index"
+                  :disabled="isDisabledButton(item, scope.row)"
+                  :type="item.type || 'text'"
+                  size="small"
+                  @click="itemClick(item, scope.row, index)"
+                >
+                {{ getLabel(scope.row, item.label) }}
+                </el-button>
+              </template>
             </template>
           </el-table-column>
           <el-table-column v-if="!!widget.options.showRowNumber" label="序号" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
@@ -31,7 +44,7 @@
               {{scope.$index + 1}}
             </template>
           </el-table-column>
-          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="getLabelAlign(widget,subWidget)" align="center" :width="subWidget.options.columnWidth || 'auto'">
+          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="getLabelAlign(widget,subWidget)" align="center" :width="subWidget.options.columnWidth || 'auto'" :key="swIdx" v-if="!subWidget.options.hidden">
             <template slot="header" slot-scope="scope">
               <span
                 v-if="!!subWidget.options.labelIconClass"
@@ -99,14 +112,29 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column v-if="!leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="right" width="120">
+          <el-table-column v-if="!leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="right">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
-                <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
-                <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
-              </el-tooltip>
+              <template v-if="!widget.options.rowButtons">
+                <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                  <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                  <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
+                </el-tooltip>
+              </template>
+              <template v-for="(item, index) in widget.options.rowButtons">
+                <el-button
+                  v-if="showBtn(item, scope.row)"
+                  :icon="item.icon || ''"
+                  :key="index"
+                  :disabled="isDisabledButton(item, scope.row)"
+                  :type="item.type || 'text'"
+                  size="small"
+                  @click="itemClick(item, scope.row, index)"
+                >
+                {{ getLabel(scope.row, item.label) }}
+                </el-button>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -560,6 +588,57 @@ export default {
           this.widget.options.onSubFormRowDelete
         );
         customFunc.call(this, subFormData, deletedDataRow);
+      }
+    },
+
+    // 是否disabled
+    isDisabledButton(item, row) {
+      return false
+
+      if (typeof item.isDisable === "function") {
+        return item.isDisable(row);
+      } else {
+        return !!item.disabled;
+      }
+    },
+    // 是否显示
+    showBtn(item, row) {
+      // const row = row
+      return (
+        item.tableHideCustom ? 
+          !!item.isHide ? 
+            eval(item.isHide) 
+            :
+            true 
+          : 
+          !item.tableHide
+      )
+    },
+    itemClick(item, row, index) {
+      console.log('[itemClick]', item)
+      if (item.action == 'add') {
+        this.insertSubFormRow(index)
+      } else if (item.action == 'delete') {
+        this.deleteSubFormRow(index)
+      } else {
+        if (!!item.customFunc) {
+          let customFuncInst = new Function(
+            "item",
+            "row",
+            "index",
+            item.customFunc
+          );
+          customFuncInst.call(this, item, row, index);
+        }
+      }
+    },
+    getLabel(item, label) {
+      return label
+
+      if (typeof label == "function") {
+        return label(item);
+      } else {
+        return label;
       }
     },
   },

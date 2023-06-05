@@ -367,7 +367,7 @@
       console.log(crudOption);
       this.field=this.widget
       // this.initFieldModel()
-      // this.registerToRefList()
+      this.registerToRefList()
       // this.initEventHandler()
       // this.initRefList()
       this.handleOnCreated()

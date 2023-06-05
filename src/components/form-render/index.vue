@@ -418,7 +418,7 @@
           })
           if(customURIForm.dataHandlerCode){
             let dhFn = new Function('response', customURIForm.dataHandlerCode)
-            const interceptedData = dhFn.call(null, response)
+            const interceptedData = dhFn.call(this, response)
             this.setFormData(interceptedData)
           } else {
             this.setFormData(response)

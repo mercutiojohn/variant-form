@@ -1,6 +1,6 @@
 <template>
   <container-item-wrapper :widget="widget" :style="styleOuterObj">
-  <div @click.native.stop="selectWidget(widget)" :style="styleObj" class="card-container" v-show="!widget.options.hidden" :ref="widget.id" :class="[customClass]">
+    <div @click.stop="selectWidget(widget)" :style="styleObj" class="card-container" :ref="widget.id" :class="[customClass]" v-show="!widget.options.hidden">
       <template v-if="!!widget.widgetList && (widget.widgetList.length > 0)">
         <template v-for="(subWidget, swIdx) in widget.widgetList">
           <template v-if="'container' === subWidget.category">

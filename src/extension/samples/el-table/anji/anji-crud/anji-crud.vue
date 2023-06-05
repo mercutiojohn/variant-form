@@ -66,6 +66,8 @@
                           v-else-if="item.inputType == 'select'||item.inputType == 'radio'||item.inputType == 'switch'||item.inputType == 'checkbox'"         
                           v-model.trim="queryParams[item.field]"
                           :disabled="item.disabled"
+                          :multiple="false" 
+                          :multiple-limit="item.inputType == 'checkbox'?9999:item.anjiSelectOption.multipleLimit"
                           @change="value => queryFormChange(item.field, value)"
                           >
                           <Option
@@ -361,6 +363,7 @@
               fixed="right"
               label="操作"
               :width="option.buttons.rowButtonsWidth || 100"
+              v-if="option.rowButtons.length>0"
             >
               <template slot-scope="scope">
                 <div >
@@ -542,7 +545,7 @@ export default {
       isShowRowContextMenu: false,
       contextMenuConfigStyle: {},
       contextMenuRow: {},
-      pageQueryDataFlag:true
+      pageQueryDataFlag:true,
     };
   },
   watch: {
@@ -797,11 +800,12 @@ export default {
         //自定义查询
         let query={}
         let url={}
-        let apiData={}
+        let apiData=this.option.cuatomQuery.apiData
         let urlData={}
+
         //转为对象
         if(!!this.option.cuatomQuery.apiData){
-          apiData= eval("("+this.option.cuatomQuery.apiData+")")  
+          apiData= eval("("+apiData+")")  
           console.log('apiData',apiData);   
           // this.router.push(apiData)   
         }
@@ -809,8 +813,12 @@ export default {
           urlData= eval("("+this.option.cuatomQuery.urlData+")")      
           console.log('urlData',urlData);          
         }  
+        let routeQuery=this.deepClone(this.$route.query)
+        let{routeData,routeParams}=this.replaceParamsObject(apiData,routeQuery,'query')
+        params={...params,...routeData}
         //对参数进行处理
         query=  this.getNewData(apiData,params,'query')
+       
         // console.log(query);
         let api ={}
         //如果是代码生成查询，url不需要传参并且为get方式
@@ -828,6 +836,10 @@ export default {
           if(!!this.option.cuatomQuery.apiUrl){
             // this.formId='vformGenTableTestForm'
             //路径参数进行处理
+            let{newData,routeParams}=this.replaceParamsObject(urlData,routeQuery,'url')
+            console.log('newData',newData);
+            
+            let urlParam={...this,...newData}
             url= this.getNewData(urlData,this,'url')
             // console.log('url',url);
             let allUrl=this.option.cuatomQuery.apiUrl
@@ -841,6 +853,8 @@ export default {
           }else{
             api['url']=''
           }
+          console.log(api);
+          
           if(this.option.cuatomQuery.apiType=='get'){
             api['params']=query 
           }else{
@@ -932,19 +946,21 @@ export default {
       //递归替换数据
       if(status=='query'){
         //查询条件
-        if(this.option.queryFormHide){
+        // if(this.option.queryFormHide){
           let{apiData,params}=this.replaceParamsObject(data,param,status)
+          console.log(apiData,params);
+          
           //分页条件
           if(this.pageQueryDataFlag){
               return{...params,pageQueryData:this.params.pageQueryData,...apiData}
             }
             return{...params,...apiData}
-        }else{
-          if(this.pageQueryDataFlag){
-              return{pageQueryData:this.params.pageQueryData}
-            }
-            return{}
-        }
+        // }else{
+        //   if(this.pageQueryDataFlag){
+        //       return{pageQueryData:this.params.pageQueryData}
+        //     }
+        //     return{}
+        // }
         
       }else if(status=='url'){
         let{apiData,params}= this.replaceParamsObject(data,param,status)     
@@ -983,7 +999,7 @@ export default {
               }
         }
       }
-      //  console.log(apiData,params);      
+       console.log(apiData,params);      
        return {apiData,params} 
     },
     replaceParams (str, replacements) {
@@ -998,7 +1014,7 @@ export default {
     },
     replaceParams1 (str, replacements) {
       const regex = /\$\{([^}]+)\}/g       
-        // console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
+        //  console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
           return str.replace(regex, (_, match) => replacements[match])   
     },
     // 重置

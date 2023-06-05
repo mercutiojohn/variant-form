@@ -97,7 +97,7 @@
         </TableColumn>
         <TableColumn
           label="操作"
-          width="150px"
+          width="180px"
           align="center"
           fixed="right"
         >
@@ -120,6 +120,14 @@
               @click="
                 delDict(scope.$index,listData)
               "
+            />
+            <el-button
+              v-if="scope.row.option"
+              type="info"
+              icon="el-icon-edit"
+              circle
+              plain
+              @click="editOption(scope.row,scope.$index)" 
             />
           </template>
         </TableColumn>
@@ -198,13 +206,23 @@
           确定</el-button>
         </div>
       </el-dialog>
+      <el-dialog title="选项设置" :visible.sync="optionVisible" width="60%" :append-to-body="true">
+        <optionSetting
+          v-if="optionVisible"
+          @need-close="optionVisible=false"
+          :list="optionData"
+          windowHight="700px"
+          @close="toClose"
+        ></optionSetting>
+    </el-dialog>
     </div>
   </template>
   <script>
   import CodeEditor from '@/components/code-editor/index'
+  import optionSetting from "./optionSetting.vue"
   import { Button, Table, TableColumn,Input } from 'element-ui'
   import {getAllFieldWidgets} from "@/utils/util"
-  import sortable from './Sortable.js'
+  import sortable from '@/utils/Sortable.js'
   import Vue from 'vue'
   import common from '../../anji/anji-crud/mixins/common'
   export default {
@@ -215,7 +233,8 @@
       TableColumn,
       Button,
       ELInput: Input,
-      CodeEditor
+      CodeEditor,
+      optionSetting
     },
     mixins: [
       common
@@ -236,6 +255,8 @@
         listData: [],
         num: 1,
         lodding:false,
+        optionVisible:false,
+        optionData:[],
         inputType:[
           {
             value: 'input',
@@ -356,6 +377,23 @@
       editData(data){
         this.showWidgetEventDialogFlag=true        
       },
+      editOption(row,index){
+        console.log(row);
+        this.customCodeIndex = index
+        let watchOption=[]
+        if(row.inputType=='switch'){
+          watchOption.push({value:'true',label:row.option.activeText||'是',})
+          watchOption.push({value:'false',label:row.option.inactiveText||'否',})
+        }
+        this.optionData=row.option.optionItems||watchOption||[]
+        this.optionVisible=true
+      },
+      toClose(data){
+        this.listData[this.customCodeIndex].option.optionItems=data
+        // this.selectedWidget.options.crudOption.columns=data  
+        // this.selectedWidget.options.crudOption.columnsCss=cssData
+        this.optionVisible=false
+      },
       async getLatestData(){
         this.lodding=true
         const {data} = await this.setFunction.getVformPagesByPageId(this.formId);
@@ -408,7 +446,10 @@
           inputType: "input",
           label: "",
           placeholder: "",
-          customCode: ""
+          customCode: "",
+          option:{
+            optionItems:[]
+          }
         });
       },
       delDict(index,rows) {

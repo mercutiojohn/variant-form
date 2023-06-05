@@ -398,6 +398,9 @@
       // this.crudOption.tableButtons=tableButtons
       // this.formId=this.widget.options.formId
       this.field=this.widget
+      //加上这个才能使用this.getWidgetRef获取此组件
+      //外部调用查询this.getWidgetRef('eltable75747').$refs.listPage.handleQueryPageList()
+      this.registerToRefList()
       // this.widget.options.crudOption.formList=this.setFunction.listVformPages
       this.handleOnCreated()
     },

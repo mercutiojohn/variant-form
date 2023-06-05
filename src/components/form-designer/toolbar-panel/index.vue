@@ -104,7 +104,7 @@
 
     <el-drawer size="40%" :title="i18nt('designer.toolbar.editJson')" :visible.sync="showEditJsonDialogFlag"
                v-if="showEditJsonDialogFlag" :show-close="true" class="small-padding-drawer" center append-to-body v-dialog-drag
-               :wrapperClosable="false" :close-on-press-escape="false" :destroy-on-close="true" :modal="true">
+               :wrapperClosable="false" :close-on-press-escape="false" :destroy-on-close="true" :modal="false">
       <code-editor :mode="'json'" :maxLines="40" :readonly="false" v-model="jsonEditContent"></code-editor>
       <div slot="title" class="dialog-footer">
         <span style="margin-right: 10px">{{i18nt('designer.toolbar.editJson')}}</span>

@@ -9,59 +9,36 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="字段名称" >
+        <TableColumn
+            align="center"
+            label="拖拽排序"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+                <el-button
+                style="font-size:30px;"
+                type="text"
+                icon="el-icon-menu"
+                class="drag"
+              />
+            </template>
+        </TableColumn>
+        <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="label" >
             <template slot-scope="scope" >
                 <el-input  v-model="scope.row.label" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="inputType" header-align="center" align="left" min-width="120" label="类型" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.inputType" ></el-input>
-            </template>
-        </TableColumn>
-        <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="字段" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.field" ></el-input>
-            </template>
-        </TableColumn>
-        <TableColumn  prop="headerAlign" header-align="center" align="left" min-width="120" label="表头对齐方式" >
+       
+        <TableColumn  prop="value" header-align="center" align="left" min-width="80" label="value" >
           <template slot-scope="scope"  >
-              <el-select v-model="scope.row.headerAlign" placeholder="请选择">
-                <el-option label="左对齐" value='left'></el-option>
-                <el-option label="居中对齐" value='center'></el-option>
-                <el-option label="右对齐" value='right'></el-option>
-              </el-select>
+              <el-input  v-model="scope.row.value" ></el-input>
           </template>
-        </TableColumn>
-        <TableColumn  prop="contentAlign" header-align="center" align="left" min-width="120" label="对齐方式" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.contentAlign" placeholder="请选择">
-                  <el-option label="左对齐" value='left'></el-option>
-                  <el-option label="居中对齐" value='center'></el-option>
-                  <el-option label="右对齐" value='right'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn  prop="sortable" header-align="center" align="left" min-width="120" label="是否可排序" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.sortable" placeholder="请选择">
-                  <el-option label="是" :value='true'></el-option>
-                  <el-option label="否" :value='false'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="120" label="是否在列表中显示" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.tableHide" placeholder="请选择">
-                  <el-option label="隐藏" :value='true'></el-option>
-                  <el-option label="显示" :value='false'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
+        </TableColumn>    
         <TableColumn
-        label="操作"
-        width="150px"
-        align="center"
+          label="操作"
+          width="150px"
+          align="center"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button
@@ -104,64 +81,59 @@
           保存
         </Button>
       </div>
-    </div>
+   </div>
   </template>
   <script>
   import { Button, Table, TableColumn,Input } from 'element-ui'
+  import {getAllFieldWidgets} from "@/utils/util"
   import sortable from '@/utils/Sortable.js'
   import Vue from 'vue'
+  import common from '../../anji/anji-crud/mixins/common'
   export default {
-    name: 'edit-table',
+    name: 'edit-table-optionSetting',
+    inject: ['setFunction'],
     components: {
       Table,
       TableColumn,
       Button,
       ELInput: Input,
     },
+    mixins: [
+      common
+    ],
     props: {
       list: {
         type: [Array]
+      },
+      formId:{
+
+      },
+      columnsCss:{
+
       }
     },
     data () {
       return {
         listData: [],
         num: 1,
+        customCodeEditing: '',
+        customCodeIndex: -1
       }
     },
     methods: {
       addDict(index,item) {
-        console.log(index,item);
         item.push({ 
-          contentAlign: "center",
-          disabled: false,
-          editField: "",
-          field: "",
-          headerAlign: "left",
-          inputType: "input",
           label: "",
-          placeholder: "",
+          value:"",
         });
       },
       delDict(index,rows) {
-        if (rows.length<=1) {
-          this.$message.error("至少保留一条");
-          return;
-        }
-        if(rows[index].primaryKey){
-              this.$confirm("删除确认", "确认要删除吗,可能会影响部分功能?", {
-              type: "warning",
-              confirmButtonClass: "delete_sure",
-              cancelButtonClass: "el-button--danger is-plain"
-            }).then(() => {
-              rows.splice(index, 1);
-              })
-        }else{
-          rows.splice(index, 1);
-        }
+        // if (rows.length<=1) {
+        //   this.$message.error("至少保留一条");
+        //   return;
+        // }
+        rows.splice(index, 1);
         console.log(index,rows);
-        
-
       },
       // 保存份号编辑
       toSave () {
@@ -171,7 +143,9 @@
             const el = this.$refs.multipleTable.$el.querySelector('.el-table__body-wrapper tbody')
             const _this=this
             sortable.create(el,{
-            ghostClass:'sortable-ghost',
+              draggable:".el-table__row",
+              handle:'.drag',          
+              // ghostClass:'sortable-ghost',
                 // setData:function(dataTransfer){
                 //     dataTransfer.setData('Text', '')
                 // },
@@ -190,7 +164,10 @@
     },
     // 页面初始化调用方法
     mounted: function () {
-      this.listData = JSON.parse(JSON.stringify(this.list))
+      this.listData = this.deepClone(this.list)
+      if ( this.listData.length==0) {
+        this.addDict(0, this.listData)
+      }
       console.log(this.listData);
       document.body.ondrag=function(event){
         event.preventDefault()

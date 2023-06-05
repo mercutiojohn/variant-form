@@ -37,32 +37,45 @@
                 >操作</label
               >
               <div class="el-form-item__content">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="下方添加行"
-                  placement="top-end"
-                >
+                <template v-if="!widget.options.rowButtons">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="下方添加行"
+                    placement="top-end"
+                  >
+                    <el-button
+                      :disabled="true"
+                      size="mini"
+                      type="text"
+                      icon="el-icon-plus"
+                    ></el-button>
+                  </el-tooltip>
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="删除当前行"
+                    placement="top-end"
+                  >
+                    <el-button
+                      :disabled="true"
+                      size="mini"
+                      type="text"
+                      icon="el-icon-delete"
+                    ></el-button>
+                  </el-tooltip>
+                </template>
+                <template v-for="(item, index) in widget.options.rowButtons">
                   <el-button
-                    :disabled="true"
-                    size="mini"
-                    type="text"
-                    icon="el-icon-plus"
-                  ></el-button>
-                </el-tooltip>
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="删除当前行"
-                  placement="top-end"
-                >
-                  <el-button
-                    :disabled="true"
-                    size="mini"
-                    type="text"
-                    icon="el-icon-delete"
-                  ></el-button>
-                </el-tooltip>
+                    v-if="!item.tableHide"
+                    :icon="item.icon || ''"
+                    :key="index"
+                    :type="item.type || 'text'"
+                    size="small"
+                  >
+                  {{ item.label }}
+                  </el-button>
+                </template>
               </div>
             </div>
           </div>
@@ -142,32 +155,45 @@
                 >操作</label
               >
               <div class="el-form-item__content">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="下方添加行"
-                  placement="top-end"
-                >
+                <template v-if="!widget.options.rowButtons">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="下方添加行"
+                    placement="top-end"
+                  >
+                    <el-button
+                      :disabled="true"
+                      size="mini"
+                      type="text"
+                      icon="el-icon-plus"
+                    ></el-button>
+                  </el-tooltip>
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="删除当前行"
+                    placement="top-end"
+                  >
+                    <el-button
+                      :disabled="true"
+                      size="mini"
+                      type="text"
+                      icon="el-icon-delete"
+                    ></el-button>
+                  </el-tooltip>
+                </template>
+                <template v-for="(item, index) in widget.options.rowButtons">
                   <el-button
-                    :disabled="true"
-                    size="mini"
-                    type="text"
-                    icon="el-icon-plus"
-                  ></el-button>
-                </el-tooltip>
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="删除当前行"
-                  placement="top-end"
-                >
-                  <el-button
-                    :disabled="true"
-                    size="mini"
-                    type="text"
-                    icon="el-icon-delete"
-                  ></el-button>
-                </el-tooltip>
+                    v-if="!item.tableHide"
+                    :icon="item.icon || ''"
+                    :key="index"
+                    :type="item.type || 'text'"
+                    size="small"
+                  >
+                  {{ item.label }}
+                  </el-button>
+                </template>
               </div>
             </div>
           </div>
@@ -268,6 +294,22 @@ export default {
     },
     getLabelAlign(widget, subWidget) {
       return subWidget.options.labelAlign || widget.options.labelAlign || 'label-center-align';
+    },
+    // 是否显示
+    showBtn(item, row) {
+      // const row = row
+      return (
+        item.tableHideCustom ? 
+          !!item.isHide ? 
+            eval(item.isHide) 
+            :
+            true 
+          : 
+          !item.tableHide
+      )
+    },
+    getLabel(item, label) {
+      return label
     },
   },
 };
@@ -402,5 +444,13 @@ export default {
 
 .label-right-align {
   text-align: right;
+}
+::v-deep .static-content-item {
+  margin-top: 52px;
+  border-top: 1px solid #ebeef5;
+  padding: 10px;
+  display:flex !important;
+  align-items: center;
+  justify-content: center;
 }
 </style>

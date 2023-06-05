@@ -34,7 +34,29 @@ export const subFormSchema = {
     onSubFormRowAdd: "",
     onSubFormRowInsert: "",
     onSubFormRowDelete: "",
-    onSubFormRowChange: ""
+    onSubFormRowChange: "",
+    rowButtons: [
+      {
+        label: '新增',
+        icon: 'el-icon-plus',
+        action: 'add',
+        customFunc: '',
+        tableHide: false,
+        tableHideCustom: false,
+        isHide: '',
+        settingData:''
+      },
+      {
+        label: '删除',
+        icon: 'el-icon-delete',
+        action: 'delete',
+        customFunc: '',
+        tableHide: false,
+        tableHideCustom: false,
+        isHide: '',
+        settingData: ''
+      }
+    ],
   }
 }
 

@@ -118,7 +118,7 @@
   <script>
   import { Button, Table, TableColumn,Input } from 'element-ui'
   import {getAllFieldWidgets} from "@/utils/util"
-  import sortable from './Sortable.js'
+  import sortable from '@/utils/Sortable.js'
   import Vue from 'vue'
   export default {
     name: 'edit-table',
@@ -165,12 +165,12 @@
                 row.anjiSelectOption=columns[index].anjiSelectOption||[]
               }  
             }else if(inputType.includes(columns[index].type)){
-              row.anjiSelectOption=[]
+              row.anjiSelectOption=columns[index].anjiSelectOption||[]
 
             }else if(dataType.includes(columns[index].type)){
               row.format=columns[index].format
               row.valueFormat=columns[index].valueFormat||columns[index].format
-              row.anjiSelectOption=[]
+              row.anjiSelectOption=columns[index].anjiSelectOption||[]
             }
             // else if(columns[index].type=="switch"){
             //   row.disableValue=columns[index].activeText

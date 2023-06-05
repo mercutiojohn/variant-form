@@ -189,8 +189,8 @@
       resetDefault() {
         if ((this.selectedWidget.type === 'checkbox') ||
             ((this.selectedWidget.type === 'select') && this.selectedWidget.options.multiple)) {
-          // this.optionModel.defaultValue = []
-          this.optionModel.defaultValue = "[]"
+          this.optionModel.defaultValue = []
+          // this.optionModel.defaultValue = "[]"
         } else {
           this.optionModel.defaultValue = ''
         }

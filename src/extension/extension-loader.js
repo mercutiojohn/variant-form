@@ -58,6 +58,8 @@ import LineChartItem from '@/extension/samples/lineChart/line-chart-item'
 import {subFormSchema} from "@/extension/samples/extension-schema"
 import SubFormWidget from '@/extension/samples/subForm/sub-form-widget'
 import SubFormItem from '@/extension/samples/subForm/sub-form-item'
+import rowButtonsEditor from '@/extension/samples/subForm/editor/rowButtons-editor'
+
 // import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 // DataTable 增删改查
@@ -260,8 +262,7 @@ export const loadExtension = function () {
   Vue.component(SubFormWidget.name, SubFormWidget)  //注册设计期的容器组件
   Vue.component(SubFormItem.name, SubFormItem)  //注册运行期的容器组件
   /* -------------------------------------------------- */
-//   PERegister.registerCPEditor('subForm-folded', 'subForm-folded-editor',
-//       PEFactory.createBooleanEditor('folded', 'extension.setting.cardFolded'))
+  PERegister.registerCPEditor('rowButtons', 'rowButtons-editor',rowButtonsEditor)
 
 //   PERegister.registerCPEditor('subForm-showFold', 'subForm-showFold-editor',
 //       PEFactory.createBooleanEditor('showFold', 'extension.setting.cardShowFold'))

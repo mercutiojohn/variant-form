@@ -124,7 +124,7 @@
   <script>
   import CodeEditor from '@/components/code-editor/index'
   import { Button, Table, TableColumn,Input } from 'element-ui'
-  import sortable from './Sortable.js'
+  import sortable from '@/utils/Sortable.js'
   import Vue from 'vue'
   export default {
     name: 'row-button-table',
