@@ -263,6 +263,9 @@ export const loadExtension = function () {
   Vue.component(SubFormItem.name, SubFormItem)  //注册运行期的容器组件
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('rowButtons', 'rowButtons-editor',rowButtonsEditor)
+  PERegister.registerCPEditor('addRowText', 'addRowText-editor',
+    PEFactory.createInputTextEditor('addRowText', 'extension.setting.addRowText')  
+  )
 
 //   PERegister.registerCPEditor('subForm-showFold', 'subForm-showFold-editor',
 //       PEFactory.createBooleanEditor('showFold', 'extension.setting.cardShowFold'))

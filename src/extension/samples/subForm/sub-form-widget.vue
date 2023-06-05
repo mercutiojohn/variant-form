@@ -37,7 +37,7 @@
                 >操作</label
               >
               <div class="el-form-item__content">
-                <template v-if="!widget.options.rowButtons">
+                <template v-if="!widget.options.rowButtons.length">
                   <el-tooltip
                     class="item"
                     effect="dark"
@@ -155,7 +155,7 @@
                 >操作</label
               >
               <div class="el-form-item__content">
-                <template v-if="!widget.options.rowButtons">
+                <template v-if="!widget.options.rowButtons.length">
                   <el-tooltip
                     class="item"
                     effect="dark"

@@ -18,12 +18,14 @@
         >
           <el-table-column v-if="leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left">
             <template slot-scope="scope">
-              <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
-                <el-button ton size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
-              </el-tooltip>
-              <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
-                <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
-              </el-tooltip>
+              <template v-if="!widget.options.rowButtons.length">
+                <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
+                  <el-button size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
+                </el-tooltip>
+                <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
+                  <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
+                </el-tooltip>
+              </template>
               <template v-for="(item, index) in widget.options.rowButtons">
                 <el-button
                   v-if="showBtn(item, scope.row)"
@@ -114,7 +116,7 @@
           </el-table-column>
           <el-table-column v-if="!leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="right">
             <template slot-scope="scope">
-              <template v-if="!widget.options.rowButtons">
+              <template v-if="!widget.options.rowButtons.length">
                 <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
                   <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
                 </el-tooltip>
@@ -139,7 +141,7 @@
           </el-table-column>
         </el-table>
       <div class="add-block">
-        <el-button type="text" icon="el-icon-plus" size="mini" :disabled="widgetDisabled" @click="addSubFormRow">添加行</el-button>
+        <el-button type="text" icon="el-icon-plus" size="mini" :disabled="widgetDisabled" @click="addSubFormRow">{{widget.options.addRowText}}</el-button>
       </div>
       <!-- <el-row class="header-row">
         <div v-if="leftActionColumn" class="action-header-column">

@@ -35,6 +35,7 @@ export const subFormSchema = {
     onSubFormRowInsert: "",
     onSubFormRowDelete: "",
     onSubFormRowChange: "",
+    addRowText: "新增行",
     rowButtons: [
       {
         label: '新增',

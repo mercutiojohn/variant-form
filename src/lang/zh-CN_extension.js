@@ -33,6 +33,7 @@ export default {
       pageQueryDataFlag:'是否分页',
       queryFormFieldsFlag:'是否显示查询条件',
       queryFormHide:'是否显示查询区域',
+      addRowText: '添加新行文案',
     },
 
   }

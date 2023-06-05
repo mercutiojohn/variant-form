@@ -7,8 +7,8 @@
     <el-drawer title="自定义操作列" :visible.sync="editNumberVisible" :append-to-body="true" size="700px">
         <rowButtons
           v-if="editNumberVisible"
-          @need-close="editNumberVisible=false"
-          :list="list"
+          @need-close="editNumberVisible = false"
+          :list="btnList"
           :getTableData="getTableData"
           windowHight="700px"
           @close="toClose"
@@ -46,36 +46,36 @@
     // }
   },
     computed:{
-      list(){
-        return this.selectedWidget.options.rowButtons;
-      },
-      getTableData(){
-        let tableList = []
-        this.selectedWidget.options.widgetList?.forEach((item)=>{
-          let data={
-            field:item.id,
-            name:item.label
-          }
-          tableList.push(data)
-        })
-        return tableList
-      }
+      // getTableData(){
+      //   let tableList = []
+      //   this.selectedWidget.options.widgetList?.forEach((item)=>{
+      //     let data={
+      //       field:item.id,
+      //       name:item.label
+      //     }
+      //     tableList.push(data)
+      //   })
+      //   return tableList
+      // }
 
     },
     data() {
       return {
         editNumberVisible:false,
         eventParams: [],
-        newSelectedWidget:{}
+        newSelectedWidget:{},
+        btnList: []
       }
     },
     methods:{
       editData(){
-        this.editNumberVisible=true
+        this.btnList = this.selectedWidget.options.rowButtons
+        this.editNumberVisible = true
       },
       toClose(data){
-        this.selectedWidget.options.rowButtons=data
-        this.editNumberVisible=false
+        this.selectedWidget.options.rowButtons = data
+        this.editNumberVisible = false
+        this.btnList = []
       }
     },
     created(){

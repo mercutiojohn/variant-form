@@ -156,7 +156,7 @@
       <Button size="small" type="primary" @click="toSave"> 保存 </Button>
     </div>
     <Dialog
-      title="自定义配置"
+      title="自定义按钮操作"
       :visible.sync="showDataFlag"
       v-if="showDataFlag"
       :show-close="true"
@@ -203,9 +203,9 @@ export default {
     list: {
       type: [Array],
     },
-    getTableData: {
-      type: [Array],
-    },
+    // getTableData: {
+    //   type: [Array],
+    // },
   },
   data() {
     return {
