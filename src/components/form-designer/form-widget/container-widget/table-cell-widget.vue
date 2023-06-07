@@ -1,6 +1,6 @@
 <template>
   <td class="table-cell" :class="[selected ? 'selected' : '', customClass]"
-      :style="{width: widget.options.cellWidth + '!important' || '', height: widget.options.cellHeight + '!important' || '', 'word-break': !!widget.options.wordBreak ? 'break-all' : 'normal'}"
+      :style="styleOuterObj"
       :colspan="widget.options.colspan || 1" :rowspan="widget.options.rowspan || 1"
       @click.stop="selectWidget(widget)">
     <draggable :list="widget.widgetList" class="draggable-div" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
@@ -137,6 +137,26 @@
       deleteWholeRowDisabled() {
         return (this.rowLength === 1) || (this.widget.options.rowspan === this.rowLength)
       },
+      styleOuterObj() {
+        return {
+          width: this.widget.options.cellWidth + ' !important' || '', 
+          height: this.widget.options.cellHeight + ' !important' || '', 
+          'word-break': !!this.widget.options.wordBreak ? 'break-all' : 'normal',
+          // width: `${this.widget.options.basic.width}${this.widget.options.basic.widthMeasure}` || 'unset',
+          // height: `${this.widget.options.basic.height}${this.widget.options.basic.heightMeasure}` || 'unset',
+          // 'overflow': 'hidden',
+          // margin: `${this.widget.options.basic.margin}${this.widget.options.basic.marginMeasure}` || '',
+          // margin: `${this.widget.options.basic.margin.top}px ${this.widget.options.basic.margin.right}px ${this.widget.options.basic.margin.bottom}px ${this.widget.options.basic.margin.left}px` || '',
+          // Border
+          // 'border-width': `${this.widget.options.boxBorder.width}px` || '',
+          // 'border-style': this.widget.options.boxBorder.style || '',
+          // 'border-color': this.widget.options.boxBorder.color || '',
+          'border-top': this.widget.options.boxBorder.use && this.widget.options.boxBorder.visible.top ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-right': this.widget.options.boxBorder.use && this.widget.options.boxBorder.visible.right ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-bottom': this.widget.options.boxBorder.use && this.widget.options.boxBorder.visible.bottom ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+          'border-left': this.widget.options.boxBorder.use && this.widget.options.boxBorder.visible.left ? `${this.widget.options.boxBorder.width}px ${this.widget.options.boxBorder.style} ${this.widget.options.boxBorder.color}` : 'none' || '',
+        }
+      }
 
     },
     watch: {

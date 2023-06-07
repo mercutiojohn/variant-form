@@ -7,7 +7,7 @@
 
 <script>
   import i18n from "@/utils/i18n"
-  import OptionItemsSetting from "@/components/form-designer/setting-panel/option-items-setting"
+  import OptionItemsSetting from "@/components/form-designer/setting-panel/components/option-items-setting"
 
   export default {
     name: "optionItems-editor",

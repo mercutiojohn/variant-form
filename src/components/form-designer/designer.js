@@ -696,6 +696,20 @@ export function createDesigner(vueInstance) {
         })
 
         return newTable
+      } else if (containWidget.type === 'flex-box') {
+        let newFlexBox = deepClone(this.getContainerByType('flex-box'))
+        newFlexBox.id = newFlexBox.type + generateId()
+        newFlexBox.options.name = newFlexBox.id
+        containWidget.widgetList = []  //清空组件列表
+
+        return newFlexBox
+      } else if (containWidget.type === 'sub-form') {
+        let newSubForm = deepClone(this.getContainerByType('sub-form'))
+        newSubForm.id = newSubForm.type + generateId()
+        newSubForm.options.name = newSubForm.id
+        containWidget.widgetList = []  //清空组件列表
+
+        return newSubForm
       } else {  //其他容器组件不支持clone操作
         return null
       }

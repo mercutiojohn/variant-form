@@ -9,7 +9,8 @@ export default {
       'el-table': '增删改查',
       'bar-chart': '柱状图',
 	    'submit-button': '提交按钮',
-      'line-chart': '折线图'    
+      'line-chart': '折线图',
+      'common-tree':'树',    
   },
 
     setting: {

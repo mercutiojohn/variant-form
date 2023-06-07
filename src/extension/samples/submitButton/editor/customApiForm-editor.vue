@@ -122,14 +122,14 @@
 </template>
 
 <script>
-  import formSettingMixin from "@/components/form-designer/setting-panel/formSettingMixin"
+  import swaggerApiMixin from "@/components/form-designer/setting-panel/mixins/swaggerApiMixin"
   import i18n from "@/utils/i18n"
   import eventMixin from "@/components/form-designer/setting-panel/property-editor/event-handler/eventMixin"
   import CodeEditor from '@/components/code-editor/index'
 
   export default {
     name: "customApiForm-editor",
-    mixins: [i18n, eventMixin, formSettingMixin],
+    mixins: [i18n, eventMixin, swaggerApiMixin],
     props: {
       designer: Object,
       selectedWidget: Object,

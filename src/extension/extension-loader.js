@@ -23,10 +23,6 @@ import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator
 import {flexBoxSchema} from "@/extension/samples/extension-schema"
 import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
 import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
-import BasicEditor from '@/extension/samples/flexBox/editor/basic-editor'
-import FlexEditor from '@/extension/samples/flexBox/editor/flex-editor'
-import BorderEditor from '@/extension/samples/flexBox/editor/border-editor'
-import ShadowEditor from '@/extension/samples/flexBox/editor/shadow-editor'
 // import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
 /* Widget 字段组件 */
@@ -61,7 +57,11 @@ import SubFormItem from '@/extension/samples/subForm/sub-form-item'
 import rowButtonsEditor from '@/extension/samples/subForm/editor/rowButtons-editor'
 
 // import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
-
+// 树组件
+import {tree} from "@/extension/samples/extension-schema"
+import commonTreeWidget from '@/extension/samples/commonTree/common-tree-widget'
+import commonTreeItem from '@/extension/samples/commonTree/common-tree-item'
+import commonTreeAttributeEditor from '@/extension/samples/commonTree/setting-editor/common-tree-editor'
 // DataTable 增删改查
 import {tableSchema} from "@/extension/samples/extension-schema"
 import elTableWidget from '@/extension/samples/el-table/el-table-widget'
@@ -76,6 +76,7 @@ import elTableCuatomQueryEditor from '@/extension/samples/el-table/setting-edito
 import barChartAttributeEditor from '@/extension/samples/barChart/setting-editor/bar-chart-attribute-editor'
 //折线图编辑
 import lineChartAttributeEditor from '@/extension/samples/lineChart/setting-editor/line-chart-attribute-editor'
+
 export const loadExtension = function () {
 
   /**
@@ -181,10 +182,6 @@ export const loadExtension = function () {
   Vue.component(FlexBoxItem.name, FlexBoxItem)  //注册运行期的容器组件
 
   /* -------------------------------------------------- */
-  PERegister.registerCPEditor('basic', 'basic-editor', BasicEditor)
-  PERegister.registerCPEditor('flex', 'flex-editor', FlexEditor)
-  PERegister.registerCPEditor('boxBorder', 'boxBorder-editor', BorderEditor)
-  PERegister.registerCPEditor('shadow', 'shadow-editor', ShadowEditor)
 
   /* -------------------------------------------------- */
   // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
@@ -284,6 +281,18 @@ export const loadExtension = function () {
 //   registerCWGenerator('subForm', cardTemplateGenerator)  //注册容器组件的代码生成器
   /* -------------------------------------------------- */
   /* SubForm 容器组件加载完毕 end */
+
+  /* tree 组件加载 start */
+  addAdvancedFieldSchema(tree)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(commonTreeWidget.name, commonTreeWidget)  //注册组件
+  Vue.component(commonTreeItem.name, commonTreeItem)  //注册组件
+  Vue.component(commonTreeAttributeEditor.name, commonTreeAttributeEditor)  
+  PERegister.registerEPEditor('onNodeClick', 'onNodeClick-editor',
+  PEFactory.createEventHandlerEditor('onNodeClick', 'extension.setting.onNodeClick'))    
+  PERegister.registerEPEditor('onCheckChange', 'onCheckChange-editor',
+  PEFactory.createEventHandlerEditor('onCheckChange', 'extension.setting.onCheckChange')) 
+   /* tree组件加载 end */
 
   /* 表格组件加载 start */
   addAdvancedFieldSchema(tableSchema)  //加载组件Json Schema

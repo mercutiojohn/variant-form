@@ -3,7 +3,8 @@
                           :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                           :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <el-divider ref="fieldEditor" direction="horizontal" :content-position="field.options.contentPosition">
-      {{field.options.label}}</el-divider>
+      <span :style="fontStyle">{{field.options.label}}</span>
+    </el-divider>
   </static-content-wrapper>
 </template>
 
@@ -47,7 +48,38 @@
       StaticContentWrapper,
     },
     computed: {
+      fontStyle() {
+        // let defaultFontStyle = {}
+        if (!!this.field.options.font && !!this.field.options.font.use) {
+          let fontObj = this.field.options.font
+          return {
+            'font-family': fontObj.family,
+            'font-size': `${fontObj.size}${fontObj.sizeMeasure}!important`,
+            'color': fontObj.color,
+            'font-weight': fontObj.weight
+          }
+        }
 
+        // if (!!this.designer) {
+        //   let fontObj = this.formConfig.font
+        //   return {
+        //     'font-family': fontObj.family,
+        //     'font-size': `${fontObj.size}${fontObj.sizeMeasure}`,
+        //     'font-color': fontObj.color,
+        //     'font-color': fontObj.color,
+        //     'font-weight': fontObj.weight
+        //   } || defaultFontStyle
+        // } else {
+        //   let fontObj = this.formConfig.font
+        //   return {
+        //     'font-family': fontObj.family,
+        //     'font-size': `${fontObj.size}${fontObj.sizeMeasure}`,
+        //     'font-color': fontObj.color,
+        //     'font-color': fontObj.color,
+        //     'font-weight': fontObj.weight
+        //   } || defaultFontStyle
+        // }
+      },
     },
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */

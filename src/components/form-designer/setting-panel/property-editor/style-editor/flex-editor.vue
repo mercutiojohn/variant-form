@@ -179,9 +179,9 @@
     border-radius: 8px;
   }
   .el-collapse-item__header {
-    background-color: unset;
+    background-color: unset!important;
     border-bottom: none;
-    height: 40px;
+    height: 40px!important;
   }
   .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 3px;

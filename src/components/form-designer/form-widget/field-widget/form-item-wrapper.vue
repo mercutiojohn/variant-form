@@ -15,9 +15,10 @@
                   :title="field.options.labelTooltip"
                   :rules="rules" :prop="getPropName()"
                   :class="[selected ? 'selected' : '', labelAlign, customClass, field.options.required ? 'required' : '']"
-                  @click.native.stop="selectField(field)">
+                  @click.native.stop="selectField(field)"
+    >
 
-      <span v-if="!!field.options.labelIconClass" slot="label" class="custom-label">
+      <span v-if="!!field.options.labelIconClass" slot="label" class="custom-label" :style="fontStyle">
         <template v-if="field.options.labelIconPosition === 'front'">
           <template v-if="!!field.options.labelTooltip">
             <el-tooltip :content="field.options.labelTooltip" effect="light">
@@ -32,6 +33,9 @@
           <template v-else>
             {{label}}<i :class="field.options.labelIconClass"></i></template>
         </template>
+      </span>
+      <span v-else slot="label" class="custom-label" :style="fontStyle">
+        {{label}}
       </span>
       <slot></slot>
     </el-form-item>
@@ -128,6 +132,39 @@
         } else {
           return this.formConfig.labelAlign || 'label-left-align'
         }
+      },
+
+      fontStyle() {
+        // let defaultFontStyle = {}
+        if (!!this.field.options.font && !!this.field.options.font.use) {
+          let fontObj = this.field.options.font
+          return {
+            'font-family': fontObj.family,
+            'font-size': `${fontObj.size}${fontObj.sizeMeasure}!important`,
+            'color': fontObj.color,
+            'font-weight': fontObj.weight
+          }
+        }
+
+        // if (!!this.designer) {
+        //   let fontObj = this.formConfig.font
+        //   return {
+        //     'font-family': fontObj.family,
+        //     'font-size': `${fontObj.size}${fontObj.sizeMeasure}`,
+        //     'font-color': fontObj.color,
+        //     'font-color': fontObj.color,
+        //     'font-weight': fontObj.weight
+        //   } || defaultFontStyle
+        // } else {
+        //   let fontObj = this.formConfig.font
+        //   return {
+        //     'font-family': fontObj.family,
+        //     'font-size': `${fontObj.size}${fontObj.sizeMeasure}`,
+        //     'font-color': fontObj.color,
+        //     'font-color': fontObj.color,
+        //     'font-weight': fontObj.weight
+        //   } || defaultFontStyle
+        // }
       },
 
       customClass() {

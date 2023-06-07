@@ -140,7 +140,7 @@
         scrollerHeight: 0,
 
         activeTab: "2",
-        widgetActiveCollapseNames: ['1', '3'], //['1', '2', '3'],
+        widgetActiveCollapseNames: ['1', '2', '3'],
         formActiveCollapseNames: ['1', '2'],
 
         commonProps: COMMON_PROPERTIES,

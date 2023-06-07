@@ -1,6 +1,6 @@
 <template>
     <el-collapse class="sub-collapse" v-model="activeNames">
-    <el-collapse-item title="基本样式" name="1">
+    <el-collapse-item title="宽高" name="1">
       <template slot="title">
         <svg-icon icon-class="ruler-square" class-name="color-svg-icon" /> 宽高
       </template>
@@ -167,7 +167,7 @@
   import i18n from "@/utils/i18n"
   import propertyMixin from "@/components/form-designer/setting-panel/property-editor/propertyMixin"
   import SvgIcon from '@/components/svg-icon'
-  import GradientBackgroundEditor from "../components/gradient-editor";
+  import GradientBackgroundEditor from "@/components/form-designer/setting-panel/components/gradient-editor";
 
   export default {
     name: "basic-editor",
@@ -216,9 +216,9 @@
     }
   }
   .el-collapse-item__header {
-    background-color: unset;
+    background-color: unset!important;
     border-bottom: none;
-    height: 40px;
+    height: 40px!important;
   }
   .el-input-group__append {
     width: 50%;

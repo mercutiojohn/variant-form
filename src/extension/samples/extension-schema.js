@@ -406,9 +406,10 @@ export const flexBoxSchema = {
       gap: 10
     },
     boxBorder: {
-      width: 2,
-      style: "dashed",
-      color: "rgba(0, 0, 0, 0.12)",
+      use: false,
+      width: 1,
+      style: "solid",
+      color: "rgba(0, 0, 0, 0.17)",
       visible: {
         top: true,
         right: true,
@@ -417,12 +418,13 @@ export const flexBoxSchema = {
       }
     },
     shadow: {
+      use: false,
       isInset: false,
       offsetX: 0,
-      offsetY: 0,
-      blur: 0,
-      expand: 0,
-      color: "#00000023"
+      offsetY: 4,
+      blur: 9,
+      expand: -3,
+      color: "rgba(0, 0, 0, 0.25)"
     }
   }
 }
@@ -958,4 +960,114 @@ export const pieChartSchema = {
       zIndex: 0
     }
   }
+}
+
+//树组件
+export const tree = {
+  type: "common-tree",
+  icon: "tree",
+  category: "container",
+  widgetList: [], 
+  options: {
+    name: "tree42416",
+    attribute:'',
+    label: "",
+    filter: true,
+    draggable: false,
+    defaultExpandAllNode: true,
+    selectClearAllNode: true,
+    expandRetractAllNode: true,
+    showCheckBox: true,
+    expandOnClickNode: false,
+    lazy: false,
+    treeDataEdit: true,
+    checkStrictlyTree: true,
+    staticFlag:true,
+    nodeEdit: true,
+    size: "default",
+    disabled: false,
+    hidden: false,
+    dsEnabled: false,
+    dsName: "",
+    dataSetName: "",
+    customClass: [],
+    onCreated: "",
+    onMounted: "",
+    onNodeClick: "",
+    onNodeCheck: "",
+    onNodeContextmenu: "",
+    onCheckChange: "",
+    apiData:"",
+    treeData: [
+      { 
+        "id":"1",
+        "label": "一级 1",
+        "children": [
+          {
+            "id":"4",
+            "label": "二级 1-1",
+            "children": [
+              {
+                "id":"9",
+                "label": "三级 1-1-1"
+              }
+            ]
+          }
+        ]
+      },
+      { 
+        "id":"2",
+        "label": "一级 2",
+        "children": [
+          {
+            "id":"5",
+            "label": "二级 2-1",
+            "children": [
+              {
+                "id":"10",
+                "label": "三级 2-1-1"
+              }
+            ]
+          },
+          {
+            "id":"6",
+            "label": "二级 2-2",
+            "children": [
+              {
+                "id":"11",
+                "label": "三级 2-2-1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id":"3",
+        "label": "一级 3",
+        "children": [
+          {
+            "id":"7",
+            "label": "二级 3-1",
+            "children": [
+              {
+                "id":"12",
+                "label": "三级 3-1-1"
+              }
+            ]
+          },
+          {
+            "id":"8",
+            "label": "二级 3-2",
+            "children": [
+              {
+                "id":"13",
+                "label": "三级 3-2-1"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  id: "tree42416"
 }

@@ -1,9 +1,12 @@
 <template>
   <el-collapse class="sub-collapse" v-model="activeName">
     <el-collapse-item title="阴影设置" name="1">
-      <template slot="title">
-        <svg-icon icon-class="shadow" class-name="color-svg-icon" /> 阴影
-      </template>
+      <div @click.stop slot="title" style="width: 100%;display: flex; align-items: center; justify-content: space-between;padding-right:10px;">
+        <span>
+          <svg-icon icon-class="shadow" class-name="color-svg-icon" /> 阴影
+        </span>
+        <el-switch v-model="optionModel.shadow.use" @click.stop></el-switch>
+      </div>
       <el-form-item label="颜色" label-width="70px">
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
           <el-color-picker v-model="optionModel.shadow.color" show-alpha>
@@ -86,9 +89,9 @@
     border-radius: 8px;
   }
   .el-collapse-item__header {
-    background-color: unset;
+    background-color: unset!important;
     border-bottom: none;
-    height: 40px;
+    height: 40px!important;
   }
 }
 </style>

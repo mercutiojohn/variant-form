@@ -58,6 +58,13 @@ const COMMON_PROPERTIES = {
   'fileTypes'         :            'fileTypes-editor',
   'customClass'       :            'customClass-editor',
 
+  // 样式
+  'basic'             :            'basic-editor',
+  'font'             :            'font-editor',
+  'flex'              :            'flex-editor',
+  'boxBorder'         :            'boxBorder-editor',
+  'shadow'            :            'shadow-editor',
+
   //容器
   'showBlankRow'       :            'showBlankRow-editor',
   'showRowNumber'      :            'showRowNumber-editor',

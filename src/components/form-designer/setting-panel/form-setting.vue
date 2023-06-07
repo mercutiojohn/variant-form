@@ -239,12 +239,12 @@
 
 <script>
   import i18n from "@/utils/i18n"
-  import formSettingMixin from "@/components/form-designer/setting-panel/formSettingMixin"
+  import swaggerApiMixin from "@/components/form-designer/setting-panel/mixins/swaggerApiMixin"
   import CodeEditor from '@/components/code-editor/index'
   import {deepClone, insertCustomCssToHead, insertGlobalFunctionsToHtml, assembleAxiosConfig} from "@/utils/util"
   export default {
     name: "form-setting",
-    mixins: [i18n, formSettingMixin],
+    mixins: [i18n, swaggerApiMixin],
     components: {
       CodeEditor,
     },

@@ -362,11 +362,11 @@ export default {
 //   width: 100px;
 // }
 .sub-form-container {
-  padding: 8px;
-  border: 1px dashed #369;
+  // padding: 8px;
+  // border: 1px dashed #369;
 }
 .sub-form-container.selected {
-  outline: 2px solid #409eff !important;
+  outline: 2px solid $--color-primary !important;
 }
 .sub-form-container .sub-form-table div.sub-form-table-column {
   display: inline-block;
@@ -403,11 +403,15 @@ export default {
 .full-width {
   width: 100%;
   overflow: hidden;
-  border: 1px solid #ebeef5;
-  border-left: none;
+  // border: 1px solid #ebeef5;
+  // border-left: none;
+  // padding: 8px;
+  border: 1px dashed #369;
+  // box-shadow: inset 0 0 10px #000;
   background: #eee;
   &:first-child {
-    border-left: 1px solid #ebeef5;
+    // border-left: 1px solid #ebeef5;
+    border-left: 1px dashed #369;
   }
   .sub-form-table-column {
     background: #fff;

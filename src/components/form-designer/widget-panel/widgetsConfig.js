@@ -75,6 +75,18 @@ export const containers = [
       rowspan: 1,
       wordBreak: false,  //是否自动换行
       customClass: '',  //自定义css类名
+      boxBorder: {
+        use: true,
+        width: 1,
+        style: "solid",
+        color: "#e5e5e5",
+        visible: {
+          top: true,
+          right: true,
+          bottom: true,
+          left: true
+        }
+      }
     }
   },
 
@@ -135,6 +147,14 @@ export const basicFields = [
       appendButton: false,
       appendButtonDisabled: false,
       buttonIcon: 'el-icon-search',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       onCreated: '',
       onMounted: '',
@@ -169,6 +189,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -208,6 +236,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -255,6 +291,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -295,6 +339,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -340,6 +392,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -380,6 +440,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -420,6 +488,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -461,6 +537,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -503,6 +587,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -532,6 +624,14 @@ export const basicFields = [
       labelHidden: false,
       disabled: false,
       hidden: false,
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -568,6 +668,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -606,6 +714,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -638,6 +754,14 @@ export const basicFields = [
       requiredHint: '',
       validation: '',
       validationHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,
@@ -667,8 +791,58 @@ export const basicFields = [
       hidden: false,
       textContent: 'static text',
       textAlign: 'left',
-      fontSize: '13px',
+      // fontSize: '13px',
       preWrap: false,  //是否自动换行
+      basic: {
+        width: null,
+        widthMeasure:'',
+        height: null,
+        heightMeasure: '',
+        // margin: 10,
+        margin: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0
+        },
+        // marginMeasure: 'px',
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0
+        },
+        // paddingMeasure: 'px',
+        radius: {
+          topLeft: 0,
+          topRight: 0,
+          bottomRight: 0,
+          bottomLeft: 0
+        },
+        backgroundType: 'none',
+        backgroundColor: '',
+        gradient: ''
+      },
+      boxBorder: {
+        use: false,
+        width: 1,
+        style: "solid",
+        color: "#e5e5e5",
+        visible: {
+          top: true,
+          right: true,
+          bottom: true,
+          left: true
+        }
+      },
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       //-------------------
@@ -711,6 +885,14 @@ export const basicFields = [
       round: false,
       circle: false,
       icon: null,
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       //-------------------
@@ -731,6 +913,14 @@ export const basicFields = [
       direction: 'horizontal',
       contentPosition: 'center',
       hidden: false,
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       customClass: '',  //自定义css类名
       //-------------------
@@ -755,6 +945,14 @@ export const basicFields = [
       requiredHint: '',
       customRule: '',
       customRuleHint: '',
+      font: {
+        use: false,
+        family: 'unset',
+        size: '1',
+        sizeMeasure: 'em',
+        weight: "normal",
+        color: "#000000",
+      },
       //-------------------
       uploadURL: '/api/file/fileManager/uploadFile2',
       uploadTip: '',

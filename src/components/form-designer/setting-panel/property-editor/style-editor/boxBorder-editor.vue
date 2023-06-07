@@ -1,9 +1,12 @@
 <template>
     <el-collapse class="sub-collapse" v-model="activeName">
     <el-collapse-item title="边框设置" name="1">
-      <template slot="title">
-        <svg-icon icon-class="border-all" class-name="color-svg-icon" /> 边框
-      </template>
+      <div @click.stop slot="title" style="width: 100%;display: flex; align-items: center; justify-content: space-between;padding-right:10px;">
+        <span>
+          <svg-icon icon-class="border-all" class-name="color-svg-icon" /> 边框
+        </span>
+        <el-switch v-model="optionModel.boxBorder.use" @click.stop></el-switch>
+      </div>
       <el-form-item label="边框颜色" label-width="70px">
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
           <el-color-picker v-model="optionModel.boxBorder.color" show-alpha>
@@ -12,7 +15,7 @@
         </div>
       </el-form-item>
       <el-form-item label="边框类型" label-width="70px">
-        <!-- <el-select v-model="optionModel.boxBorder.style">
+        <el-select v-model="optionModel.boxBorder.style">
           <el-option label="实边框" value="solid" style="display:flex; align-items:center">
             <div :style="`width:100%; height:0; border-top: 2px solid #000`"></div>
           </el-option>
@@ -22,8 +25,8 @@
           <el-option label="点状边框" value="dotted" style="display:flex; align-items:center">
             <div :style="`width:100%; height:0; border-top: 2px dotted #000`"></div>
           </el-option>
-        </el-select> -->
-        <el-radio-group v-model="optionModel.boxBorder.style">
+        </el-select>
+        <!-- <el-radio-group v-model="optionModel.boxBorder.style">
           <el-radio-button label="solid">
             <el-tooltip content="实边框" placement="top">
               <svg-icon icon-class="border-solid" class-name="color-svg-icon" />
@@ -39,7 +42,7 @@
               <svg-icon icon-class="border-dotted" class-name="color-svg-icon" />
             </el-tooltip>
           </el-radio-button>
-        </el-radio-group>
+        </el-radio-group> -->
       </el-form-item>
       <el-form-item label="边框宽度" label-width="70px">
         <el-input-number v-model="optionModel.boxBorder.width"></el-input-number>
@@ -112,9 +115,9 @@
     border-radius: 8px;
   }
   .el-collapse-item__header {
-    background-color: unset;
+    background-color: unset!important;
     border-bottom: none;
-    height: 40px;
+    height: 40px!important;
   }
   .el-checkbox-button--mini .el-checkbox-button__inner {
     padding: 7px 9px;
