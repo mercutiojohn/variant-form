@@ -347,6 +347,30 @@ export function copyToClipboard(content, clickEvent, $message, successMsg, error
   clipboard.onClick(clickEvent)
 }
 
+export function copyToClipboardTest(content, clickEvent, $message, successMsg, errorMsg) {
+  const tempElement = document.createElement('button'); // Create a temporary button element
+  tempElement.style.display = 'none'; // Hide the temporary button
+  document.body.appendChild(tempElement); // Add the temporary button to the document
+
+  const clipboard = new Clipboard(tempElement, {
+    text: () => content
+  });
+
+  clipboard.on('success', () => {
+    $message.success(successMsg);
+    clipboard.destroy();
+    document.body.removeChild(tempElement); // Remove the temporary button
+  });
+
+  clipboard.on('error', () => {
+    $message.error(errorMsg);
+    clipboard.destroy();
+    document.body.removeChild(tempElement); // Remove the temporary button
+  });
+
+  clipboard.onClick(clickEvent);
+}
+
 export function getQueryParam(variable) {
   let query = window.location.search.substring(1);
   let vars = query.split("&")
@@ -372,6 +396,7 @@ export function getDefaultFormConfig() {
     cssCode: '',
     customClass: [],
     functions: '',
+    customMixins: '',
     layoutType: 'PC',
     useCustomInitApi: false,
     customInitStatus: '',

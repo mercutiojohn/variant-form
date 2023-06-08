@@ -682,10 +682,10 @@ export default {
       this.handleQueryForm("query");
     }
     this.queryFormChange();
-    console.log('[init-register]',this.option.columns)
+    // console.log('[init-register]',this.option.columns)
     this.option.columns.forEach(item => {
       if(item.inputType == 'custom'){
-        this.register(item.field, item.customCode?.template ? item.customCode.template : '<div>{{data}}</div>', item.customCode?.methods ? item.customCode.methods : {})
+        this.register(item.field, item.customCode?.template ? item.customCode.template : '<div>{{data}}</div>', item.customCode?.methods ? item.customCode.methods : '{}')
       }
     })
   },

@@ -55,6 +55,9 @@
           <el-form-item :label="i18nt('designer.setting.globalFunctions')">
             <el-button type="info" icon="el-icon-edit" plain round @click="editGlobalFunctions">{{i18nt('designer.setting.addEventHandler')}}</el-button>
           </el-form-item>
+          <el-form-item :label="i18nt('designer.setting.customMixins')">
+            <el-button type="info" icon="el-icon-edit" plain round @click="editCustomMixins">{{i18nt('designer.setting.addEventHandler')}}</el-button>
+          </el-form-item>
           <el-form-item label-width="0">
             <el-divider class="custom-divider" content-position="left">{{i18nt('designer.setting.formSFCSetting')}}</el-divider>
           </el-form-item>
@@ -238,6 +241,21 @@
 </template>
 
 <script>
+// const mixinString = `
+// {
+//   data: function () {
+//     return {
+//       message: "Hello from mixin!"
+//     };
+//   },
+//   methods: {
+//     mixinMethod: function () {
+//       console.log("This is a mixin method!");
+//     }
+//   }
+// }
+// `;
+// const mixinObject = mixinString ? eval('(' + mixinString + ')') : null;
   import i18n from "@/utils/i18n"
   import swaggerApiMixin from "@/components/form-designer/setting-panel/mixins/swaggerApiMixin"
   import CodeEditor from '@/components/code-editor/index'
@@ -245,6 +263,7 @@
   export default {
     name: "form-setting",
     mixins: [i18n, swaggerApiMixin],
+    // mixins: [mixinObject],
     components: {
       CodeEditor,
     },
@@ -419,6 +438,32 @@
         this.designer.formConfig.functions = this.functionsCode
         insertGlobalFunctionsToHtml(this.functionsCode)
         this.showEditFunctionsDialogFlag = false
+      },
+
+      editCustomMixins() {
+        this.mixinsCode = this.designer.formConfig.customMixins
+        this.showEditMixinsDialogFlag = true
+      },
+
+      saveCustomMixins() {
+        const codeHints = this.$refs.gfEditor.getEditorAnnotations()
+        let syntaxErrorFlag = false
+        if (!!codeHints && (codeHints.length > 0)) {
+          codeHints.forEach((chItem) => {
+            if (chItem.type === 'error') {
+              syntaxErrorFlag = true
+            }
+          })
+
+          if (syntaxErrorFlag) {
+            this.$message.error(this.i18nt('designer.setting.syntaxCheckWarning'))
+            return
+          }
+        }
+
+        this.designer.formConfig.customMixins = this.mixinsCode
+        // insertGlobalFunctionsToHtml(this.mixinsCode)
+        this.showEditMixinsDialogFlag = false
       },
 
       editFormEventHandler(eventName) {

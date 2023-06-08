@@ -15,7 +15,25 @@
         <span>
           <svg-icon icon-class="text" class-name="color-svg-icon" /> 字体
         </span>
-        <el-switch v-model="optionModel.font.use" @click.stop></el-switch>
+        <div class="right">
+          <el-button type="text" :data-clipboard-text="optionModel.font" @click="copyJsonToClipboard">
+            <svg-icon icon-class="copy" class-name="color-svg-icon" />
+          </el-button>
+          <el-popover
+            placement="bottom"
+            width="300"
+            v-model="editDialogShow">
+            <code-editor v-if="editDialogShow" :mode="'css'" :readonly="false" v-model="editPaste" ref="pasteEditor"></code-editor>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="editDialogShow = false">取消</el-button>
+              <el-button type="primary" size="mini" @click="pasteFromClipboard">确定</el-button>
+            </div>
+            <el-button slot="reference" type="text" icon="el-icon-edit">
+              <!-- <svg-icon icon-class="clipboard" class-name="color-svg-icon" /> -->
+            </el-button>
+          </el-popover>
+          <el-switch v-model="optionModel.font.use" @click.stop></el-switch>
+        </div>
       </div>
       <el-form-item label="字体风格">
         <el-select v-model="optionModel.font.family" placeholder="请选择">
@@ -97,6 +115,10 @@
 </template>
 
 <script>
+import {
+  copyToClipboardTest
+} from "@/utils/util"
+import CodeEditor from '@/components/code-editor/index'
 import i18n from "@/utils/i18n";
 import propertyMixin from "@/components/form-designer/setting-panel/property-editor/propertyMixin";
 import SvgIcon from "@/components/svg-icon";
@@ -107,7 +129,8 @@ export default {
   mixins: [i18n, propertyMixin],
   components: {
     SvgIcon,
-    GradientBackgroundEditor,
+    CodeEditor,
+    GradientBackgroundEditor
   },
   props: {
     designer: Object,
@@ -117,6 +140,8 @@ export default {
   data() {
     return {
       activeNames: ["1"],
+      editPaste: '',
+      editDialogShow: false,
       fonts: [
         {label:'默认',value:'unset'},
         {label:'宋体',value:'SimSun, sans-serif'},
@@ -155,6 +180,21 @@ export default {
         return (weight.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    copyJsonToClipboard(e) {
+        console.log('【copyToClipboard】',JSON.stringify(this.optionModel.font))
+        copyToClipboardTest(
+          JSON.stringify(this.optionModel.font), 
+          e,
+          this.$message,
+          this.i18nt('designer.hint.copyJsonSuccess'),
+          this.i18nt('designer.hint.copyJsonFail')
+        )
+      },
+      pasteFromClipboard() {
+        this.optionModel.font = JSON.parse(this.editPaste)
+        this.editPaste = ''
+        this.editDialogShow = false
+      }
   }
 };
 </script>
@@ -191,5 +231,10 @@ export default {
   .axis .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 6px;
   }
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>

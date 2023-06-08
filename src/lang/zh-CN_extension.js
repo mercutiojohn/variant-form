@@ -10,7 +10,9 @@ export default {
       'bar-chart': '柱状图',
 	    'submit-button': '提交按钮',
       'line-chart': '折线图',
-      'common-tree':'树',    
+      'common-tree':'树',   
+      'pie-chart': '饼图', 
+      'custom-component': '自定义组件',
   },
 
     setting: {
@@ -27,6 +29,8 @@ export default {
       showIcon: '显示图标',
       effect: '显示效果',
       formId: '绑定表单',
+      customCode: '自定义组件代码',
+      customCodeBtn: '编辑',
       useCustomApi: '自定义接口',
       customApiStatus: '接口执行条件',
       customApiForm: '接口配置',

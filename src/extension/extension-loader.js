@@ -30,6 +30,10 @@ import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
 import {alertSchema} from "@/extension/samples/extension-schema"
 import AlertWidget from '@/extension/samples/alert/alert-widget'
 import {alertTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+// CustomComponent 自定义组件
+import {customComponentSchema} from "@/extension/samples/extension-schema"
+import CustomComponentWidget from '@/extension/samples/customComponent/custom-component-widget'
+import customCodeEditor from '@/extension/samples/customComponent/editor/customCode-editor'
 // SubmitButton 表单提交按钮
 import {submitButtonSchema} from "@/extension/samples/extension-schema"
 import SubmitButtonWidget from '@/extension/samples/submitButton/submit-button-widget'
@@ -49,6 +53,10 @@ import BarChartItem from '@/extension/samples/barChart/bar-chart-item'
 import {lineChartSchema} from "@/extension/samples/extension-schema"
 import LineChartWidget from '@/extension/samples/lineChart/line-chart-widget'
 import LineChartItem from '@/extension/samples/lineChart/line-chart-item'
+// pieChart 饼图
+import {pieChartSchema} from "@/extension/samples/extension-schema"
+import pieChartWidget from '@/extension/samples/pieChart/pie-chart-widget'
+import pieChartItem from '@/extension/samples/pieChart/pie-chart-item'
 
 // subForm 子表
 import {subFormSchema} from "@/extension/samples/extension-schema"
@@ -76,7 +84,8 @@ import elTableCuatomQueryEditor from '@/extension/samples/el-table/setting-edito
 import barChartAttributeEditor from '@/extension/samples/barChart/setting-editor/bar-chart-attribute-editor'
 //折线图编辑
 import lineChartAttributeEditor from '@/extension/samples/lineChart/setting-editor/line-chart-attribute-editor'
-
+//饼图编辑
+import pieChartAttributeEditor from '@/extension/samples/pieChart/setting-editor/pie-chart-attribute-editor'
 export const loadExtension = function () {
 
   /**
@@ -175,6 +184,15 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 字段组件加载完毕 end */
 
+  /* 自定义组件加载 start */
+  addCustomWidgetSchema(customComponentSchema)  //加载组件Json Schema
+
+  /* -------------------------------------------------- */
+  Vue.component(CustomComponentWidget.name, CustomComponentWidget)  //注册组件
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor('customCode', 'customCode-editor', customCodeEditor)
+  /* 弹性布局组件加载 end */
+
   /* 弹性布局组件加载 start */
   addContainerWidgetSchema(flexBoxSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
@@ -253,6 +271,13 @@ export const loadExtension = function () {
   Vue.component(LineChartItem.name, LineChartItem)  //注册组件
   /* LineChart 组件加载完毕 end */
 
+  /* pieChart 组件加载 start */
+  addAdvancedFieldSchema(pieChartSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(pieChartWidget.name, pieChartWidget)  //注册组件
+  Vue.component(pieChartItem.name, pieChartItem)  //注册组件
+  /* LineChart 组件加载完毕 end */
+
   /* SubForm 容器组件加载 start */
   addContainerWidgetSchema(subFormSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
@@ -305,7 +330,8 @@ export const loadExtension = function () {
   Vue.component(elTableFormIdEditor.name, elTableFormIdEditor)  
   Vue.component(elTableCuatomQueryEditor.name, elTableCuatomQueryEditor) 
   Vue.component(barChartAttributeEditor.name, barChartAttributeEditor)
-  Vue.component(lineChartAttributeEditor.name, lineChartAttributeEditor)       
+  Vue.component(lineChartAttributeEditor.name, lineChartAttributeEditor)   
+  Vue.component(pieChartAttributeEditor.name, pieChartAttributeEditor)    
   PERegister.registerCPEditor('tableEdit', 'tableEdit-editor',
   PEFactory.createEventHandlerEditor('tableEdit', [])) 
   PERegister.registerCPEditor('tableButtonEdit', 'tableButtonEdit-editor',

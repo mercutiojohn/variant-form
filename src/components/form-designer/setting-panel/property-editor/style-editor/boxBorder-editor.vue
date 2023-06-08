@@ -5,7 +5,25 @@
         <span>
           <svg-icon icon-class="border-all" class-name="color-svg-icon" /> 边框
         </span>
-        <el-switch v-model="optionModel.boxBorder.use" @click.stop></el-switch>
+        <div class="right">
+          <el-button type="text" :data-clipboard-text="optionModel.boxBorder" @click="copyJsonToClipboard">
+            <svg-icon icon-class="copy" class-name="color-svg-icon" />
+          </el-button>
+          <el-popover
+            placement="bottom"
+            width="300"
+            v-model="editDialogShow">
+            <code-editor v-if="editDialogShow" :mode="'css'" :readonly="false" v-model="editPaste" ref="pasteEditor"></code-editor>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="editDialogShow = false">取消</el-button>
+              <el-button type="primary" size="mini" @click="pasteFromClipboard">确定</el-button>
+            </div>
+            <el-button slot="reference" type="text" icon="el-icon-edit">
+              <!-- <svg-icon icon-class="clipboard" class-name="color-svg-icon" /> -->
+            </el-button>
+          </el-popover>
+          <el-switch v-model="optionModel.boxBorder.use" @click.stop></el-switch>
+        </div>
       </div>
       <el-form-item label="边框颜色" label-width="70px">
         <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
@@ -79,6 +97,10 @@
 </template>
 
 <script>
+  import {
+    copyToClipboardTest
+  } from "@/utils/util"
+  import CodeEditor from '@/components/code-editor/index'
   import i18n from "@/utils/i18n"
   import propertyMixin from "@/components/form-designer/setting-panel/property-editor/propertyMixin"
   import SvgIcon from '@/components/svg-icon'
@@ -87,7 +109,8 @@
     name: "boxBorder-editor",
     mixins: [i18n, propertyMixin],
     components:{
-      SvgIcon
+      SvgIcon,
+      CodeEditor
     },
     props: {
       designer: Object,
@@ -96,7 +119,26 @@
     },
     data() {
       return {
-        activeName: '1'
+        activeName: '1',
+        editPaste: '',
+        editDialogShow: false
+      }
+    },
+    methods:{
+      copyJsonToClipboard(e) {
+        console.log('【copyToClipboard】',JSON.stringify(this.optionModel.boxBorder))
+        copyToClipboardTest(
+          JSON.stringify(this.optionModel.boxBorder), 
+          e,
+          this.$message,
+          this.i18nt('designer.hint.copyJsonSuccess'),
+          this.i18nt('designer.hint.copyJsonFail')
+        )
+      },
+      pasteFromClipboard() {
+        this.optionModel.boxBorder = JSON.parse(this.editPaste)
+        this.editPaste = ''
+        this.editDialogShow = false
       }
     }
   }
@@ -122,5 +164,10 @@
   .el-checkbox-button--mini .el-checkbox-button__inner {
     padding: 7px 9px;
   }
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>

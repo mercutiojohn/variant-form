@@ -58,7 +58,7 @@ export default {
       'rich-editor':    '富文本',
       cascader:         '级联选择',
       slot:             '插槽',
-
+      user:          '用户选择',
       custom:           'Custom Component',
     },
 
@@ -165,6 +165,7 @@ export default {
       exportCode: '导出JSON-Vue',
       generateCode: '生成代码',
       generateSFC: '生成原生Vue',
+      exportTableJson: '导出增删改查JSON',
     },
 
     setting: {
@@ -327,6 +328,7 @@ export default {
       formCss: '表单全局CSS',
       addCss: '编写CSS',
       customClass: '自定义CSS样式',
+      customMixins: '自定义表单函数',
       globalFunctions: '表单全局函数',
       addEventHandler: '编写代码',
       editWidgetEventHandler: '组件事件处理',

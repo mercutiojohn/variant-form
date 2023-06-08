@@ -81,13 +81,23 @@ export default {
   },
   created() {
     if (this.value) {
-      const matches = this.value.match(
-        /linear-gradient\((\d+)deg, (.+), (.+)\)/
-      );
-      if (matches) {
-        this.angle = parseInt(matches[1]);
-        this.startColor = matches[2];
-        this.endColor = matches[3];
+      const angleMatches = this.value.match(/linear-gradient\((\d+)deg,/);
+      if (angleMatches) {
+        this.angle = parseInt(angleMatches[1]);
+      }
+
+      const colorMatches = this.value.match(/((?:#[a-fA-F0-9]{6}|\w+)\s*\d+%)+/g);
+
+      if (colorMatches) {
+        this.colors = colorMatches.map((colorStop) => {
+          const colorStopMatches = colorStop.match(/(#[a-fA-F0-9]{6}|\w+)\s*(\d+)%/);
+          if (colorStopMatches) {
+            return {
+              color: colorStopMatches[1],
+              stop: parseInt(colorStopMatches[2]),
+            };
+          }
+        });
       }
     }
   },

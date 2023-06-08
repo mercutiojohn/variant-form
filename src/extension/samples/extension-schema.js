@@ -451,6 +451,24 @@ export const alertSchema = {
   }
 }
 
+export const customComponentSchema = {
+  type: 'custom-component',
+  icon: 'alert',
+  formItemFlag: false,
+  options: {
+    name: '',
+    description: '',
+    hidden: false,
+    onClose: '',
+    customClass: '',
+    customCode: {
+      template: '',
+      methods: '',
+      dataFields: ''
+    }
+  }
+}
+
 export const submitButtonSchema = {
   type: 'submit-button',
   icon: 'button',
@@ -869,7 +887,7 @@ export const pieChartSchema = {
       lateralPosition: "center",
       layerName: "饼图",
       layoutFront: "horizontal",
-      egendColor: "#000",
+      legendColor: "#000",
       legendFontSize: 16,
       legendWidth: 15,
       lineColorX: "#000",
@@ -929,27 +947,11 @@ export const pieChartSchema = {
       dataType: "staticData",
       refreshTime: 5000,
       staticData: [
-        {
-          axis: "苹果",
-          data: 1000
-        },
-        {
-          axis: "三星",
-          data: 2229
-        },
-        {
-          axis: "小米",
-          data: 3879
-        },
-        {
-          axis: "oppo",
-          data: 2379
-        },
-        {
-          axis: "vivo",
-          data: 4079
-        },
-      ]
+        { "value": 1048, "name": "搜索引擎" }, 
+        { "value": 735, "name": "直接访问" }, 
+        { "value": 580, "name": "邮件营销" }, 
+        { "value": 484, "name": "联盟广告" }, 
+        { "value": 300, "name": "视频广告" }]
     },
     // 坐标
     position: {
@@ -965,7 +967,7 @@ export const pieChartSchema = {
 //树组件
 export const tree = {
   type: "common-tree",
-  icon: "tree",
+  icon: "node-tree",
   category: "container",
   widgetList: [], 
   options: {

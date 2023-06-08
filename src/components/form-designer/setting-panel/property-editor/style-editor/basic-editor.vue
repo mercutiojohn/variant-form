@@ -1,169 +1,192 @@
 <template>
+  <div>
+    <span>基本样式</span>
+    <el-button type="text" :data-clipboard-text="optionModel.basic" @click="copyJsonToClipboard">
+      <svg-icon icon-class="copy" class-name="color-svg-icon" />
+    </el-button>
+    <el-popover
+      placement="bottom"
+      width="300"
+      v-model="editDialogShow">
+      <code-editor v-if="editDialogShow" :mode="'css'" :readonly="false" v-model="editPaste" ref="pasteEditor"></code-editor>
+      <div style="text-align: right; margin: 0">
+        <el-button size="mini" type="text" @click="editDialogShow = false">取消</el-button>
+        <el-button type="primary" size="mini" @click="pasteFromClipboard">确定</el-button>
+      </div>
+      <el-button slot="reference" type="text" icon="el-icon-edit">
+        <!-- <svg-icon icon-class="clipboard" class-name="color-svg-icon" /> -->
+      </el-button>
+    </el-popover>
     <el-collapse class="sub-collapse" v-model="activeNames">
-    <el-collapse-item title="宽高" name="1">
-      <template slot="title">
-        <svg-icon icon-class="ruler-square" class-name="color-svg-icon" /> 宽高
-      </template>
-      <el-form-item label="宽度">
-        <el-input v-model="optionModel.basic.width">
-          <el-select v-model="optionModel.basic.widthMeasure" slot="append" placeholder="请选择">
-            <el-option label="px" value="px"></el-option>
-            <el-option label="vw" value="vw"></el-option>
-            <el-option label="vh" value="vh"></el-option>
-            <el-option label="%" value="%"></el-option>
-            <el-option label="无" value=""></el-option>
-          </el-select>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="高度">
-        <el-input v-model="optionModel.basic.height">
-          <el-select v-model="optionModel.basic.heightMeasure" slot="append" placeholder="请选择">
-            <el-option label="px" value="px"></el-option>
-            <el-option label="vw" value="vw"></el-option>
-            <el-option label="vh" value="vh"></el-option>
-            <el-option label="%" value="%"></el-option>
-            <el-option label="无" value=""></el-option>
-          </el-select>
-        </el-input>
-      </el-form-item>
-      <!-- <el-form-item label="内边距">
-        <el-input v-model="optionModel.basic.padding">
-          <el-select v-model="optionModel.basic.paddingMeasure" slot="append" placeholder="请选择">
-            <el-option label="px" value="px"></el-option>
-            <el-option label="vw" value="vw"></el-option>
-            <el-option label="vh" value="vh"></el-option>
-            <el-option label="%" value="%"></el-option>
-            <el-option label="无" value=""></el-option>
-          </el-select>
-        </el-input>
-      </el-form-item> -->
-      <!-- <el-form-item label="外边距">
-        <el-input v-model="optionModel.basic.margin">
-          <el-select v-model="optionModel.basic.marginMeasure" slot="append" placeholder="请选择">
-            <el-option label="px" value="px"></el-option>
-            <el-option label="vw" value="vw"></el-option>
-            <el-option label="vh" value="vh"></el-option>
-            <el-option label="%" value="%"></el-option>
-            <el-option label="无" value=""></el-option>
-          </el-select>
-        </el-input>
-      </el-form-item> -->
-    </el-collapse-item>
-    <el-collapse-item name="2">
-      <template slot="title">
-        <svg-icon icon-class="padding" class-name="color-svg-icon" /> 内边距
-      </template>
-      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.padding.top"></el-input-number>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.padding.left"></el-input-number>
-        </el-col>
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.padding.right"></el-input-number>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.padding.bottom"></el-input-number>
-        </el-col>
-      </el-row>
-    </el-collapse-item>
-    <el-collapse-item name="3">
-      <template slot="title">
-        <svg-icon icon-class="margin" class-name="color-svg-icon" /> 外边距
-      </template>
-      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.margin.top"></el-input-number>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.margin.left"></el-input-number>
-        </el-col>
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.margin.right"></el-input-number>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <el-input-number controls-position="right" v-model="optionModel.basic.margin.bottom"></el-input-number>
-        </el-col>
-      </el-row>
-    </el-collapse-item>
-    <el-collapse-item name="4">
-      <template slot="title">
-        <svg-icon icon-class="corners" class-name="color-svg-icon" /> 圆角
-      </template>
-      <el-row :gutter="10">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <svg-icon icon-class="corner-top-left" class-name="color-svg-icon" />
-          <el-input-number controls-position="right" v-model="optionModel.basic.radius.topLeft"></el-input-number>
-        </el-col>
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <svg-icon icon-class="corner-top-right" class-name="color-svg-icon" />
-          <el-input-number controls-position="right" v-model="optionModel.basic.radius.topRight"></el-input-number>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <svg-icon icon-class="corner-bottom-left" class-name="color-svg-icon" />
-          <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomLeft"></el-input-number>
-        </el-col>
-        <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
-          <svg-icon icon-class="corner-bottom-right" class-name="color-svg-icon" />
-          <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomRight"></el-input-number>
-        </el-col>
-      </el-row>
-    </el-collapse-item>
-    <el-collapse-item name="5">
-      <template slot="title">
-        <svg-icon icon-class="blending-mode" class-name="color-svg-icon" /> 背景
-      </template>
-      <el-form-item label="背景类型" label-width="70">
-        <el-radio-group class="axis" v-model="optionModel.basic.backgroundType">
-          <el-radio-button label="none">
-            <svg-icon icon-class="value-none" class-name="color-svg-icon" />
-            无
-          </el-radio-button>
-          <el-radio-button label="color">
-            <svg-icon icon-class="opacity" class-name="color-svg-icon" />
-            单色
-          </el-radio-button>
-          <el-radio-button label="gradient">
-            <svg-icon icon-class="blending-mode" class-name="color-svg-icon" />
-            渐变
-          </el-radio-button>
-          <!-- <el-radio-button :label="image">
-            <svg-icon icon-class="image" class-name="color-svg-icon" />
-            图片
-          </el-radio-button> -->
-        </el-radio-group>
-      </el-form-item>
-      <gradient-background-editor
-        v-model="optionModel.basic.gradient"
-        @input="updateColors"
-        v-if="optionModel.basic.backgroundType === 'gradient'"
-      ></gradient-background-editor>
-      <!-- <div :style="{ background: optionModel.basic.gradient }" v-if="optionModel.basic.backgroundType === 'gradient'">
-        This is some text with a gradient background.
-      </div> -->
-      <el-form-item label="背景颜色"  label-width="70" v-else-if="optionModel.basic.backgroundType === 'color'">
-        <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
-          <el-color-picker v-model="optionModel.basic.backgroundColor" show-alpha>
-          </el-color-picker>
-          {{optionModel.basic.backgroundColor}}
-        </div>
-      </el-form-item>
-    </el-collapse-item>
-  </el-collapse>
+      <el-collapse-item title="宽高" name="1">
+        <template slot="title">
+          <svg-icon icon-class="ruler-square" class-name="color-svg-icon" /> 宽高
+        </template>
+        <el-form-item label="宽度">
+          <el-input v-model="optionModel.basic.width">
+            <el-select v-model="optionModel.basic.widthMeasure" slot="append" placeholder="请选择">
+              <el-option label="px" value="px"></el-option>
+              <el-option label="vw" value="vw"></el-option>
+              <el-option label="vh" value="vh"></el-option>
+              <el-option label="%" value="%"></el-option>
+              <el-option label="无" value=""></el-option>
+            </el-select>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="高度">
+          <el-input v-model="optionModel.basic.height">
+            <el-select v-model="optionModel.basic.heightMeasure" slot="append" placeholder="请选择">
+              <el-option label="px" value="px"></el-option>
+              <el-option label="vw" value="vw"></el-option>
+              <el-option label="vh" value="vh"></el-option>
+              <el-option label="%" value="%"></el-option>
+              <el-option label="无" value=""></el-option>
+            </el-select>
+          </el-input>
+        </el-form-item>
+        <!-- <el-form-item label="内边距">
+          <el-input v-model="optionModel.basic.padding">
+            <el-select v-model="optionModel.basic.paddingMeasure" slot="append" placeholder="请选择">
+              <el-option label="px" value="px"></el-option>
+              <el-option label="vw" value="vw"></el-option>
+              <el-option label="vh" value="vh"></el-option>
+              <el-option label="%" value="%"></el-option>
+              <el-option label="无" value=""></el-option>
+            </el-select>
+          </el-input>
+        </el-form-item> -->
+        <!-- <el-form-item label="外边距">
+          <el-input v-model="optionModel.basic.margin">
+            <el-select v-model="optionModel.basic.marginMeasure" slot="append" placeholder="请选择">
+              <el-option label="px" value="px"></el-option>
+              <el-option label="vw" value="vw"></el-option>
+              <el-option label="vh" value="vh"></el-option>
+              <el-option label="%" value="%"></el-option>
+              <el-option label="无" value=""></el-option>
+            </el-select>
+          </el-input>
+        </el-form-item> -->
+      </el-collapse-item>
+      <el-collapse-item name="2">
+        <template slot="title">
+          <svg-icon icon-class="padding" class-name="color-svg-icon" /> 内边距
+        </template>
+        <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.padding.top"></el-input-number>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.padding.left"></el-input-number>
+          </el-col>
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.padding.right"></el-input-number>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.padding.bottom"></el-input-number>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+      <el-collapse-item name="3">
+        <template slot="title">
+          <svg-icon icon-class="margin" class-name="color-svg-icon" /> 外边距
+        </template>
+        <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.margin.top"></el-input-number>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.margin.left"></el-input-number>
+          </el-col>
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.margin.right"></el-input-number>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" style="display: flex;width:100%;justify-content:center;">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <el-input-number controls-position="right" v-model="optionModel.basic.margin.bottom"></el-input-number>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+      <el-collapse-item name="4">
+        <template slot="title">
+          <svg-icon icon-class="corners" class-name="color-svg-icon" /> 圆角
+        </template>
+        <el-row :gutter="10">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <svg-icon icon-class="corner-top-left" class-name="color-svg-icon" />
+            <el-input-number controls-position="right" v-model="optionModel.basic.radius.topLeft"></el-input-number>
+          </el-col>
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <svg-icon icon-class="corner-top-right" class-name="color-svg-icon" />
+            <el-input-number controls-position="right" v-model="optionModel.basic.radius.topRight"></el-input-number>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <svg-icon icon-class="corner-bottom-left" class-name="color-svg-icon" />
+            <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomLeft"></el-input-number>
+          </el-col>
+          <el-col :span="12" style="display: flex;align-items:center;padding:5px 0;">
+            <svg-icon icon-class="corner-bottom-right" class-name="color-svg-icon" />
+            <el-input-number controls-position="right" v-model="optionModel.basic.radius.bottomRight"></el-input-number>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+      <el-collapse-item name="5">
+        <template slot="title">
+          <svg-icon icon-class="blending-mode" class-name="color-svg-icon" /> 背景
+        </template>
+        <el-form-item label="背景类型" label-width="70">
+          <el-radio-group class="axis" v-model="optionModel.basic.backgroundType">
+            <el-radio-button label="none">
+              <svg-icon icon-class="value-none" class-name="color-svg-icon" />
+              无
+            </el-radio-button>
+            <el-radio-button label="color">
+              <svg-icon icon-class="opacity" class-name="color-svg-icon" />
+              单色
+            </el-radio-button>
+            <el-radio-button label="gradient">
+              <svg-icon icon-class="blending-mode" class-name="color-svg-icon" />
+              渐变
+            </el-radio-button>
+            <!-- <el-radio-button :label="image">
+              <svg-icon icon-class="image" class-name="color-svg-icon" />
+              图片
+            </el-radio-button> -->
+          </el-radio-group>
+        </el-form-item>
+        <gradient-background-editor
+          v-model="optionModel.basic.gradient"
+          @input="updateColors"
+          v-if="optionModel.basic.backgroundType === 'gradient'"
+        ></gradient-background-editor>
+        <!-- <div :style="{ background: optionModel.basic.gradient }" v-if="optionModel.basic.backgroundType === 'gradient'">
+          This is some text with a gradient background.
+        </div> -->
+        <el-form-item label="背景颜色"  label-width="70" v-else-if="optionModel.basic.backgroundType === 'color'">
+          <div style="display: flex; gap:5px; align-items: center; justify-content: flex-start">
+            <el-color-picker v-model="optionModel.basic.backgroundColor" show-alpha>
+            </el-color-picker>
+            {{optionModel.basic.backgroundColor}}
+          </div>
+        </el-form-item>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
 </template>
 
 <script>
+  import {
+    copyToClipboardTest
+  } from "@/utils/util"
+  import CodeEditor from '@/components/code-editor/index'
   import i18n from "@/utils/i18n"
   import propertyMixin from "@/components/form-designer/setting-panel/property-editor/propertyMixin"
   import SvgIcon from '@/components/svg-icon'
@@ -174,6 +197,7 @@
     mixins: [i18n, propertyMixin],
     components:{
       SvgIcon,
+      CodeEditor,
       GradientBackgroundEditor
     },
     props: {
@@ -183,12 +207,29 @@
     },
     data() {
       return {
-        activeNames: ['1','5']
+        activeNames: ['1','5'],
+        editPaste: '',
+        editDialogShow: false
       }
     },
     methods: {
       updateColors(newColors) {
         this.optionModel.basic.gradient = newColors;
+      },
+      copyJsonToClipboard(e) {
+        console.log('【copyToClipboard】',JSON.stringify(this.optionModel.basic))
+        copyToClipboardTest(
+          JSON.stringify(this.optionModel.basic), 
+          e,
+          this.$message,
+          this.i18nt('designer.hint.copyJsonSuccess'),
+          this.i18nt('designer.hint.copyJsonFail')
+        )
+      },
+      pasteFromClipboard() {
+        this.optionModel.basic = JSON.parse(this.editPaste)
+        this.editPaste = ''
+        this.editDialogShow = false
       }
     }
   }
@@ -226,5 +267,10 @@
   .axis .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 6px;
   }
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>
