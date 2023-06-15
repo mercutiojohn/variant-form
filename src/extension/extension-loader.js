@@ -25,6 +25,12 @@ import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
 import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
 // import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
+// Grid Box Grid布局
+import { gridBoxSchema } from "@/extension/samples/extension-schema"
+import GridBoxWidget from '@/extension/samples/gridBox/grid-box-widget'
+import GridBoxItem from '@/extension/samples/gridBox/grid-box-item'
+// import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
+
 /* Widget 字段组件 */
 // Alert 提示
 import {alertSchema} from "@/extension/samples/extension-schema"
@@ -191,7 +197,7 @@ export const loadExtension = function () {
   Vue.component(CustomComponentWidget.name, CustomComponentWidget)  //注册组件
   /* -------------------------------------------------- */
   PERegister.registerCPEditor('customCode', 'customCode-editor', customCodeEditor)
-  /* 弹性布局组件加载 end */
+  /* 自定义组件加载 end */
 
   /* 弹性布局组件加载 start */
   addContainerWidgetSchema(flexBoxSchema)  //加载组件Json Schema
@@ -205,6 +211,19 @@ export const loadExtension = function () {
   // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
   /* -------------------------------------------------- */
   /* 弹性布局组件加载 end */
+
+  /* Grid布局组件加载 start */
+  addContainerWidgetSchema(gridBoxSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  Vue.component(GridBoxWidget.name, GridBoxWidget)  //注册设计期的容器组件
+  Vue.component(GridBoxItem.name, GridBoxItem)  //注册运行期的容器组件
+
+  /* -------------------------------------------------- */
+
+  /* -------------------------------------------------- */
+  // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
+  /* -------------------------------------------------- */
+  /* Grid布局组件加载 end */
 
   /* SubmitButton 组件加载 start */
   addBasicFieldSchema(submitButtonSchema)  //加载组件Json Schema
