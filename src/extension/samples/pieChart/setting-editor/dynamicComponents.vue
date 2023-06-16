@@ -56,9 +56,12 @@
 import { reportDataSetList, detailBysetId } from "@/api/dataAnalysis/data";
 import Dictionary from "./Dictionary";
 import { validateEngOrNum } from "@/utils/validators";
-
+import common from'@/extension/samples/el-table/anji/anji-crud/mixins/common'
 export default {
   name: "DynamicComponents",
+  mixins: [
+  common
+  ],
   components: {
     // Form,
     // Row,
@@ -140,6 +143,8 @@ export default {
   watch: {
     formData: {
       handler(val) {
+        // console.log('val',val);
+        
         this.echoDataSet(val);
       },
       deep: true
@@ -158,7 +163,7 @@ export default {
   },
   mounted() {
     this.loadDataSet();
-    this.echoDataSet(this.formData.dynamicData);
+    this.echoDataSet(this.formData);
     console.log(this.formData,"this.formData999");
   },
   methods: {
@@ -166,20 +171,30 @@ export default {
       const { data } = await reportDataSetList({ pageQueryData: JSON.stringify({}),condition: JSON.stringify({}),});
       this.dataSet = data.list;
     },
-    async selectDataSet() {
+    async selectDataSet(params) {
+      console.log('params',params);
+      
       const {  data } = await detailBysetId(this.dataSetValue);
       this.userNameList = data.reportdatasetparamList;
       this.setParamList = data.setParamList;
     },
     async saveDataBtn() {
       const contextData = {};
+      // if(this.userNameList){
+      //   for (let i = 0; i < this.userNameList.length; i++) {
+      //     contextData[this.userNameList[i].paramName] = this.userNameList[
+      //       i
+      //     ].sampleItem;
+      //   }
+      // }
       const params = {
         chartType: this.chartType,
         setCode: this.setCode,
         chartProperties: this.chartProperties,
         contextData
       };
-      console.log(params,"params");
+      // console.log(params,"params");
+      // this.$emit("input", params);
       this.$emit("change", params);
     },
     addDataBtn(){
@@ -266,11 +281,9 @@ export default {
       const setCode = val.setCode;
 
       await this.loadDataSet();
-
       this.dataSetValue = this.dataSet.filter(
         el => setCode == el.setCode
       )[0].id;
-
       await this.selectDataSet();;
       this.echoDynamicData(val);
     },
@@ -281,7 +294,8 @@ export default {
         for (let i = 0; i < this.setParamList.length; i++) {
           const item = this.setParamList[i];
           if (chartProperties.hasOwnProperty(item)) {
-            this.params[item] = chartProperties[item];
+            // this.params[item] = chartProperties[item];
+            this.$set(this.params,item,chartProperties[item])
           }
         }
       }

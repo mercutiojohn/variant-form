@@ -610,8 +610,19 @@
     watch: {
 
   },
-    computed:{
-    },
+  computed:{
+      formData() {
+        if(this.selectedWidget.options.data.dynamicData){
+          return this.selectedWidget.options.data.dynamicData
+      }else{
+        return{
+          dataType: "dynamicData",
+          refreshTime: 5000
+        }
+      }
+        
+      },
+    }, 
     data() {
       return {
         weightOptions: [
@@ -637,13 +648,13 @@
         ],
         showStaticDialogFlag: false,
         showDynamicDialogFlag: false,
-        formData: {
-          dataType: "dynamicData",
-          refreshTime: 5000
-        },
+        // formData: {
+        //   dataType: "dynamicData",
+        //   refreshTime: 5000
+        // },
         staticData: '',
-        chartType: 'widget-barchart',
-        dictKey: 'BAR_PROPERTIES'
+        chartType: 'widget-linechart',
+        dictKey: 'LINE_PROPERTIES'
       }
     },
     methods:{
@@ -651,9 +662,12 @@
         this.selectedWidget.options.setup.customColor = val
       },
       changeData(val, key) {
+        this.$set(this.formData, 'setCode', val.setCode);
         this.$set(this.formData, key, val);
         this.formData.staticData = this.selectedWidget.options.data.staticData
         this.selectedWidget.options.data = this.formData
+        this.selectedWidget.options.data.dataType = 'dynamicData'
+        console.log(this.formData);
       },
       editStaticData(){
         this.showStaticDialogFlag = true
@@ -686,6 +700,11 @@
       this.staticData = JSON.stringify(this.selectedWidget.options.data.staticData)
       if(this.selectedWidget.options.data.dynamicData){
         this.formData = this.selectedWidget.options.data.dynamicData
+      }else{
+        this.formData = {
+          dataType: "dynamicData",
+          refreshTime: 5000
+        }
       }
       
     }

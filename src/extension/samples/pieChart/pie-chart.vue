@@ -16,6 +16,9 @@ import queryform from'@/extension/samples/el-table/anji/anji-crud/mixins/queryfo
       option: Object,
       ispreview: Boolean
     },
+    mixins: [
+    queryform
+  ],
     data() {
       return {
         options: {
