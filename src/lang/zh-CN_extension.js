@@ -3,6 +3,7 @@ export default {
     widgetLabel: {
       card: '卡片',
       'flex-box': '弹性布局',
+      'grid-box': 'Grid布局',
       alert: '提示',
       'user-choose': '人员选择',
       'group-choose': '机构选择',

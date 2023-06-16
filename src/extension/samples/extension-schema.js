@@ -429,6 +429,76 @@ export const flexBoxSchema = {
   }
 }
 
+export const gridBoxSchema = {
+  type: 'grid-box',
+  category: 'container',
+  icon: 'card',
+  widgetList: [],
+  options: {
+    name: '',
+    label: 'Grid容器',
+    hidden: false,
+    customClass: '',
+    basic: {
+      width: null,
+      widthMeasure: '',
+      height: null,
+      heightMeasure: '',
+      // margin: 10,
+      margin: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      },
+      // marginMeasure: 'px',
+      padding: {
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+      },
+      // paddingMeasure: 'px',
+      radius: {
+        topLeft: 0,
+        topRight: 0,
+        bottomRight: 0,
+        bottomLeft: 0
+      },
+      backgroundType: 'none',
+      backgroundColor: '',
+      gradient: ''
+    },
+    grid: {
+      columns: 12,
+      rowHeight: 30,
+      columnGap: 10,
+      rowGap: 10
+    },
+    boxBorder: {
+      use: false,
+      width: 1,
+      style: "solid",
+      color: "rgba(0, 0, 0, 0.17)",
+      visible: {
+        top: true,
+        right: true,
+        bottom: true,
+        left: true
+      }
+    },
+    shadow: {
+      use: false,
+      isInset: false,
+      offsetX: 0,
+      offsetY: 4,
+      blur: 9,
+      expand: -3,
+      color: "rgba(0, 0, 0, 0.25)"
+    }
+  }
+}
+
 // 原子组件
 
 export const alertSchema = {

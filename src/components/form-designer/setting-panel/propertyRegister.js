@@ -60,8 +60,9 @@ const COMMON_PROPERTIES = {
 
   // 样式
   'basic'             :            'basic-editor',
-  'font'             :            'font-editor',
+  'font'              :            'font-editor',
   'flex'              :            'flex-editor',
+  'grid'              :            'grid-editor',
   'boxBorder'         :            'boxBorder-editor',
   'shadow'            :            'shadow-editor',
 
