@@ -34,7 +34,7 @@
                   :disabled="isDisabledButton(item, scope.row)"
                   :type="item.type || 'text'"
                   size="small"
-                  @click="itemClick(item, scope.row, index)"
+                  @click="itemClick(item, scope.row, scope.$index)"
                 >
                 {{ getLabel(scope.row, item.label) }}
                 </el-button>
