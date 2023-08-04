@@ -1,203 +1,103 @@
 <template>
   <container-item-wrapper :widget="widget">
-    <div
-      :key="widget.id"
-      class="sub-form-container"
-      v-show="!widget.options.hidden"
-    >
-    <!-- row-key="uuid" -->
-    <!-- @selection-change="handleTableCreatorTableColumnSelectionChange" -->
-    <!-- ref="tableCreatorTableColumn" -->
-    <!-- :data="formModel[widget.id]" -->
-    <!-- :row-class-name="rowTableCreatorTableColumnIndex" -->
-        <el-table
-          :data="formModel[widget.options.name]"
-          class="column-table"
-          highlight-current-row
-          border
+    <div :key="widget.id" class="sub-form-container" v-show="!widget.options.hidden">
+      
+      <el-table
+        :data="formModel[widget.options.name]"
+        class="column-table"
+        highlight-current-row
+        border
+      >
+        <el-table-column
+          v-if="leftActionColumn && !actionDisabled"
+          label="操作"
+          :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'"
+          align="center"
+          class-name="small-padding fixed-width"
+          fixed="left"
         >
-          <el-table-column v-if="leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left">
-            <template slot-scope="scope">
-              <template v-if="!widget.options.rowButtons.length">
-                <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="下方添加行" placement="top-end">
-                  <el-button size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
-                </el-tooltip>
-                <el-tooltip :disabled="widgetDisabled" class="item" effect="dark" content="删除当前行" placement="top-end">
-                  <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
-                </el-tooltip>
-              </template>
-              <template v-for="(item, index) in widget.options.rowButtons">
-                <el-button
-                  v-if="showBtn(item, scope.row)"
-                  :icon="item.icon || ''"
-                  :key="index"
-                  :disabled="isDisabledButton(item, scope.row)"
-                  :type="item.type || 'text'"
-                  size="small"
-                  @click="itemClick(item, scope.row, scope.$index)"
-                >
-                {{ getLabel(scope.row, item.label) }}
-                </el-button>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column v-if="!!widget.options.showRowNumber" label="序号" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="left" width="120">
-            <template slot-scope="scope">
-              {{scope.$index + 1}}
-            </template>
-          </el-table-column>
-          <el-table-column v-for="(subWidget, swIdx) in widget.widgetList" :header-align="getLabelAlign(widget,subWidget)" align="center" :width="subWidget.options.columnWidth || 'auto'" :key="swIdx" v-if="!subWidget.options.hidden">
-            <template slot="header" slot-scope="scope">
-              <span
-                v-if="!!subWidget.options.labelIconClass"
-                class="custom-label"
+          <template slot-scope="scope">
+            <template v-if="!widget.options.rowButtons.length">
+              <el-tooltip
+                :disabled="actionDisabled"
+                class="item"
+                effect="dark"
+                content="下方添加行"
+                placement="top-end"
               >
-                <template v-if="subWidget.options.labelIconPosition === 'front'">
-                  <template v-if="!!subWidget.options.labelTooltip">
-                    <el-tooltip
-                      :content="subWidget.options.labelTooltip"
-                      effect="light"
-                    >
-                      <i
-                        :class="subWidget.options.labelIconClass"
-                      ></i></el-tooltip
-                    >{{ subWidget.options.label }}</template
-                  >
-                  <template v-else>
-                    <i :class="subWidget.options.labelIconClass"></i
-                    >{{ subWidget.options.label }}</template
-                  >
-                </template>
-                <template v-else-if="subWidget.options.labelIconPosition === 'rear'">
-                  <template v-if="!!subWidget.options.labelTooltip">
-                    {{ subWidget.options.label }}
-                    <el-tooltip
-                      :content="subWidget.options.labelTooltip"
-                      effect="light"
-                    >
-                      <i :class="subWidget.options.labelIconClass"></i>
-                    </el-tooltip>
-                  </template>
-                  <template v-else>
-                    {{ subWidget.options.label }}
-                    <i :class="subWidget.options.labelIconClass"></i>
-                  </template>
-                </template>
-              </span>
-              <template v-else>
-                <span :title="subWidget.options.labelTooltip">
-                  {{ subWidget.options.label }}
-                </span>
-              </template>
-            </template>
-            <template slot-scope="scope">
-              <div
-                class="sub-form-table-column hide-label"
-                :key="subWidget.id + 'tc' + rowIdData[scope.$index]"
-              >
-              <!-- :style="{ width: subWidget.options.columnWidth }" -->
-                <!-- {{subWidget.id + 'tc' + rowIdData[scope.$index]}} -->
-                <component
-                  :is="subWidget.type + '-widget'"
-                  :field="fieldSchemaData[scope.$index][swIdx]"
-                  :key="fieldSchemaData[scope.$index][swIdx].id"
-                  :parent-list="widget.widgetList"
-                  :index-of-parent-list="swIdx"
-                  :parent-widget="widget"
-                  :sub-form-row-id="rowIdData[scope.$index]"
-                  :sub-form-row-index="scope.$index"
-                  :sub-form-col-index="swIdx"
-                  :disabled="widgetDisabled || subWidget.options.disabled"
-                >
-                  <!-- 子表单暂不支持插槽！！！ -->
-                </component>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column v-if="!leftActionColumn" label="操作" :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'" align="center" class-name="small-padding fixed-width" fixed="right">
-            <template slot-scope="scope">
-              <template v-if="!widget.options.rowButtons.length">
-                <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
-                  <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-plus" @click="insertSubFormRow(scope.$index)"></el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
-                  <el-button :disabled="widgetDisabled" size="mini" type="text" icon="el-icon-delete" @click="deleteSubFormRow(scope.$index)"></el-button>
-                </el-tooltip>
-              </template>
-              <template v-for="(item, index) in widget.options.rowButtons">
                 <el-button
-                  v-if="showBtn(item, scope.row)"
-                  :icon="item.icon || ''"
-                  :key="index"
-                  :disabled="isDisabledButton(item, scope.row)"
-                  :type="item.type || 'text'"
-                  size="small"
-                  @click="itemClick(item, scope.row, index)"
-                >
-                {{ getLabel(scope.row, item.label) }}
-                </el-button>
-              </template>
+                  size="mini"
+                  type="text"
+                  icon="el-icon-plus"
+                  @click="insertSubFormRow(scope.$index)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip
+                :disabled="actionDisabled"
+                class="item"
+                effect="dark"
+                content="删除当前行"
+                placement="top-end"
+              >
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="deleteSubFormRow(scope.$index)"
+                ></el-button>
+              </el-tooltip>
             </template>
-          </el-table-column>
-        </el-table>
-      <div class="add-block">
-        <el-button type="text" icon="el-icon-plus" size="mini" :disabled="widgetDisabled" @click="addSubFormRow">{{widget.options.addRowText}}</el-button>
-      </div>
-      <!-- <el-row class="header-row">
-        <div v-if="leftActionColumn" class="action-header-column">
-          <span class="action-label">{{ i18nt("render.hint.subFormAction") }}</span>
-          <el-button
-            :disabled="widgetDisabled"
-            round
-            type="primary"
-            size="mini"
-            class="action-button"
-            @click="addSubFormRow"
-            :title="i18nt('render.hint.subFormAddActionHint')"
-          >
-            {{ i18nt("render.hint.subFormAddAction") }}
-            <i class="el-icon-plus el-icon-right"></i>
-          </el-button>
-        </div>
-        <template v-for="subWidget in widget.widgetList">
-          <div
-            :key="subWidget.id + 'thc'"
-            class="field-header-column"
-            :class="[
-              getLabelAlign(widget, subWidget),
-              !!subWidget.options.required ? 'is-required' : '',
-            ]"
-            :style="{ width: subWidget.options.columnWidth }"
-          >
-            <span
-              v-if="!!subWidget.options.labelIconClass"
-              class="custom-label"
-            >
+            <template v-for="(item, index) in widget.options.rowButtons">
+              <el-button
+                v-if="showBtn(item, scope.row)"
+                :icon="item.icon || ''"
+                :key="index"
+                :disabled="actionDisabled"
+                :type="item.type || 'text'"
+                size="small"
+                @click="itemClick(item, scope.row, scope.$index)"
+              >{{ getLabel(scope.row, item.label) }}</el-button>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="!!widget.options.showRowNumber"
+          label="序号"
+          :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'"
+          align="center"
+          class-name="small-padding fixed-width"
+          fixed="left"
+          width="120"
+        >
+          <template slot-scope="scope">{{scope.$index + 1}}</template>
+        </el-table-column>
+        <el-table-column
+          v-for="(subWidget, swIdx) in widget.widgetList"
+          :header-align="getLabelAlign(widget,subWidget)"
+          align="center"
+          :width="subWidget.options.columnWidth || 'auto'"
+          :key="swIdx"
+          v-if="!subWidget.options.hidden"
+        >
+          <div slot="header" slot-scope="scope" :class="subWidget.options.labelAlign || 'label-left-align'">
+            <span v-if="subWidget.options.required" style="content: '*';color: #f56c6c;margin-right: 4px;">*</span>
+            <span v-if="!!subWidget.options.labelIconClass" class="custom-label">
               <template v-if="subWidget.options.labelIconPosition === 'front'">
                 <template v-if="!!subWidget.options.labelTooltip">
-                  <el-tooltip
-                    :content="subWidget.options.labelTooltip"
-                    effect="light"
-                  >
-                    <i
-                      :class="subWidget.options.labelIconClass"
-                    ></i></el-tooltip
-                  >{{ subWidget.options.label }}</template
-                >
+                  <el-tooltip :content="subWidget.options.labelTooltip" effect="light">
+                    <i :class="subWidget.options.labelIconClass"></i>
+                  </el-tooltip>
+                  {{ subWidget.options.label }}
+                </template>
                 <template v-else>
-                  <i :class="subWidget.options.labelIconClass"></i
-                  >{{ subWidget.options.label }}</template
-                >
+                  <i :class="subWidget.options.labelIconClass"></i>
+                  {{ subWidget.options.label }}
+                </template>
               </template>
-              <template
-                v-else-if="subWidget.options.labelIconPosition === 'rear'"
-              >
+              <template v-else-if="subWidget.options.labelIconPosition === 'rear'">
                 <template v-if="!!subWidget.options.labelTooltip">
                   {{ subWidget.options.label }}
-                  <el-tooltip
-                    :content="subWidget.options.labelTooltip"
-                    effect="light"
-                  >
+                  <el-tooltip :content="subWidget.options.labelTooltip" effect="light">
                     <i :class="subWidget.options.labelIconClass"></i>
                   </el-tooltip>
                 </template>
@@ -213,95 +113,82 @@
               </span>
             </template>
           </div>
-        </template>
-        <div v-if="!leftActionColumn" class="action-header-column">
-          <span class="action-label">{{ i18nt("render.hint.subFormAction") }}</span>
-          <el-button
-            :disabled="widgetDisabled"
-            round
-            type="primary"
-            size="mini"
-            class="action-button"
-            @click="addSubFormRow"
-            :title="i18nt('render.hint.subFormAddActionHint')"
-          >
-            {{ i18nt("render.hint.subFormAddAction") }}
-            <i class="el-icon-plus el-icon-right"></i>
-          </el-button>
-        </div>
-      </el-row>
-      <el-row
-        v-for="(subFormRowId, sfrIdx) in rowIdData"
-        class="sub-form-row"
-        :key="subFormRowId"
-      >
-        <div v-if="leftActionColumn" class="sub-form-action-column hide-label">
-          <div class="action-button-column">
-            <el-button
-              :disabled="widgetDisabled"
-              circle
-              type=""
-              icon="el-icon-circle-plus-outline"
-              @click="insertSubFormRow(sfrIdx)"
-              :title="i18nt('render.hint.insertSubFormRow')"
-            ></el-button>
-            <el-button
-              :disabled="widgetDisabled"
-              circle
-              type=""
-              icon="el-icon-delete"
-              @click="deleteSubFormRow(sfrIdx)"
-              :title="i18nt('render.hint.deleteSubFormRow')"
-            ></el-button>
-            <span v-if="widget.options.showRowNumber" class="row-number-span"
-              >#{{ sfrIdx + 1 }}</span
+          <template slot-scope="scope">
+            <div
+              class="sub-form-table-column hide-label"
+              :key="subWidget.id + 'tc' + rowIdData[scope.$index]"
             >
-          </div>
-        </div>
-        <template v-for="(subWidget, swIdx) in widget.widgetList">
-          <div
-            class="sub-form-table-column hide-label"
-            :key="subWidget.id + 'tc' + subFormRowId"
-            :style="{ width: subWidget.options.columnWidth }"
-          >
-            <component
-              :is="subWidget.type + '-widget'"
-              :field="fieldSchemaData[sfrIdx][swIdx]"
-              :key="fieldSchemaData[sfrIdx][swIdx].id"
-              :parent-list="widget.widgetList"
-              :index-of-parent-list="swIdx"
-              :parent-widget="widget"
-              :sub-form-row-id="subFormRowId"
-              :sub-form-row-index="sfrIdx"
-              :sub-form-col-index="swIdx"
-            >
-            </component>
-          </div>
-        </template>
-        <div v-if="!leftActionColumn" class="sub-form-action-column hide-label">
-          <div class="action-button-column">
-            <el-button
-              :disabled="widgetDisabled"
-              circle
-              type=""
-              icon="el-icon-circle-plus-outline"
-              @click="insertSubFormRow(sfrIdx)"
-              :title="i18nt('render.hint.insertSubFormRow')"
-            ></el-button>
-            <el-button
-              :disabled="widgetDisabled"
-              circle
-              type=""
-              icon="el-icon-delete"
-              @click="deleteSubFormRow(sfrIdx)"
-              :title="i18nt('render.hint.deleteSubFormRow')"
-            ></el-button>
-            <span v-if="widget.options.showRowNumber" class="row-number-span"
-              >#{{ sfrIdx + 1 }}</span
-            >
-          </div>
-        </div>
-      </el-row> -->
+              <!-- :style="{ width: subWidget.options.columnWidth }" -->
+              <!-- {{subWidget.id + 'tc' + rowIdData[scope.$index]}} -->
+              <component
+                :is="subWidget.type + '-widget'"
+                :field="fieldSchemaData[scope.$index][swIdx]"
+                :key="fieldSchemaData[scope.$index][swIdx].id"
+                :parent-list="widget.widgetList"
+                :index-of-parent-list="swIdx"
+                :parent-widget="widget"
+                :sub-form-row-id="rowIdData[scope.$index]"
+                :sub-form-row-index="scope.$index"
+                :sub-form-col-index="swIdx"
+                :disabled="widgetDisabled || subWidget.options.disabled"
+              >
+                <!-- 子表单暂不支持插槽！！！ -->
+              </component>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="!leftActionColumn && !actionDisabled"
+          label="操作"
+          :header-align="widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'"
+          align="center"
+          class-name="small-padding fixed-width"
+          fixed="right"
+        >
+          <template slot-scope="scope">
+            <template v-if="!widget.options.rowButtons.length">
+              <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                <el-button
+                  :disabled="actionDisabled"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-plus"
+                  @click="insertSubFormRow(scope.$index)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                <el-button
+                  :disabled="actionDisabled"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="deleteSubFormRow(scope.$index)"
+                ></el-button>
+              </el-tooltip>
+            </template>
+            <template v-for="(item, index) in widget.options.rowButtons">
+              <el-button
+                v-if="showBtn(item, scope.row)"
+                :icon="item.icon || ''"
+                :key="index"
+                :disabled="actionDisabled"
+                :type="item.type || 'text'"
+                size="small"
+                @click="itemClick(item, scope.row, scope.$index)"
+              >{{ getLabel(scope.row, item.label) }}</el-button>
+            </template>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="add-block" v-if="!actionDisabled">
+        <el-button
+          type="text"
+          icon="el-icon-plus"
+          size="mini"
+          :disabled="actionDisabled"
+          @click="addSubFormRow"
+        >{{widget.options.addRowText}}</el-button>
+      </div>
     </div>
   </container-item-wrapper>
 </template>
@@ -321,27 +208,28 @@ export default {
   mixins: [emitter, i18n, refMixin, containerItemMixin],
   components: {
     ContainerItemWrapper,
-    ...FieldComponents,
+    ...FieldComponents
   },
   props: {
-    widget: Object,
+    widget: Object
   },
   inject: ["refList", "sfRefList", "globalModel"],
   // , "getReadMode"
   data() {
     return {
       rowIdData: [],
-      fieldSchemaData: []
+      fieldSchemaData: [],
+      actionDisabled: false
     };
   },
   computed: {
     // isReadMode () {
     //   return this.getReadMode();
     // },
-    leftActionColumn () {
+    leftActionColumn() {
       return "left" === (this.widget.options.actionColumnPosition || "right");
     },
-    widgetDisabled () {
+    widgetDisabled() {
       return !!this.widget.options.disabled;
     }
   },
@@ -360,9 +248,19 @@ export default {
   },
   methods: {
     getLabelAlign(widget, subWidget) {
-      const wid = widget.options.labelAlign === 'label-left-align' ? 'left' : widget.options.labelAlign === 'label-right-align' ? 'right' : 'center'
-      const sub_wid = subWidget.options.labelAlign === 'label-left-align' ? 'left' : subWidget.options.labelAlign === 'label-right-align' ? 'right' : 'center'
-      return sub_wid || wid
+      const wid =
+        widget.options.labelAlign === "label-left-align"
+          ? "left"
+          : widget.options.labelAlign === "label-right-align"
+          ? "right"
+          : "center";
+      const sub_wid =
+        subWidget.options.labelAlign === "label-left-align"
+          ? "left"
+          : subWidget.options.labelAlign === "label-right-align"
+          ? "right"
+          : "center";
+      return sub_wid || wid;
       // return subWidget.options.labelAlign || widget.options.labelAlign;
     },
 
@@ -423,7 +321,7 @@ export default {
       if (rowLength > 0) {
         for (let i = 0; i < rowLength; i++) {
           let fieldSchemas = [];
-          this.widget.widgetList.forEach((swItem) => {
+          this.widget.widgetList.forEach(swItem => {
             fieldSchemas.push(this.cloneFieldSchema(swItem));
           });
           this.fieldSchemaData.push(fieldSchemas);
@@ -433,7 +331,7 @@ export default {
 
     addToFieldSchemaData(rowIndex) {
       let fieldSchemas = [];
-      this.widget.widgetList.forEach((swItem) => {
+      this.widget.widgetList.forEach(swItem => {
         fieldSchemas.push(this.cloneFieldSchema(swItem));
       });
 
@@ -459,7 +357,7 @@ export default {
         return;
       }
 
-      this.$on("setFormData", (newFormData) => {
+      this.$on("setFormData", newFormData => {
         this.initRowIdData(false);
         this.initFieldSchemaData();
 
@@ -485,7 +383,7 @@ export default {
 
     addSubFormRow() {
       let newSubFormDataRow = {};
-      this.widget.widgetList.forEach((subFormItem) => {
+      this.widget.widgetList.forEach(subFormItem => {
         if (!!subFormItem.formItemFlag) {
           newSubFormDataRow[subFormItem.options.name] =
             subFormItem.options.defaultValue;
@@ -506,7 +404,7 @@ export default {
 
     insertSubFormRow(beforeFormRowIndex) {
       let newSubFormDataRow = {};
-      this.widget.widgetList.forEach((subFormItem) => {
+      this.widget.widgetList.forEach(subFormItem => {
         if (!!subFormItem.formItemFlag) {
           newSubFormDataRow[subFormItem.options.name] =
             subFormItem.options.defaultValue;
@@ -531,7 +429,7 @@ export default {
         this.i18nt("render.hint.prompt"),
         {
           confirmButtonText: this.i18nt("render.hint.confirm"),
-          cancelButtonText: this.i18nt("render.hint.cancel"),
+          cancelButtonText: this.i18nt("render.hint.cancel")
         }
       )
         .then(() => {
@@ -595,7 +493,7 @@ export default {
 
     // 是否disabled
     isDisabledButton(item, row) {
-      return false
+      return false;
 
       if (typeof item.isDisable === "function") {
         return item.isDisable(row);
@@ -606,22 +504,18 @@ export default {
     // 是否显示
     showBtn(item, row) {
       // const row = row
-      return (
-        item.tableHideCustom ? 
-          !!item.isHide ? 
-            eval(item.isHide) 
-            :
-            true 
-          : 
-          !item.tableHide
-      )
+      return item.tableHideCustom
+        ? !!item.isHide
+          ? eval(item.isHide)
+          : true
+        : !item.tableHide;
     },
     itemClick(item, row, index) {
-      console.log('[itemClick]', item)
-      if (item.action == 'add') {
-        this.insertSubFormRow(index)
-      } else if (item.action == 'delete') {
-        this.deleteSubFormRow(index)
+      console.log("[itemClick]", item);
+      if (item.action == "add") {
+        this.insertSubFormRow(index);
+      } else if (item.action == "delete") {
+        this.deleteSubFormRow(index);
       } else {
         if (!!item.customFunc) {
           let customFuncInst = new Function(
@@ -635,15 +529,15 @@ export default {
       }
     },
     getLabel(item, label) {
-      return label
+      return label;
 
       if (typeof label == "function") {
         return label(item);
       } else {
         return label;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -664,6 +558,9 @@ export default {
       margin-left: 16px;
     }
   }
+}
+::v-deep .el-table__cell .sub-form-table-column {
+  width: 100%;
 }
 
 div.action-header-column {
@@ -697,7 +594,7 @@ div.field-header-column.is-required:before {
   margin-right: 4px;
 }
 
-div.label-center-left {
+div.label-left-align {
   text-align: left;
 }
 
@@ -751,9 +648,9 @@ div.sub-form-table-column.hide-label {
     display: none;
   }
 }
-.add-block{
+.add-block {
   padding: 5px;
-  border: 1px solid #EBEEF5;
+  border: 1px solid #ebeef5;
   border-top: none;
   display: flex;
   justify-content: center;

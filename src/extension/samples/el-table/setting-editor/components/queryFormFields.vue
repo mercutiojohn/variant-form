@@ -1,7 +1,6 @@
 <template>
     <div>
-      <Table :data="listData" ref="multipleTable" row-key="id" max-height="450"  
-                 style="margin-top: -20px" tooltip-effect="dark">
+      <Table :data="listData" ref="multipleTable" size="mini" max-height="600px">
         <!-- <TableColumn prop="name" header-align="center" align="left" label="机构" >
         </TableColumn>
         <TableColumn prop="sendamount" header-align="center" align="center" label="打印份数" >
@@ -9,19 +8,15 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn
-            align="center"
-            label="拖拽排序"
-            min-width="100"
-          >
-            <template slot-scope="scope">
-                <el-button
-                style="font-size:30px;"
-                type="text"
-                icon="el-icon-menu"
-                class="drag"
-              />
-            </template>
+        <TableColumn align="center" width="30">
+          <template slot-scope="scope">
+            <svg-icon
+              class="drag"
+              style="cursor: grab"
+              icon-class="drag-handle-dots-2"
+              class-name="color-svg-icon"
+            />
+          </template>
         </TableColumn>
         <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="名称" >
             <template slot-scope="scope" >
@@ -30,7 +25,11 @@
         </TableColumn>
         <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="绑定字段" >
             <template slot-scope="scope"  >
-              <el-select v-model="scope.row.field" @change="fieldChange(scope.row)" placeholder="请选择">
+              <el-select 
+               filterable
+                allow-create
+                default-first-option
+                v-model="scope.row.field" @change="fieldChange(scope.row)" placeholder="请选择">
                 <el-option
                   v-for="dict in columns"
                   :key="dict.code"
@@ -46,9 +45,9 @@
               <el-select v-model="scope.row.inputType" placeholder="请选择">
                 <el-option
                   v-for="dict in inputType"
-                  :key="dict"
-                  :label="dict"
-                  :value="dict"
+                  :key="dict.label"
+                  :label="dict.label"
+                  :value="dict.value"
                ></el-option>
               </el-select>
             </template>
@@ -62,29 +61,21 @@
           </template>
         </TableColumn> -->
         <TableColumn
-        label="操作"
-        width="150px"
-        align="center"
+          label="" align="center" fixed="right"
         >
           <template slot-scope="scope">
             <el-button
-              type="success"
-              circle
+              type="text"
               plain
               icon="el-icon-plus"
-              @click="
-                addDict(scope.$index,listData)
-              "
+              @click="addDict(scope.$index, listData)"
             />
 
             <el-button
-              type="danger"
-              circle
+              type="text"
               plain
               icon="el-icon-delete"
-              @click="
-                delDict(scope.$index,listData)
-              "
+              @click="delDict(scope.$index, listData)"
             />
           </template>
         </TableColumn>
@@ -97,7 +88,7 @@
             </template>
         </TableColumn> -->
       </Table>
-      <div v-if="lodding" style="width: 100%;
+      <div v-if="loading" style="width: 100%;
                   height: calc(100% - 60px);
                   background-color: rgb(244, 244, 244);
                   position: absolute;
@@ -116,6 +107,7 @@
     </div>
   </template>
   <script>
+  import SvgIcon from "@/components/svg-icon";
   import { Button, Table, TableColumn,Input } from 'element-ui'
   import {getAllFieldWidgets} from "@/utils/util"
   import sortable from '@/utils/Sortable.js'
@@ -128,6 +120,7 @@
       TableColumn,
       Button,
       ELInput: Input,
+      SvgIcon
     },
     props: {
       list: {
@@ -144,8 +137,61 @@
       return {
         listData: [],
         num: 1,
-        lodding:false,
-        inputType:['input','user-choose','group-choose','textarea','number','select','radio','checkbox','switch','time','time-range','date','date-range']
+        loading: false,
+        inputType: [
+          {
+            value: 'input',
+            label: '单行文本' 
+          },
+          {
+            value: 'user-choose',
+            label: '人员选择' 
+          },
+          {
+            value: 'group-choose',
+            label: '组织选择' 
+          },
+          {
+            value: 'textarea',
+            label: '多行文本' 
+          },
+          {
+            value: 'number',
+            label: '数字' 
+          },
+          {
+            value: 'select',
+            label: '下拉选择' 
+          },
+          {
+            value: 'radio',
+            label: '单选' 
+          },
+          {
+            value: 'checkbox',
+            label: '复选框' 
+          },
+          {
+            value: 'switch',
+            label: '开关' 
+          },
+          {
+            value: 'time',
+            label: '时间' 
+          },
+          {
+            value: 'time-range',
+            label: '时间范围' 
+          },
+          {
+            value: 'date',
+            label: '日期' 
+          },
+          {
+            value: 'date-range',
+            label: '日期范围' 
+          }
+        ]
       }
     },
     methods: {
@@ -181,7 +227,7 @@
         }
       },
       async getLatestData(){
-        this.lodding=true
+        this.loading=true
         const {data} = await this.setFunction.getVformPagesByPageId(this.formId);
         const pageJsonObj=  JSON.parse(data.pageJson)
         let widgetList=pageJsonObj.widgetList
@@ -212,7 +258,7 @@
         })
         console.log(newTable);
         this.listData=newTable
-        this.lodding=false
+        this.loading=false
       },
       getFieldWidgets(widgetList = null) {
         return !!widgetList ? getAllFieldWidgets(widgetList) : getAllFieldWidgets(this.formJson.widgetList)

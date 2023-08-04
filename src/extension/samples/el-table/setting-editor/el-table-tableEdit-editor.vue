@@ -1,20 +1,24 @@
 <template>
   <div>
-    <el-form-item label="表格列编辑" label-width="150px">
-      <el-button type="info" icon="el-icon-edit" plain round @click="editData">
-        编辑字段</el-button>
+    <el-form-item label-width="0">
+      <el-divider class="custom-divider" content-position="left">表格配置</el-divider>
     </el-form-item>
-    <el-dialog title="表格列编辑" :visible.sync="editNumberVisible" width="60%" :append-to-body="true">
+    <el-form-item label="表格列" label-width="150px">
+      <el-button type="info" icon="el-icon-edit" plain round @click="editData">
+        编辑
+      </el-button>
+    </el-form-item>
+    <el-drawer title="表格列字段编辑" :visible.sync="editNumberVisible" :append-to-body="true" size="95%">
         <editTable
           v-if="editNumberVisible"
           @need-close="editNumberVisible=false"
           :list="list"
-          windowHight="700px"
+          windowHight="600px"
           @close="toClose"
           :formId="formId"
           :columnsCss="columnsCss"
         ></editTable>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 

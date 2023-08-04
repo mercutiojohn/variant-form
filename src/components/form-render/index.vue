@@ -54,7 +54,7 @@
     name: "VFormRender",
     componentName: 'VFormRender',
     mixins: [emitter, i18n],
-    inject: ['request', 'router', 'currentRoute'],
+    inject: ['request', 'router', 'currentRoute','closePage'],
     components: {
       //ElForm,
 

@@ -253,7 +253,7 @@ export const basicFields = [
       max: 100000000000,
       precision: 0,
       step: 1,
-      controlsPosition: 'right',
+      controlsPosition: 'default',
       //-------------------
       onCreated: '',
       onMounted: '',
@@ -745,6 +745,7 @@ export const basicFields = [
       labelAlign: '',
       columnWidth: '',
       showStops: true,
+      showInput:false,
       size: '',
       labelWidth: null,
       labelHidden: false,
@@ -874,13 +875,13 @@ export const basicFields = [
     formItemFlag: false,
     options: {
       name: '',
-      label: '',
+      label: '保存',
       columnWidth: '',
       size: '',
       displayStyle: 'block',
       disabled: false,
       hidden: false,
-      type: '',
+      type: 'primary',
       plain: false,
       round: false,
       circle: false,
@@ -898,7 +899,7 @@ export const basicFields = [
       //-------------------
       onCreated: '',
       onMounted: '',
-      onClick: '',
+      onClick: "// 打印ENV\nconsole.log('[renderEnv]',this.getFormRef().getGlobalDsv().renderEnv)\n\n// Render环境\nlet renderEnv = this.getGlobalDsv().renderEnv;\n\n// ---- 相关JSON ----\n// 页面数据\nlet pageData = renderEnv.pageData;\nconsole.log('[pageData]',pageData);\n\n// 获取表单数据API\nlet getFormData = this.getFormRef().getFormData;\nlet formData = {};\ngetFormData().then((resp)=>{\n  formData = resp\n  console.log('[formData]', formData);\n});\n\n// ---- 相关ID ----\n// 页面ID\nlet pageId = renderEnv.pageId;\nconsole.log('[pageId]',pageId);\n\n// 路由参数 Params\nlet params = renderEnv.$route.params;\nconsole.log('[params]',params);\n// 路由查询 Query\nlet query = renderEnv.$route.query\nconsole.log('[query]',query);\n\n// ---- 增删改查API ----\n// 新增\nlet submitTask = renderEnv.submitTask();\n// 修改\nlet editTask = renderEnv.editTask();\n// 单个查\nlet queryTask = renderEnv.queryTask();\n// 查询列表\nlet queryTaskList = renderEnv.queryTaskList();\n// 记录ID\nlet taskId = renderEnv.$route && renderEnv.$route.query && renderEnv.$route.query.task_id;\nif(taskId){\n  console.log('[taskId]','修改状态', taskId);\n}\nelse{\n  console.log('[taskId]','非修改状态');\n}\n// ---- 操作 ----\nif(taskId){\n  console.log('[编辑]',pageId,taskId)\n  getFormData().then((resp)=>{\n    formData = resp\n    formData.task_id = taskId\n    console.log('[formData]', formData);\n    editTask(pageId,formData).then((resp)=>{\n      renderEnv.$message.success(\"保存成功\")\n      console.log('[editTask]',resp)\n    })\n  }).catch((e)=>{\n    renderEnv.$message.error(e)\n  });\n}\nelse{\n  console.log('[新增]',pageId)\n  getFormData().then((resp)=>{\n    formData = resp\n    console.log('[formData]', formData);\n    submitTask(pageId,formData).then((resp)=>{\n      console.log('[submitTask]',resp)\n      renderEnv.$route.query.task_id = resp.data.task_id\n      renderEnv.$message.success(\"保存成功\")\n      \n    })\n  }).catch((e)=>{\n    renderEnv.$message.error(e)\n  });;\n  \n}\n"
     },
   },
 
@@ -954,7 +955,7 @@ export const basicFields = [
         color: "#000000",
       },
       //-------------------
-      uploadURL: '/api/file/fileManager/uploadFile2',
+      uploadURL: '/xxzx/api/file/fileManager/uploadFile2',
       uploadTip: '',
       withCredentials: false,
       multipleSelect: false,
@@ -999,7 +1000,7 @@ export const basicFields = [
       customRule: '',
       customRuleHint: '',
       //-------------------
-      uploadURL: '/api/file/fileManager/uploadFile2',
+      uploadURL: '/xxzx/api/file/fileManager/uploadFile2',
       uploadTip: '',
       withCredentials: false,
       multipleSelect: false,

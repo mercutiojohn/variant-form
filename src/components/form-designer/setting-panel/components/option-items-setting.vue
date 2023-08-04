@@ -125,6 +125,7 @@
     },
     methods: {
       emitDefaultValueChange() {
+        debugger
         if (!!this.designer && !!this.designer.formWidget) {
           let fieldWidget = this.designer.formWidget.getWidgetRef(this.selectedWidget.options.name)
           if (!!fieldWidget && !!fieldWidget.refreshDefaultValue) {
@@ -137,7 +138,7 @@
       },
 
       addOption() {
-        let newValue = this.optionModel.optionItems.length + 1
+        let newValue = this.optionModel.optionItems.length + 1 + ''
         this.optionModel.optionItems.push({
           value: newValue,
           label: 'new option'
@@ -187,9 +188,10 @@
       },
 
       resetDefault() {
+        debugger
         if ((this.selectedWidget.type === 'checkbox') ||
             ((this.selectedWidget.type === 'select') && this.selectedWidget.options.multiple)) {
-          this.optionModel.defaultValue = []
+          this.optionModel.defaultValue = ""
           // this.optionModel.defaultValue = "[]"
         } else {
           this.optionModel.defaultValue = ''

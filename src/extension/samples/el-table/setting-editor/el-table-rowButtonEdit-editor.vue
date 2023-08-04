@@ -1,19 +1,20 @@
 <template>
   <div>
-    <el-form-item label="表格操作列按钮编辑" label-width="150px">
+    <el-form-item label="操作列按钮" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
-        编辑字段</el-button>
+        编辑
+      </el-button>
     </el-form-item>
-    <el-dialog title="表格操作列按钮编辑" :visible.sync="editNumberVisible" :append-to-body="true">
-        <rowButton
+    <el-drawer title="自定义操作列" :visible.sync="editNumberVisible" :append-to-body="true" size="700px">
+        <rowButtons
           v-if="editNumberVisible"
-          @need-close="editNumberVisible=false"
-          :list="list"
+          @need-close="editNumberVisible = false"
+          :list="btnList"
           :getTableData="getTableData"
           windowHight="700px"
           @close="toClose"
-        ></rowButton>
-    </el-dialog>
+        ></rowButtons>
+    </el-drawer>
   </div>
 </template>
 
@@ -21,7 +22,7 @@
   import Vue from 'vue'
   import i18n from "@/utils/i18n"
   import eventMixin from "@/components/form-designer/setting-panel/property-editor/event-handler/eventMixin"
-  import rowButton from "./components/rowButton.vue"
+  import rowButtons from "./components/rowButton"
   export default {
     name: "el-table-rowButtonEdit-editor",
     mixins: [i18n, eventMixin],
@@ -32,7 +33,7 @@
 
     },
     components: {
-      rowButton
+      rowButtons
     },
     watch: {
     //   selectedWidget: {
@@ -46,7 +47,7 @@
     // }
   },
     computed:{
-      list(){
+      btnList(){
         return  this.selectedWidget.options.crudOption.rowButtons;
       },
       getTableData(){

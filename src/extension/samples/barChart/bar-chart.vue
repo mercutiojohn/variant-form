@@ -1,6 +1,6 @@
 <template>
   <div :style="styleObj">
-    <v-chart :options="options" autoresize/>
+    <v-chart :options="options" @click="onClick"/>
   </div>
 </template>
 
@@ -101,6 +101,14 @@ export default {
     
   },
   methods: {
+    //点击事件
+    onClick(item){
+      //console.log(item)
+      if(this.optionsSetup.clickEvent){
+        let newFunction =  new Function('item','_this',this.optionsSetup.clickEvent)              
+        newFunction(item,this)             
+      }
+    },
     // 修改图标options属性
     editorOptions() {
       this.setOptionsTitle();
@@ -250,8 +258,8 @@ export default {
           }
         }
       } 
-      series[0].barWidth = optionsSetup.maxWidth;
-      series[0].barMinHeight = optionsSetup.minHeight;
+      // series[0].barWidth = optionsSetup.maxWidth;
+      // series[0].barMinHeight = optionsSetup.minHeight;
     },
     // tooltip 设置
     setOptionsTooltip() {

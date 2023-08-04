@@ -132,7 +132,7 @@ export default {
         })
       }
 
-      //禁用3个操作按钮
+      //禁用操作按钮
       this.actionDisabled = true
     },
 
@@ -143,7 +143,7 @@ export default {
         })
       }
 
-      //启用3个操作按钮
+      //启用操作按钮
       this.actionDisabled = false
     },
 
@@ -170,7 +170,38 @@ export default {
       }
     },
 
-    setSubFormValues(subFormValues) {
+    setSubFormValues(subFormValues,index='2023/7/7') {
+      // console.log(this.formModel);
+      if (this.widget.type === 'sub-form') {       
+        if (index=='2023/7/7'&&Object.prototype.toString.call(subFormValues)=='[object Array]') {
+          // Object.prototype.toString.call(apiData[key])=='[object Object]'
+          if(subFormValues.length>this.formModel[this.widget.options.name].length){
+            let addLength= subFormValues.length-this.formModel[this.widget.options.name].length
+            for (let index = 0; index <addLength; index++) {
+              this.addSubFormRow()          
+            }
+          }
+          this.rowIdData.splice(0, this.rowIdData.length)
+          this.formModel[this.widget.options.name]=subFormValues
+          let subFormModel = this.formModel[this.widget.options.name]
+          if (!!subFormModel && (subFormModel.length > 0)) {
+            subFormModel.forEach(() => {
+              this.rowIdData.push('id' + Math.floor(Math.random() * 100000 + Math.random() * 20000 + Math.random() * 5000))
+            })
+          }
+        }else if(Object.prototype.toString.call(subFormValues)=='[object Object]'){
+          if (index>this.formModel[this.widget.options.name].length-1) {
+            console.log('index超出子表数据长度')
+            return
+          }
+          this.formModel[this.widget.options.name][index]=subFormValues
+          this.rowIdData.splice(index,1,'id' +  Math.floor(Math.random() * 100000 + Math.random() * 20000 + Math.random() * 5000))
+        }else{
+          console.log('传参不正确'+'正确格式为：数组 || 对象+index')
+        }       
+      } else {
+        this.$message.error(this.i18nt('render.hint.nonSubFormType'))
+      }
       //TODO: 待实现！！
     },
 

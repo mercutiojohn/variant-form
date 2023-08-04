@@ -16,53 +16,33 @@
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']"
            @click="toggleCard"></i>
       </div>
-    </el-card> -->
+    </el-card>-->
     <span class="test" ref="test"></span>
     <div
       class="sub-form-container"
       :class="{ selected: selected }"
       @click.stop="selectWidget(widget)"
     >
-      <el-form label-position="top">
-        <div
-          v-if="leftActionColumn"
-          class="sub-form-table-extended function"
-        >
+      <el-form
+        label-position="top"
+        v-if="!((formConfig && formConfig.layoutType == 'H5') || (designer && designer.formConfig.layoutType == 'H5'))"
+      >
+        <div v-if="leftActionColumn" class="sub-form-table-extended function">
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label :class="[
+              <label
+                :class="[
                 widget.options.labelAlign,
                 'el-form-item__label',
               ]"
-                >操作</label
-              >
+              >操作</label>
               <div class="el-form-item__content">
                 <template v-if="!widget.options.rowButtons.length">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="下方添加行"
-                    placement="top-end"
-                  >
-                    <el-button
-                      :disabled="true"
-                      size="mini"
-                      type="text"
-                      icon="el-icon-plus"
-                    ></el-button>
+                  <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                    <el-button :disabled="true" size="mini" type="text" icon="el-icon-plus"></el-button>
                   </el-tooltip>
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="删除当前行"
-                    placement="top-end"
-                  >
-                    <el-button
-                      :disabled="true"
-                      size="mini"
-                      type="text"
-                      icon="el-icon-delete"
-                    ></el-button>
+                  <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                    <el-button :disabled="true" size="mini" type="text" icon="el-icon-delete"></el-button>
                   </el-tooltip>
                 </template>
                 <template v-for="(item, index) in widget.options.rowButtons">
@@ -72,26 +52,21 @@
                     :key="index"
                     :type="item.type || 'text'"
                     size="small"
-                  >
-                  {{ item.label }}
-                  </el-button>
+                  >{{ item.label }}</el-button>
                 </template>
               </div>
             </div>
           </div>
         </div>
-        <div
-          v-if="!!widget.options.showRowNumber"
-          class="sub-form-table-extended index"
-        >
+        <div v-if="!!widget.options.showRowNumber" class="sub-form-table-extended index">
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label :class="[
+              <label
+                :class="[
                 widget.options.labelAlign,
                 'el-form-item__label',
               ]"
-                >序号</label
-              >
+              >序号</label>
               <div class="el-form-item__content">1</div>
             </div>
           </div>
@@ -141,46 +116,23 @@
               </div>
             </div>
           </div>
-        </div> -->
-        <div
-          v-if="!leftActionColumn"
-          class="sub-form-table-extended function"
-        >
+        </div>-->
+        <div v-if="!leftActionColumn" class="sub-form-table-extended function">
           <div class="field-wrapper design-time-bottom-margin">
             <div class="el-form-item">
-              <label :class="[
+              <label
+                :class="[
                 widget.options.labelAlign,
                 'el-form-item__label',
               ]"
-                >操作</label
-              >
+              >操作</label>
               <div class="el-form-item__content">
                 <template v-if="!widget.options.rowButtons.length">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="下方添加行"
-                    placement="top-end"
-                  >
-                    <el-button
-                      :disabled="true"
-                      size="mini"
-                      type="text"
-                      icon="el-icon-plus"
-                    ></el-button>
+                  <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                    <el-button :disabled="true" size="mini" type="text" icon="el-icon-plus"></el-button>
                   </el-tooltip>
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="删除当前行"
-                    placement="top-end"
-                  >
-                    <el-button
-                      :disabled="true"
-                      size="mini"
-                      type="text"
-                      icon="el-icon-delete"
-                    ></el-button>
+                  <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                    <el-button :disabled="true" size="mini" type="text" icon="el-icon-delete"></el-button>
                   </el-tooltip>
                 </template>
                 <template v-for="(item, index) in widget.options.rowButtons">
@@ -190,12 +142,135 @@
                     :key="index"
                     :type="item.type || 'text'"
                     size="small"
-                  >
-                  {{ item.label }}
-                  </el-button>
+                  >{{ item.label }}</el-button>
                 </template>
               </div>
             </div>
+          </div>
+        </div>
+      </el-form>
+      <!-- 更改组件样式 -->
+      <el-form label-position="left" v-else>
+        <div id="sub-form-table-app">
+          <div id="sub-form-table-app-row1">
+            <div v-if="!!widget.options.showRowNumber" class="sub-form-table-extended index" id="app-index">
+              <div class="field-wrapper design-time-bottom-margin">
+                <div class="el-form-item">
+                  <label
+                    :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
+                  >序号</label>
+                  <div class="el-form-item__content">1</div>
+                </div>
+              </div>
+            </div>
+            <div v-if="leftActionColumn" class="sub-form-table-extended function" id="app-function">
+              <div class="field-wrapper design-time-bottom-margin">
+                <div class="el-form-item">
+                  <label
+                    :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
+                  >操作</label>
+                  <div class="el-form-item__content">
+                    <template v-if="!widget.options.rowButtons.length">
+                      <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                        <el-button :disabled="true" size="mini" type="text" icon="el-icon-plus"></el-button>
+                      </el-tooltip>
+                      <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                        <el-button :disabled="true" size="mini" type="text" icon="el-icon-delete"></el-button>
+                      </el-tooltip>
+                    </template>
+                    <template v-for="(item, index) in widget.options.rowButtons">
+                      <el-button
+                        v-if="!item.tableHide"
+                        :icon="item.icon || ''"
+                        :key="index"
+                        :type="item.type || 'text'"
+                        size="small"
+                      >{{ item.label }}</el-button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="!leftActionColumn" class="sub-form-table-extended function" id="app-function">
+              <div class="field-wrapper design-time-bottom-margin">
+                <div class="el-form-item">
+                  <label
+                    :class="[
+                widget.options.labelAlign,
+                'el-form-item__label',
+              ]"
+                  >操作</label>
+                  <div class="el-form-item__content">
+                    <template v-if="!widget.options.rowButtons.length">
+                      <el-tooltip class="item" effect="dark" content="下方添加行" placement="top-end">
+                        <el-button :disabled="true" size="mini" type="text" icon="el-icon-plus"></el-button>
+                      </el-tooltip>
+                      <el-tooltip class="item" effect="dark" content="删除当前行" placement="top-end">
+                        <el-button :disabled="true" size="mini" type="text" icon="el-icon-delete"></el-button>
+                      </el-tooltip>
+                    </template>
+                    <template v-for="(item, index) in widget.options.rowButtons">
+                      <el-button
+                        v-if="!item.tableHide"
+                        :icon="item.icon || ''"
+                        :key="index"
+                        :type="item.type || 'text'"
+                        size="small"
+                      >{{ item.label }}</el-button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="sub-form-table-app-row2">
+            <draggable
+              :list="widget.widgetList"
+              handle=".drag-handler"
+              @add="onSubFormDragAdd($event, widget.widgetList)"
+              @end="onSubFormDragEnd"
+              @update="onContainerDragUpdate"
+              group="dragGroup"
+              ghost-class="ghost"
+              animation="200"
+              :class="{'full-width-app-form':true, 'overflowed':overflowed}"
+              ref="overflowBox"
+            >
+              <transition-group
+                id="sub-form-table-app-element"
+                class="sub-form-table"
+                name="fade"
+                tag="div"
+                ref="innerTable"
+              >
+                <div
+                  v-for="(subWidget, swIdx) in widget.widgetList"
+                  :key="subWidget.id + 'tc'"
+                  id="sub-form-table-column-app"
+                  class="sub-form-table-column"
+                  :style="{ width: subWidget.options.columnWidth, 'max-width': subWidget.options.columnWidth }"
+                >
+                  <component
+                    :key="subWidget.id"
+                    :is="subWidget.type + '-widget'"
+                    tag="component"
+                    :field="subWidget"
+                    :designer="designer"
+                    :parent-list="widget.widgetList"
+                    :index-of-parent-list="swIdx"
+                    :parent-widget="widget"
+                    :design-state="true"
+                    :sub-form-item-flag="true"
+                  ></component>
+                </div>
+              </transition-group>
+            </draggable>
           </div>
         </div>
       </el-form>
@@ -215,18 +290,18 @@ export default {
   name: "sub-form-widget",
   componentName: "ContainerWidget",
   mixins: [i18n, containerMixin, refMixinDesign],
-  inject: ["refList"],
+  inject: ["refList", "formConfig"],
   components: {
     Draggable,
     ContainerWrapper,
-    ...FieldComponents,
+    ...FieldComponents
   },
   props: {
     widget: Object,
     parentWidget: Object,
     parentList: Array,
     indexOfParentList: Number,
-    designer: Object,
+    designer: Object
   },
   computed: {
     selected() {
@@ -243,14 +318,14 @@ export default {
     this.initRefList();
   },
   mounted() {
-    this.$nextTick(()=>{
-      this.updateBoxWidth('')
-    })
+    this.$nextTick(() => {
+      this.updateBoxWidth("");
+    });
   },
   watch: {
     widget: {
       handler() {
-        this.updateBoxWidth('')
+        this.updateBoxWidth("");
       },
       deep: true
     }
@@ -258,25 +333,25 @@ export default {
   data() {
     return {
       columnForm: {
-        tableCreatorTableColumnList: [],
+        tableCreatorTableColumnList: []
       },
       options: {
-        tableDataTypeOptions: [],
+        tableDataTypeOptions: []
       },
       overflowed: false
     };
   },
   methods: {
-    updateBoxWidth(e){
-      this.$nextTick(()=>{
-        let overflowBoxWidth = this.$refs.overflowBox?.$el.offsetWidth || 0
-        let innerTableWidth = 0
-        this.$refs.innerTable.$children.forEach((element)=>{
-          innerTableWidth += element.$el.offsetWidth
-        })
-        this.overflowed = overflowBoxWidth < innerTableWidth
+    updateBoxWidth(e) {
+      this.$nextTick(() => {
+        let overflowBoxWidth = this.$refs.overflowBox?.$el.offsetWidth || 0;
+        let innerTableWidth = 0;
+        this.$refs.innerTable.$children.forEach(element => {
+          innerTableWidth += element.$el.offsetWidth;
+        });
+        this.overflowed = overflowBoxWidth < innerTableWidth;
         // console.log('[updateBoxWidth]', overflowBoxWidth, innerTableWidth, '[return]:', overflowBoxWidth < innerTableWidth, e)
-      })
+      });
     },
     onSubFormDragAdd(event, widgetList) {
       // console.log('[onSubFormDragAdd]: [event]',event,'[widgetList]',widgetList)
@@ -286,32 +361,32 @@ export default {
       }
       this.designer.emitHistoryChange();
       this.designer.emitEvent("field-selected", this.widget);
-      this.updateBoxWidth('')
+      this.updateBoxWidth("");
     },
     onSubFormDragEnd(e) {
       // console.log("sub form drag end: ", e);
-      this.updateBoxWidth(e)
+      this.updateBoxWidth(e);
     },
     getLabelAlign(widget, subWidget) {
-      return subWidget.options.labelAlign || widget.options.labelAlign || 'label-center-align';
+      return (
+        subWidget.options.labelAlign ||
+        widget.options.labelAlign ||
+        "label-center-align"
+      );
     },
     // 是否显示
     showBtn(item, row) {
       // const row = row
-      return (
-        item.tableHideCustom ? 
-          !!item.isHide ? 
-            eval(item.isHide) 
-            :
-            true 
-          : 
-          !item.tableHide
-      )
+      return item.tableHideCustom
+        ? !!item.isHide
+          ? eval(item.isHide)
+          : true
+        : !item.tableHide;
     },
     getLabel(item, label) {
-      return label
-    },
-  },
+      return label;
+    }
+  }
 };
 </script>
 
@@ -372,6 +447,7 @@ export default {
   display: inline-block;
   border-right: 1px solid #ebeef5;
   border-left: none;
+  flex-shrink: 0;
   // padding: 10px;
 }
 .sub-form-container .sub-form-table .ghost + div.sub-form-table-column {
@@ -392,8 +468,8 @@ export default {
     &:first-child {
       border-left: 1px solid #ebeef5;
     }
-    .index{
-      width: 60px
+    .index {
+      width: 60px;
     }
     // .drag-empty {
     //   width: 100%;
@@ -453,8 +529,69 @@ export default {
   margin-top: 52px;
   border-top: 1px solid #ebeef5;
   padding: 10px;
-  display:flex !important;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+}
+
+// 移动端样式
+
+#sub-form-table-app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#sub-form-table-app-row1 {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  width: 100%;
+}
+
+#sub-form-table-app-row2 {
+  
+  width: 100%;
+}
+#sub-form-table-app-element {
+  min-height: 68px;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+  flex-direction: column;
+}
+
+.full-width-app-form {
+  width: 100%;
+  overflow: hidden;
+  // border: 1px solid #ebeef5;
+  // border-left: none;
+  // padding: 8px;
+  border: 1px dashed #369;
+  // box-shadow: inset 0 0 10px #000;
+  background: #eee;
+  &:first-child {
+    // border-left: 1px solid #ebeef5;
+    border-left: 1px dashed #369;
+  }
+  .sub-form-table-column {
+    background: #fff;
+    width: 100%;
+  }
+}
+
+#app-index {
+    width: 50px;
+}
+
+#app-function {
+   flex:1;
+}
+
+#sub-form-table-column-app {
+    background: #fff;
+    width: 100%;
+    border-top: 1px solid #eee;
 }
 </style>

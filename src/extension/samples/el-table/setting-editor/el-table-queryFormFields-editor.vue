@@ -1,12 +1,13 @@
 <template>
   <div>
-    <el-form-item label="查询条件编辑" label-width="150px">
+    <el-form-item label="查询条件" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
-        编辑字段</el-button>
+        编辑
+      </el-button>
     </el-form-item>
-    <el-dialog title="查询条件编辑" :visible.sync="editNumberVisible" width="60%" :append-to-body="true">
+    <el-drawer title="查询条件编辑" :visible.sync="editNumberVisible" size="60%" :append-to-body="true">
         <queryFormFields
-          v-if="editNumberVisible"
+          v-if="editNumberVisible" 
           @need-close="editNumberVisible=false"
           :list="list"
           windowHight="700px"
@@ -14,7 +15,7 @@
           :formId="formId"
           :columns="columns"
         ></queryFormFields>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -68,26 +69,26 @@
               name:item.label,
               code:item.field,
               type:item.inputType, 
-              anjiSelectOption: {
+              anjiSelectOption:!!item.option? {
                   dictCode: "",
                   option:item.option.optionItems||[],
                   multiple:item.option.multiple||'',
                   multipleLimit:item.option.multipleLimit||1,
-                },        
+                }:{},        
               })
             }else if(dataType.includes(item.inputType)){
               data.push({
               name:item.label,
               code:item.field,
               type:item.inputType,
-              format:item.option.format,
-              valueFormat:item.option.valueFormat||item.option.format, 
-              anjiSelectOption: {
+              format:(!!item.option&&!!item.option.format)?item.option.format:'',
+              valueFormat:(!!item.option&&!!item.option.valueFormat)?(item.option.valueFormat||item.option.format):'', 
+              anjiSelectOption: !!item.option?{
                   dictCode: "",
                   option:item.option.optionItems||[],
                   multiple:item.option.multiple||'',
                   multipleLimit:item.option.multipleLimit||1,
-                },         
+                }:{},         
               })             
             }else if(item.inputType=="switch"){
               let option=[]
@@ -97,10 +98,10 @@
               name:item.label,
               code:item.field,
               type:item.inputType,
-              anjiSelectOption: {
+              anjiSelectOption: !!item.option?{
                   dictCode: "",
                   option:item.option.optionItems||option
-              },
+              }:{},
               disableValue:item.option.activeText,
               enableValue:item.option.inactiveText           
               })

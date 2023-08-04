@@ -11,10 +11,9 @@
 <template>
   <container-wrapper :designer="designer" :widget="widget" :parent-widget="parentWidget" :parent-list="parentList"
                      :index-of-parent-list="indexOfParentList">
-
     <div :key="widget.id" class="table-container"
          :class="[selected ? 'selected' : '', customClass]" @click.stop="selectWidget(widget)">
-         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId">
+         <anji-crud ref="listPage"  :option="newCrudOption" :formId="formId" :title="label" :layoutType="designer.formConfig.layoutType">
           </anji-crud>
     </div>
 
@@ -82,6 +81,7 @@
         //   total: 0,
         // },
         crudOption: {
+          showRowNumber: !0,
           //自定义表格列css样式
           columnsCss:'',
           //是否使用内部弹窗（不要修改）
@@ -341,7 +341,8 @@
               rules: [],
               disabled: false,
             }
-          ]
+          ],
+          rowClick:''
         }
       }
     },
@@ -369,11 +370,16 @@
         crudOption.tableButtons=tableButtons
         let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
         crudOption.rowButtons=rowButtons
+        crudOption.rowClick=this.widget.options.rowClick
         crudOption.pageQueryDataFlag=this.widget.options.pageQueryDataFlag
+        crudOption.showStripe=this.widget.options.showStripe
+        crudOption.checkbox=this.widget.options.checkbox
+        crudOption.showBorder=this.widget.options.showBorder
         crudOption.queryFormFieldsFlag=this.widget.options.queryFormFieldsFlag
         crudOption.queryFormHide=this.widget.options.queryFormHide
         crudOption.columnsCss=this.widget.options.crudOption.columnsCss
-        console.log(crudOption);
+        crudOption.showRowNumber=this.widget.options.showRowNumber
+        //console.log(crudOption);
         // let formId=this.formId
         return  crudOption
       },
@@ -385,6 +391,9 @@
           // this.flag=true
         }    
         return  formId
+      },
+      label(){
+        return  this.widget.options.label
       }
     },
     watch: {
@@ -467,7 +476,7 @@
         return !!widgetList ? getAllFieldWidgets(widgetList) : getAllFieldWidgets(this.formJson.widgetList)
       },
       getData(defaultData,queryData){
-        console.log('2342',defaultData,queryData);
+        //console.log('2342',defaultData,queryData);
         
         let defaultDataId=[]
         let finallyData=[]

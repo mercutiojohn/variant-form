@@ -1,9 +1,9 @@
 <template>
   <div style="height:490px;overflow-x: hidden;border: 1px solid #f2f2f2">
     <div style="margin: 15px;margin-right:15px;text-align: right;">
-      <!-- <Button size="medium" type="primary" @click="toAddCommonUser" style="font-family: 黑体;background-color: #095fff;color: white;border-radius:15px;border: 1px solid #095fff;">添加常用人</Button> -->
-      <Button type="primary" size="medium"  @click="toAddCommonUser"
-            style="margin-top: 0px;margin-bottom: 10px;font-size:16px;">添加常用人</Button>
+      <!-- <el-button size="medium" type="primary" @click="toAddCommonUser" style="font-family: 黑体;background-color: #095fff;color: white;border-radius:15px;border: 1px solid #095fff;">添加常用人</el-button> -->
+      <el-button type="primary" size="medium"  @click="toAddCommonUser"
+            style="margin-top: 0px;margin-bottom: 10px;font-size:16px;">添加常用人</el-button>
     </div>
     <el-checkbox-group v-model="selectData" @change="handleCheckedUserChange">
       <div  v-for="user in data">
@@ -15,7 +15,7 @@
       </div>
 
     </el-checkbox-group>
-    <Dialog :visible.sync="vis" v-if="vis" @close="clearData()" width="30%" :append-to-body="true">
+    <el-dialog :visible.sync="vis" v-if="vis" @close="clearData()" width="30%" :append-to-body="true">
           <el-input style="margin-bottom: 5px"
             placeholder="输入关键字进行过滤"
             v-model="searchText">
@@ -29,24 +29,20 @@
         :newOperator="newOperator"
       ></stepAllTree>
       <div style="text-align: center;margin-top: 20px">
-      <!-- <Button size="medium" type="primary" @click="add" style="font-family: 黑体;background-color: #095fff;color: white;border-radius:15px;border: 1px solid #095fff;">保存</Button> -->
-      <Button type="primary" size="medium"   @click="add"
-            style="margin-top: 0px;margin-bottom: 10px;font-size:16px;">保存</Button>
+      <!-- <el-button size="medium" type="primary" @click="add" style="font-family: 黑体;background-color: #095fff;color: white;border-radius:15px;border: 1px solid #095fff;">保存</el-button> -->
+      <el-button type="primary" size="medium"   @click="add"
+            style="margin-top: 0px;margin-bottom: 10px;font-size:16px;">保存</el-button>
       </div>
-    </Dialog>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { Button, Dialog } from 'element-ui'
-// import { getCommonUseData, addContacts } from '../../api/transferunit'
 import stepAllTree from './stepAllTree'
 export default {
   name: 'commonUse',
   inject:['getCommonUseData','addContacts'],
   components: {
-    Button,
-    Dialog,
     stepAllTree
   },
   data() {
@@ -71,6 +67,13 @@ export default {
     newOperator: {
       type: String,
       default: ''
+    }
+  },
+  watch: {
+    vis(status) {
+      if(!status) {
+        this.getCommonUse()
+      }
     }
   },
   methods: {
@@ -103,9 +106,9 @@ export default {
     add() {
       var checkData = this.$refs.add.$refs.tree.getCheckedNodes()
       // if (checkData.length >= 0) {
-        addContacts({ selectData: checkData }).then(res => {
+        this.addContacts({ selectData: checkData }).then(res => {
           this.vis = false
-          this.getCommonUseData()
+          this.getCommonUse()
         })
       // }
       this.selectData = []

@@ -88,6 +88,48 @@
       indexOfParentList: Number,
       designer: Object,
     },
+    data() {
+      return {
+        columns: this.widget.options.grid.columns || 3,
+      }
+    },
+    watch: {
+      'designer.formConfig.layoutType': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+
+      'widget.options.grid.responsive': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+
+      'widget.options.grid.columns': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+
+      'widget.options.grid.mobileColumns': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+
+      'widget.options.grid.padColumns': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+
+      'widget.options.grid.columns': {
+        handler(val) {
+          this.updateLayoutProps(val)
+        }
+      },
+    },
     computed: {
       selected() {
         return this.widget.id === this.designer.selectedId
@@ -106,7 +148,7 @@
           padding: `${this.widget.options.basic.padding.top}px ${this.widget.options.basic.padding.right}px ${this.widget.options.basic.padding.bottom}px ${this.widget.options.basic.padding.left}px` || '',
           // Grid
           display: 'grid',
-          'grid-template-columns': `repeat(${this.widget.options.grid.columns}, 1fr)`,
+          'grid-template-columns': `repeat(${this.columns}, 1fr)`,
           'grid-template-rows': `auto`,
           'grid-row-gap': `${this.widget.options.grid.rowGap}px`,
           'grid-column-gap': `${this.widget.options.grid.columnGap}px`,
@@ -138,6 +180,7 @@
     },
     created() {
       this.initRefList()
+      this.initLayoutProps()
     },
     methods: {
       /**
@@ -147,6 +190,34 @@
        */
       checkContainerMove(evt) {
         return true
+      },
+      initLayoutProps() {
+        if (!!this.widget.options.grid.responsive) {
+          let lyType = this.designer.formConfig.layoutType
+          if (lyType === 'H5') {
+            this.columns = this.widget.options.grid.mobileColumns || 1
+          } else if (lyType === 'Pad') {
+            this.columns = this.widget.options.grid.padColumns || 2
+          } else {
+            this.columns = this.widget.options.grid.columns || 3
+          }
+        } else {
+          this.columns = this.widget.options.grid.columns
+        }
+      },
+      updateLayoutProps(val) {
+        if (!!this.widget.options.grid.responsive) {
+          let lyType = this.designer.formConfig.layoutType
+          if (lyType === 'H5') {
+            this.columns = this.widget.options.grid.mobileColumns || 1
+          } else if (lyType === 'Pad') {
+            this.columns = this.widget.options.grid.padColumns || 2
+          } else {
+            this.columns = this.widget.options.grid.columns || 3
+          }
+        } else {
+          this.columns = this.widget.options.grid.columns
+        }
       },
     }
   }

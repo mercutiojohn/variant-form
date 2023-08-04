@@ -14,9 +14,10 @@ import '@/iconfont/iconfont.css'
 import ECharts from 'vue-echarts'
 
 import {loadExtension} from '@/extension/extension-loader'
-
+import Vant from 'vant' 
+import 'vant/lib/index.css'
 loadExtension()
-
+Vue.use(Vant)
 Vue.use(ElementUI, { size: 'small' })
 Vue.component('v-chart', ECharts)
 

@@ -9,7 +9,7 @@
                     :format="field.options.format" :value-format="field.options.valueFormat"
                     :placeholder="field.options.placeholder || i18nt('render.hint.datePlaceholder')"
                     @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-                    @change="handleChangeEvent">
+                    @change="handleChangeEvent" :picker-options="pickerOptions">
     </el-date-picker>
   </form-item-wrapper>
 </template>
@@ -59,6 +59,11 @@
         oldFieldValue: null, //field组件change之前的值
         fieldModel: null,
         rules: [],
+        pickerOptions:{
+          // disabledDate:time=>{
+          //   return time.getTime()>Date.now()
+          // }
+        }
       }
     },
     computed: {
@@ -88,7 +93,6 @@
     },
 
     methods: {
-
     }
   }
 </script>

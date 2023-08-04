@@ -75,9 +75,14 @@
       ...FieldComponents,
     },
     props: {
-      widget: Object,
+      widget: Object
     },
-    inject: ['refList', 'sfRefList', 'globalModel'],
+    inject: ['refList', 'sfRefList', 'globalModel', 'formConfig', 'previewState'],
+    data() {
+      return {
+        columns: this.widget.options.grid.columns || 3,
+      }
+    },
     computed: {
       customClass() {
         return this.widget.options.customClass || ''
@@ -93,7 +98,7 @@
           background: `${this.widget.options.basic.backgroundType === 'gradient' ? this.widget.options.basic.gradient : this.widget.options.basic.backgroundType === 'color' ? this.widget.options.basic.backgroundColor : 'none'}` || 'none',
           // Grid
           display: 'grid',
-          'grid-template-columns': `repeat(${this.widget.options.grid.columns}, 1fr)`,
+          'grid-template-columns': `repeat(${this.columns}, 1fr)`,
           'grid-template-rows': `auto`,
           'grid-row-gap': `${this.widget.options.grid.rowGap}px`,
           'grid-column-gap': `${this.widget.options.grid.columnGap}px`,
@@ -124,15 +129,32 @@
     },
     created() {
       this.initRefList()
+      this.initLayoutProps()
     },
     beforeDestroy() {
       this.unregisterFromRefList()
     },
     methods: {
-      toggleCard() {
-        this.widget.options.folded = !this.widget.options.folded
-      },
+      initLayoutProps() {
+        if (!!this.widget.options.grid.responsive) {
+          // if (!!this.previewState) {
+            this.columns = undefined
 
+            let lyType = this.formConfig.layoutType
+            if (lyType === 'H5') {
+              this.columns = this.widget.options.grid.mobileColumns || 12
+            } else if (lyType === 'Pad') {
+              this.columns = this.widget.options.grid.padColumns || 12
+            } else {
+              this.columns = this.widget.options.grid.columns || 12
+            }
+          // } else {
+          //   this.columns = undefined
+          // }
+        } else {
+          this.columns = undefined
+        }
+      },
     },
   }
 </script>

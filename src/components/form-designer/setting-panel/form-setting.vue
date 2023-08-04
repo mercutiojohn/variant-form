@@ -13,11 +13,30 @@
             <el-input type="text" v-model="formConfig.customInitStatus"></el-input>
           </el-form-item>
           <el-form-item v-if="formConfig.useCustomInitApi" :label="i18nt('designer.setting.customInitApiEdit')">
-            <el-button type="info" icon="el-icon-set-up" plain round @click="editCustomInitApi">{{i18nt('designer.setting.customInitApiEditBtn')}}</el-button>
+            <el-button type="info" icon="el-icon-set-up" plain round @click="editCustomInitApi">{{i18nt('designer.setting.customToggleBtn')}}</el-button>
           </el-form-item>
         </el-collapse-item>
 
         <el-collapse-item name="2" :title="i18nt('designer.setting.basicSetting')">
+          <!-- <el-form-item :label="i18nt('designer.setting.showActionBar')">
+            <el-switch v-model="formConfig.showActionBar"></el-switch>
+          </el-form-item>
+          <el-form-item :label="i18nt('designer.setting.actionBarPosition')">
+            <el-radio-group v-model="formConfig.actionBarPosition" class="radio-group-custom">
+              <el-radio-button label="top">{{i18nt('designer.setting.topPosition')}}</el-radio-button>
+              <el-radio-button label="bottom">{{i18nt('designer.setting.bottomPosition')}}</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item :label="i18nt('designer.setting.actionBarAlign')">
+            <el-radio-group v-model="formConfig.actionBarAlign" class="radio-group-custom">
+              <el-radio-button label="left">{{i18nt('designer.setting.leftAlign')}}</el-radio-button>
+              <el-radio-button label="center">{{i18nt('designer.setting.centerAlign')}}</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item :label="i18nt('designer.setting.customHeadButtons')">
+            <el-button type="info" icon="el-icon-edit" plain round @click="editHeadButtons">
+              {{i18nt('designer.setting.customToggleBtn')}}</el-button>
+          </el-form-item> -->
           <el-form-item :label="i18nt('designer.setting.formSize')">
             <el-select v-model="formConfig.size">
               <el-option v-for="item in formSizes" :key="item.value" :label="item.label"
@@ -55,9 +74,9 @@
           <el-form-item :label="i18nt('designer.setting.globalFunctions')">
             <el-button type="info" icon="el-icon-edit" plain round @click="editGlobalFunctions">{{i18nt('designer.setting.addEventHandler')}}</el-button>
           </el-form-item>
-          <el-form-item :label="i18nt('designer.setting.customMixins')">
+          <!-- <el-form-item :label="i18nt('designer.setting.customMixins')">
             <el-button type="info" icon="el-icon-edit" plain round @click="editCustomMixins">{{i18nt('designer.setting.addEventHandler')}}</el-button>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label-width="0">
             <el-divider class="custom-divider" content-position="left">{{i18nt('designer.setting.formSFCSetting')}}</el-divider>
           </el-form-item>
@@ -149,7 +168,7 @@
             </span>
             <!-- <el-input v-model="customInitApiForm.uri" type="text" clearable></el-input> -->
             <el-autocomplete
-              popper-class="my-autocomplete"
+              popper-class="api-list"
               class="inline-input"
               v-model="customInitApiForm.uri"
               :fetch-suggestions="querySearch"
@@ -237,6 +256,17 @@
       </div>
     </el-dialog>
 
+    <el-drawer :title="i18nt('designer.setting.customHeadButtons')" :visible.sync="showEditHeadButtonsDrawerFlag" :append-to-body="true" size="800px">
+      <HeadButtonsList
+        v-if="showEditHeadButtonsDrawerFlag"
+        @need-close="showEditHeadButtonsDrawerFlag = false"
+        :list="actionBarButtons"
+        :getTableData="getTableData"
+        windowHight="700px"
+        @close="saveHeadButtons"
+      ></HeadButtonsList>
+    </el-drawer>
+
   </div>
 </template>
 
@@ -259,6 +289,7 @@
   import i18n from "@/utils/i18n"
   import swaggerApiMixin from "@/components/form-designer/setting-panel/mixins/swaggerApiMixin"
   import CodeEditor from '@/components/code-editor/index'
+  import HeadButtonsList from "./components/head-buttons-list"
   import {deepClone, insertCustomCssToHead, insertGlobalFunctionsToHtml, assembleAxiosConfig} from "@/utils/util"
   export default {
     name: "form-setting",
@@ -266,6 +297,7 @@
     // mixins: [mixinObject],
     components: {
       CodeEditor,
+      HeadButtonsList
     },
     props: {
       designer: Object,
@@ -313,6 +345,9 @@
 
         showEditCustomInitApiDialogFlag: false,
         customInitApiForm: {},
+
+        showEditHeadButtonsDrawerFlag: false,
+        actionBarButtons: [],
 
         eventParamsMap: {
           'onFormCreated':      'onFormCreated() {',
@@ -503,6 +538,16 @@
         this.showEditCustomInitApiDialogFlag = false
       },
 
+      editHeadButtons(){
+        this.actionBarButtons = this.designer.formConfig.actionBarButtons
+        this.showEditHeadButtonsDrawerFlag = true
+      },
+
+      saveHeadButtons(data){
+        this.designer.formConfig.actionBarButtons = data
+        this.showEditHeadButtonsDrawerFlag = false
+      },
+
       addRequestParam() {
         this.customInitApiForm.params.push({
           name: '',
@@ -572,7 +617,7 @@
   .inline-input {
     width: 100%;
   }
-  .my-autocomplete {
+  .api-list {
     li {
       line-height: normal;
       padding: 7px;

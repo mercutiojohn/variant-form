@@ -10,10 +10,9 @@
 
 <template>
     <container-item-wrapper :widget="widget">
-
     <div :key="widget.id" class="table-container"
     v-show="!widget.options.hidden">
-         <anji-crud ref="listPage" :option="crudOption" :formId="formId">
+         <anji-crud ref="listPage" :option="crudOption" :formId="formId" :title="label" :layoutType="formConfig.layoutType">
           </anji-crud>
     </div>
 
@@ -40,7 +39,7 @@
     name: "el-table-item",
     componentName: 'ContainerWidget',
     mixins: [i18n, containerMixin, refMixinDesign,fieldMixin,common],
-    inject: ['refList'],
+    inject: ['refList','formConfig'],
     components: {
       ContainerWrapper,
       TableCellWidget,
@@ -60,6 +59,7 @@
         dataSet: {},
         dialogCaseResult: false,
         crudOption: {
+          showRowNumber: !0,
           //自定义表格列css样式
           columnsCss:'',
           // 使用菜单做为页面标题
@@ -316,7 +316,8 @@
               rules: [],
               disabled: false
             }
-          ]
+          ],
+          rowClick:''
         }
       };
     },
@@ -342,8 +343,10 @@
       //   return this.crudOption
       // },
       formId(){
-        
         return  this.widget.options.formId
+      },
+      label(){
+        return  this.widget.options.label
       }
     },
     watch: {
@@ -360,11 +363,16 @@
       this.crudOption.tableButtons=tableButtons
       let rowButtons=this.getData(crudOption.rowButtons,this.widget.options.crudOption.rowButtons)
       this.crudOption.rowButtons=rowButtons
+      this.crudOption.rowClick=this.widget.options.rowClick
       this.crudOption.pageQueryDataFlag=this.widget.options.pageQueryDataFlag
+      this.crudOption.showStripe=this.widget.options.showStripe
+      this.crudOption.showBorder=this.widget.options.showBorder
+      this.crudOption.checkbox=this.widget.options.checkbox
       this.crudOption.queryFormFieldsFlag=this.widget.options.queryFormFieldsFlag
       this.crudOption.queryFormHide=this.widget.options.queryFormHide
       this.crudOption.columnsCss=this.widget.options.crudOption.columnsCss
-      console.log(crudOption);
+      this.crudOption.showRowNumber=this.widget.options.showRowNumber
+      //console.log(crudOption);
       this.field=this.widget
       // this.initFieldModel()
       this.registerToRefList()
@@ -378,7 +386,6 @@
     },
     methods: {
       getData(defaultData,queryData){
-        // console.log('2342',defaultData,queryData);
         
         let defaultDataId=[]
         let finallyData=[]

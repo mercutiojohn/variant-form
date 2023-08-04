@@ -1,10 +1,11 @@
 <template>
   <div>
-    <el-form-item label="表格头按钮编辑" label-width="150px">
+    <el-form-item label="头部操作按钮" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
-        编辑字段</el-button>
+        编辑
+      </el-button>
     </el-form-item>
-    <el-dialog title="表格列编辑" :visible.sync="editNumberVisible" :append-to-body="true">
+    <el-drawer title="头部操作按钮" :visible.sync="editNumberVisible" :append-to-body="true" size="1000px">
         <editButtonTable
           v-if="editNumberVisible"
           @need-close="editNumberVisible=false"
@@ -12,7 +13,7 @@
           windowHight="700px"
           @close="toClose"
         ></editButtonTable>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 

@@ -64,6 +64,8 @@ export default {
       listVformPages: queryListCond, //增删改查查询
       addRedirect: this.addRedirect,//增删改查新增跳转
       editRedirect: this.editRedirect,//增删改查编辑跳转
+      back:this.back,
+      down:this.down,
       setFunction: {
         delRecordByIds, //增删改查多选删除
         delRecordById, //增删改查单删
@@ -84,7 +86,7 @@ export default {
         resetFormJson: false,
         toolbarMaxWidth: 490,
         headerShow: true,  //是否显示顶栏
-        devices: false,  //是否显示设备切换
+        devices: true,  //是否显示设备切换
         // languageMenu: true,  //是否显示语言切换菜单
         externalLink: false,  //是否显示GitHub、文档等外部链接
         // formTemplates: true,  //是否显示表单模板
@@ -207,6 +209,33 @@ export default {
           })
         })
     },
+    //文件下载
+    down(fileName, fileUrl, fileUid) {
+      this.request({
+        method:"GET",
+        url:fileUrl,
+        responseType: 'blob'
+      }).then(res => {
+        this.download(res, fileName)
+      }).catch(error => {
+        this.$message.error('下载失败:' + err)
+      })
+    },
+    download(data, fileName) {
+      if (!data) {
+        return this.$message.warning('文件为空')
+      }
+      let url = window.URL.createObjectURL(new Blob([data]))
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      // 获取文件名
+      // download 属性定义了下载链接的地址而不是跳转路径
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    },
     // 增删改查组件
     addRedirect (route) {
       console.log('[addRedirect]', route)
@@ -226,6 +255,9 @@ export default {
         query: params
       })
     },
+    back(){
+      console.log("移动端导航栏返回方法")
+    }
   }
 }
 </script>

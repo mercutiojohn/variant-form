@@ -1,16 +1,16 @@
 <template>
-  <Container direction="vertical" style="height:80%">
+  <div>
     <Row :gutter="20">
       <Row>
         <el-input placeholder="输入名称" v-model="filterText"></el-input>
       </Row>
-      <Row style="margin-top:20px">
+      <Row style="margin-top:20px" v-if="layoutType!='H5'">
         <el-tabs v-model="activeName" type="border-card">
           <!-- <el-tab-pane label="本部门用户" name="third">
             <stepGroupTree ref="third" :selectMode='selectMode' :filterText.sync='filterText' :newOperator="newOperator"></stepGroupTree>
           </el-tab-pane> -->
           <el-tab-pane label="全部用户" name="third">
-            <stepAllTree ref="third" :selectMode='selectMode' :filterText.sync='filterText' :newOperator="newOperator"></stepAllTree>
+            <stepAllTree ref="third" :selectMode='selectMode' :filterText.sync='filterText' :newOperator="newOperator" :layoutType="layoutType"></stepAllTree>
           </el-tab-pane>
           <el-tab-pane label="常用用户" name="second">
             <commonUse ref="second" :selectMode='selectMode' :filterText.sync='filterText'  :newOperator="newOperator"></commonUse>
@@ -19,6 +19,9 @@
             <stepAllTree ref="first" :selectMode='selectMode' :filterText.sync='filterText'></stepAllTree>
           </el-tab-pane> -->
         </el-tabs>
+      </Row>
+      <Row v-else>
+        <stepAllTree ref="third" :selectMode='selectMode' :filterText.sync='filterText' :newOperator="newOperator" :layoutType="layoutType"></stepAllTree>
       </Row>
     </Row>
     <Row style="text-align: center;margin-top: 20px">
@@ -31,7 +34,7 @@
       <Button type="primary" size="medium"  @click="getCheckedNodes"
             style="margin-top: 0px;margin-bottom: 10px;font-size:16px;">确认</Button>
     </Row>
-  </Container>
+  </div>
 </template>
 
 <script>
@@ -54,6 +57,10 @@ export default {
     commonUse
   },
   props: {
+    layoutType: {
+      type: String,
+      default: ''
+    },
     selectMode: {
       type: Boolean,
       default: false

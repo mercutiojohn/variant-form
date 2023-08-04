@@ -45,7 +45,7 @@
           <!-- <el-input v-model="scope.row.icon" :prefix-icon="scope.row.icon" size="mini">
           </el-input> -->
           <el-autocomplete
-            popper-class="my-autocomplete"
+            popper-class="icon-list"
             v-model="scope.row.icon"
             :fetch-suggestions="querySearch"
             placeholder="请输入内容"
@@ -166,7 +166,7 @@
       :close-on-press-escape="false"
       :destroy-on-close="true"
     >
-      <el-alert class="code-wrapper top" type="info" :closable="false" title="(this, row, item, index) => {"></el-alert>
+      <el-alert class="code-wrapper top" type="info" :closable="false" title="(this, row, item, index) => { // DOM节点、行、按钮属性、行号"></el-alert>
       <code-editor
         :mode="'javascript'"
         :readonly="false"
@@ -356,8 +356,8 @@ export default {
   text-align: center;
 }
 </style>
-<style lang="scss">
-.my-autocomplete {
+<style lang="scss" scoped>
+.icon-list {
   .el-autocomplete-suggestion__list {
     display: flex;
     justify-content: center;

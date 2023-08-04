@@ -8,7 +8,8 @@
     "lib": "vue-cli-service build --report --target lib --dest dist/lib --name VFormDesigner install.js",
     "lib-render": "vue-cli-service build --report --target lib --dest dist/lib-render --name VFormRender install-render.js",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "copy-files": "node scripts/copyFile.js"
   },
   "dependencies": {
     "@vue/composition-api": "^1.7.1",

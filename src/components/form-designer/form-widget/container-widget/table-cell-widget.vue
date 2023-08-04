@@ -312,7 +312,7 @@
       border: 1px dashed #336699;
       margin: 3px;
 
-      //min-height: 36px;
+      min-height: 36px;
       height: 100%;
 
       /*position: absolute;*/

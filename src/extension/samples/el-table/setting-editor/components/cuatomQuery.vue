@@ -3,10 +3,19 @@
       <el-row>
         <el-form-item  label="选择方式">
             <el-select v-model="listData.setting"   @change="fieldChange()" placeholder="请选择">
-                <el-option label="vform表单" value='0'></el-option>
+                <el-option label="通用列表查询" value='0'></el-option>
+                <el-option label="流程登记列表" value='3'></el-option>
+                <el-option label="流程审批列表" value='4'></el-option>
                 <!-- <el-option label="代码生成" value='1'></el-option> -->
                 <el-option label="自定义" value='2'></el-option>
             </el-select>
+        </el-form-item>
+        <el-form-item  label="查询范围" v-if="listData.setting=='0'">
+          <el-select v-model="listData.queryRange" placeholder="请选择">
+              <el-option label="当前用户" value='user'></el-option>
+              <el-option label="当前用户所在组" value='group'></el-option>
+              <el-option label="全部" value='all'></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="请求方式"  v-if="listData.setting=='2'">
             <el-select
@@ -222,8 +231,6 @@
     // 页面初始化调用方法
     mounted: function () {
       this.listData = JSON.parse(JSON.stringify(this.list))
-      console.log(this.listData);
-      
     },
     watch: {
     }

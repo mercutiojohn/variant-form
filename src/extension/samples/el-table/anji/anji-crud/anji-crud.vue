@@ -1,451 +1,558 @@
 <template>
 
   <div :class="[hasTreeFieldInQueryForm ? 'page-container' : 'app-container']">
-    <div v-if="hasTreeFieldInQueryForm" class="left-container">
-      <!-- <AnjiTree
-        ref="queryFormTree"
-        v-model.trim="queryParams[queryFormTreeField.field]"
-        :is-open="queryFormTreeField.anjiTreeOption.isOpen"
-        :enable-filter="queryFormTreeField.anjiTreeOption.enableFilter"
-        :label-name="queryFormTreeField.label"
-        :url="queryFormTreeField.anjiTreeOption.url"
-        @node-click="handleTreeNodeCheck"
-      /> -->
-    </div>
-    <div class="right-container">
-      <div class="top_part">
-     
-        <!-- 查询表单开始 -->
-        <el-form
-          v-if="queryFormTreeHide"
-          ref="formSearch"
-          :model="queryParams"
-          label-width="100px"
-        >
-          <div >
-              <el-row :span="24">
-                <template v-for="(item, index) in queryFormFieldExcludeTree">
-                  <el-col
-                    v-if="index < 9999 || showMoreSearch"
-                    :key="item.field"
-                    :span="6"
-                  >
-                    <el-form-item
-                      :label="item.label"
-                      :rules="item.rules"
-                      :prop="item.field"
-                    >
-                      <!-- 输入框 -->
-                      <el-input
-                        v-if="
-                          item.inputType == 'input' ||
-                            item.inputType == 'number'
-                            ||item.inputType=='textarea'
-                            ||item.inputType=='user-choose'
-                            ||item.inputType=='group-choose'
-                        "
-                        v-model.trim="queryParams[item.field]"
-                        :placeholder="item.placeholder || '请输入'"
-                        :clearable="item.clearable !== false"
-                        :disabled="item.disabled"
-                        @change="value => queryFormChange(item.field, value)"
-                      />
-                      <!-- 开关 -->
-                      <!-- <el-switch
-                        v-else-if="item.inputType == 'switch'"
-                        v-model.trim="queryParams[item.field]"
-                        :disabled="item.disabled"
-                        :active-value="item.disableValue"
-                        :inactive-value="item.enableValue"
-                        active-color="#5887fb"
-                        inactive-color="#ccc"
-                        @change="value => queryFormChange(item.field, value)"
-                      /> -->
-                      <!-- 下拉框 -->
-                      <Select 
-                          v-else-if="item.inputType == 'select'||item.inputType == 'radio'||item.inputType == 'switch'||item.inputType == 'checkbox'"         
-                          v-model.trim="queryParams[item.field]"
-                          :disabled="item.disabled"
-                          :multiple="false" 
-                          :multiple-limit="item.inputType == 'checkbox'?9999:item.anjiSelectOption.multipleLimit"
-                          @change="value => queryFormChange(item.field, value)"
-                          >
-                          <Option
-                            v-for="item1 in item.anjiSelectOption.option"
-                            :key="item1.value"
-                            :label="item1.label"
-                            :value="item1.value"
-                          ></Option>
-                      </Select>
-                      <!-- <el-checkbox-group
-                        v-else-if="item.inputType == 'checkbox'" 
-                        :disabled="item.disabled" 
-                        v-model="queryParams[item.field]"
-                        @change="value => queryFormChange(item.field, value)"
-                      >
-                        <template>
-                          <el-checkbox v-for="(item1,index) in item.anjiSelectOption.option" 
-                          :key="index" :label="item1.value"  :disabled="item.disabled"                     
-                                        >{{item1.label}}</el-checkbox>
-                        </template>
-                      </el-checkbox-group> -->
-                      <!-- <anji-select
-                        v-else-if="item.inputType == 'anji-select'"
-                        v-model.trim="queryParams[item.field]"
-                        :multiple="item.anjiSelectOption.multiple"
-                        :dict-code="item.anjiSelectOption.dictCode"
-                        :url="item.anjiSelectOption.url"
-                        :method="item.anjiSelectOption.method"
-                        :query-param="item.anjiSelectOption.queryParam"
-                        :option="item.anjiSelectOption.option"
-                        :label="item.anjiSelectOption.label"
-                        :disabled-options="
-                          item.anjiSelectOption.disabledOptions
-                        "
-                        :disabled="item.disabled"
-                        :merge-label="item.anjiSelectOption.mergeLabel"
-                        :local-options="item.anjiSelectOption.localOptions"
-                        @change="value => queryFormChange(item.field, value)"
-                      /> -->
-                      <!-- 日期时间框  -->
-                      <el-date-picker
-                        v-else-if="item.inputType == 'date---'"
-                        v-model="queryParams[item.field]"
-                        style="width: 100%"
-                        :placeholder="item.placeholder || '请选择'"
-                        :type="item.inputType"
-                        :format="item.format"
-                        :value-format="item.valueFormat"
-                        :clearable="item.clearable !== false"
-                        @change="value => queryFormChange(item.field, value)"
-                      />
-                      <el-date-picker
-                        v-else-if="item.inputType == 'date-range'||item.inputType == 'date'"
-                        v-model="queryParams[item.field]"
-                        style="width: 100%"
-                        :placeholder="item.placeholder || '请选择'"
-                        type="daterange"
-                        :format="item.format"
-                        :value-format="item.valueFormat"
-                        :clearable="item.clearable !== false"
-                        range-separator="-"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        @change="value => queryFormChange(item.field, value)"
-                      ></el-date-picker>
-                      <el-time-picker
-                        v-else-if="item.inputType == 'time---'"
-                        v-model="queryParams[item.field]"
-                        style="width: 100%"                       
-                        :placeholder="item.placeholder || '请选择'"
-                        :format="item.format" 
-                        :value-format="item.valueFormat"
-                        :clearable="item.clearable !== false"
-                        @change="value => queryFormChange(item.field, value)"
-                      />
-                      <el-time-picker 
-                        v-else-if="item.inputType == 'time-range'||item.inputType == 'time'"
-                        v-model="queryParams[item.field]"
-                        style="width: 100%"                       
-                        :placeholder="item.placeholder || '请选择'"
-                        is-range
-                        :format="item.format" 
-                        :value-format="item.valueFormat"
-                        :clearable="item.clearable !== false"
-                        range-separator="-"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间"
-                        @change="value => queryFormChange(item.field, value)"
-                        />
-                      <anji-cascader
-                        v-else-if="item.inputType == 'anji-cascader'"
-                        v-model.trim="queryParams[item.field]"
-                        :disabled="item.disabled"
-                        :single-display="item.anjiCascader.singleDisplay"
-                        :url="item.anjiCascader.url"
-                        @change="
-                          value => queryFormChange(item.field, value, null)
-                        "
-                      />
-                      <!-- 待扩展的表单类型，请自行扩展 -->
-                      <el-input
-                        v-else
-                        placeholder="组件不支持此类型表单请至组件内部自行扩展"
-                        disabled
-                      />
-                    </el-form-item>
-                  </el-col>
-
-                  <!-- <el-button
-                  
-                  v-if="queryFormFieldExcludeTree.length > 3"
-                  class="button"
-                  size="mini"
-                  plain
-                  @click="handleToggleMoreSearch"
-                >
-                  <i
-                    :class="
-                      queryParams.showMoreSearch
-                        ? 'el-icon-arrow-up'
-                        : 'el-icon-arrow-down'
-                    "
-                  />
-                  {{ queryParams.showMoreSearch == true ? "展开" : "收起" }}
-                </el-button> -->
-                </template>
-                <ElCol :span="2"  v-if="queryFormFieldExcludeTree.length > 9999"> 
-                  <div style="height:1px;"></div>                 
-                </ElCol>
-                <ElCol :span="3"  v-if="queryFormFieldExcludeTree.length > 9999">
-                    <el-button size="medium" type="text" :icon=" showMoreSearch?'':'el-icon-search'" @click="handleToggleMoreSearch">
-                        {{ showMoreSearch == true ? "收起": "高级查询" }}
-                          </el-button>
-                </ElCol>
-                <ElCol :span="6" style="margin-top: 1px;" >
-                  <el-button style="float:right;margin-right: 15px;height: 32px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
-                  <el-button style="float:right;margin-right: 15px;height: 32px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
-                </ElCol>
-              </el-row>
-              <!-- <el-row :span="24">
-                  <el-button style="float:right;margin-right: 15px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
-                  <el-button style="float:right;margin-right: 15px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
-              </el-row> -->
-          </div>
-        </el-form>
-      
-        <!-- 查询表单结束 -->
-        
-      </div>
-
-      <!-- 表格开始 -->
-      <div class="main_part">
-        <div class="page_main">
-          <!-- 批量操作 -->
-        <div style="padding-bottom: 8px">
+    <div v-if="layoutType=='H5'" style="height: 100%;">
+      <!-- <van-nav-bar :title="title" left-arrow @click-left="back" fixed placeholder> -->
+      <van-nav-bar :title="title" left-arrow @click-left="back">
+        <template #right>
+          <div style="padding-bottom: 8px">
             <slot name="tableButtons" :selection="checkRecords" />
-            <el-button
+            <el-button 
               v-for="(item, index) in option.tableButtons"
               :key="index"
               :plain="item.plain"
+              type="text"
               :icon="item.icon"
-              :type="item.type"
               :disabled="isDisabledButton(item, checkRecords)"
               @click="item.click('',item)"
-              style="font-size: 16px;"
+              style="font-size: 16px"
               :size="item.size"
-              >{{ handlegetLable(checkRecords, item.label) }}
+              >{{ getLabel(checkRecords, item.label) }}
             </el-button>
           </div>
-          <Table
-            ref="tables"
-            class="elTable"
-            align="center"
-            :data="records"
-            :row-class-name="tableRowClassName"
-            border
-            @selection-change="handleSelectionChange"
-            @sort-change="handleSortChange"
-            @row-dblclick="handleSelectionDblclick"
-            @row-contextmenu="rowContextMenu"
-          >
-          <template v-for="(item, index) in option.columns">              
-                    <el-table-column
-                      v-if="item.tableHide != true && item.columnType != 'expand'"
-                      :key="index"
-                      :prop="item.field"
-                      :label="fieldLabel(item)"
-                      :min-width="item.minWidth || 120"
-                      :sortable="item.sortable"
-                      show-overflow-tooltip
-                      :align="item.contentAlign"
-                      :header-align="item.headerAlign"
-                    >
-                      <template slot-scope="scope">
-                        <div v-if="item.inputType == 'custom'" >
-                          <component :is="'custom-slot-' + item.field" :item="item" :scope="scope" :data="scope.row[item.field]"></component>
-                        </div>
-                        <div v-else-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
-                          <!-- 图片缩略图-->
-                          <el-image
-                            style="width: 25%; height: 50%"
-                            fit="contain"
-                            :src="scope.row[item.field]"
-                            :preview-src-list="[scope.row[item.field]]"
-                          />
-                        </div>
-                        <div v-else-if="item.inputType == 'color'" >
-                           <div :style="{width:'100%',height:'22px','background-color':scope.row[item.field]}"></div>
-                        </div>
-                        <!-- <div v-else-if="item.inputType == 'rate'" >
-                          <el-rate  v-model="scope.row[item.field]"
-                            disabled="true"
-                            :max="item.option.max"
-                            :low-threshold="item.option.lowThreshold" :high-threshold="item.option.highThreshold"
-                            :allow-half="item.option.allowHalf"
-                            :show-text="item.option.showText" :show-score="item.option.showScore">
-                          </el-rate>
-                        </div> -->
-                        <div v-else :style="getDataStyle(scope.row,item)" >
-                        {{ getDataName(scope.row,item)}} 
-                          <!-- <div v-else :style="getDataStyle(scope.row,item)"  v-html="`<div style=''>${scope.row[item.field]||''} <div style='width:14px;height:14px;'><svg viewBox='0 0 100 100'><path d='
-                            M 50 50
-                            m 0 -39
-                            a 39 39 0 1 1 0 78
-                            a 39 39 0 1 1 0 -78
-                            ' stroke='#e5e9f2' stroke-width='21.4' fill='none' class='el-progress-circle__track' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px;'></path><path d='
-                            M 50 50
-                            m 0 -39
-                            a 39 39 0 1 1 0 78
-                            a 39 39 0 1 1 0 -78
-                            ' stroke='#20a0ff' fill='none' stroke-linecap='round' stroke-width='21.4' class='el-progress-circle__path' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px; transition: stroke-dasharray 0.6s ease 0s, stroke 0.6s ease 0s;'></path></svg>
-                          </div> </div>`">
-                          </div> -->
-                          <!-- <span v-if="item.inputType == 'switch' && !item.colorStyle">
-                            <el-switch
-                              v-model.trim="scope.row[item.field]"
-                              :active-value="1"
-                              :inactive-value="0"
-                              active-color="#5887fb"
-                              inactive-color="#ccc"
-                              @change="switchChange(scope.row, item.switchOption)"
-                            />
-                          </span>
-
-                          <span v-else-if="item.mergeColumn"
-                            >{{ scope.row[item.field] }}({{
-                              scope.row[item.mergeColumn]
-                            }})</span
-                          >
-
-                          <span
-                            v-else-if="item.colorStyle"
-                            :class="item.colorStyle[scope.row[item.editField]]"
-                            >{{ fieldValueByRowRenderer(scope.row, item) }}</span
-                          >
-                          <span v-else>{{
-                            fieldValueByRowRenderer(scope.row, item)
-                          }}</span> -->
-                        </div>
-                      </template>
-                    </el-table-column>
-          </template>
-            <!--多选-->
-            <el-table-column fixed v-if="selectionChange" type="selection" width="50" align="center" />
-            <!--隐藏列-->
-            <!-- <el-table-column v-if="tableExpandColumns.length > 0" type="expand">
-              <template slot-scope="scope">
-                <p
-                  v-for="item in tableExpandColumns"
-                  :key="item.field"
-                  class="table-expand-item"
-                >
-                  <span class="titel"> {{ item.label }}: </span>
-                  <span>{{ scope.row[item.field] }}</span>
-                </p>
-              </template>
-            </el-table-column> -->
-            <!--序号-->
-            <!-- <el-table-column label="序号" min-width="50" align="center">
-              <template slot-scope="scope">
-                {{
-                  queryParams.pageSize * (queryParams.currentPage - 1) +
-                    scope.$index +
-                    1
-                }}
-              </template>
-            </el-table-column> -->
-            <!-- <TableColumn type="index" header-align="center" align="center" min-width="50" label="序号" width="80"></TableColumn> -->
-
-            <!--操作栏-->
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              :width="option.buttons.rowButtonsWidth || 100"
-              v-if="option.rowButtons.length>0"
-            >
-              <template slot-scope="scope">
-                <div >
-                  <template v-for="(item, index) in option.rowButtons">
-                    <el-button
-                      v-if="isHide(item, scope.row)"
-                      :key="index"
-                      :disabled="isDisabledButton(item, scope.row)"
-                      :type="item.type || 'text'"
-                      size="small"
-                      @click="item.click(scope.row,item)"
-                    >{{ handlegetLable(scope.row, item.label) }}</el-button
-                    >
-                  </template>
+        </template>
+      </van-nav-bar>
+       <!-- 查询表单开始 -->
+      <el-form
+       v-if="queryFormTreeHide"
+       ref="formSearch"
+       :model="queryParams"
+       label-width="100px"
+     >
+       <van-search  v-if="queryFormFieldExcludeTree.length>0"
+        v-model.trim="queryParams[queryFormFieldExcludeTree[0].field]"
+        :placeholder="queryFormFieldExcludeTree[0].placeholder || '请输入搜索关键词'"
+        @change="value => queryFormChange(queryFormFieldExcludeTree[0].field, value)"
+        show-action
+        @search="handleQueryForm('query')"
+        @cancel="handleResetForm"
+       />
+     </el-form>
+     <!-- 查询表单结束 -->
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="loadMore">
+          <van-cell v-for="row in records" :key="row" @click="handRowClick(row)">
+            <template #title>
+              <div v-for="(item, index) in option.columns">
+                <div v-if="item.tableHide != true && item.columnType != 'expand'">
+                  <div v-if="item.inputType == 'custom'" >
+                    <component :is="'custom-slot-' + item.field" :item="item" :row="row" :data="row[item.field]"></component>
+                  </div>
+                  <div v-else-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
+                    <!-- 图片缩略图-->
+                    <el-image
+                      style="width: 25%; height: 50%"
+                      fit="contain"
+                      :src="row[item.field]"
+                      :preview-src-list="[row[item.field]]"
+                    />
+                  </div>
+                  <div v-else-if="item.inputType == 'color'" >
+                     <div :style="{width:'100%',height:'22px','background-color':row[item.field]}"></div>
+                  </div>
+                  <div v-else :style="getDataStyle(row,item)" >
+                    {{ getDataName(row,item)}} 
+                  </div>
                 </div>
-              </template>
-            </el-table-column>
-          </Table>
-          <!-- <el-col :span="24" style="margin-left: 0px;"> -->
-            <!-- 分页标签 -->
-          <!-- <div class="page_bottom">
-            <div class="pagination"> -->
-              <!-- <div>
-                <slot name="tableSelectionBtn" :selection="checkRecords" />
-              </div> -->
-              <el-pagination
-                v-show="pageQueryDataFlag"
-                :current-page.sync="params.pageQueryData.currentPage"
-                :page-sizes="[10, 15, 20]"
-                :page-size="params.pageQueryData.pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="params.pageQueryData.total"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-              >
-             </el-pagination>
-            <!-- </div>
-          </div> -->
-        <!-- </el-col> -->
-        </div>
-      </div>
-      <!-- 表格结束 -->
-
-      <EditDialog
-        ref="edit"
-        :submit-detail-data="option.submitDetailData"
-        :handle-detail-data="option.handleDetailData"
-        :option="option"
-        :model-type="editDialogModelType"
-        :visible="editDialogOpen"
-        :row-data="editDialogRowData"
-        :itemId="itemId"
-        @closeEvent="editDialogClosedEvent"
-      >
-        <template v-slot:customCard>
-          <slot name="cardInEditPage" />
-        </template>
-        <template slot="editBtn" slot-scope="scope">
-          <slot name="editBtnPage" :rowData="scope" />
-        </template>
-      </EditDialog>
+              </div>
+            </template>
+            <template #right-icon>
+              <div v-for="(item1, index) in option.rowButtons">
+                <el-button
+                  v-if="isHide(item1, row)"
+                  :key="index"
+                  :disabled="isDisabledButton(item1,row)"
+                  :type="item1.type || 'text'"
+                  size="small"
+                  style="margin:0px 2px"
+                  @click.native.stop="item1.click(row,item1)"
+                >{{ getLabel(row, item1.label) }}</el-button>
+              </div>
+            </template>
+          </van-cell>
+        </van-list>
+      </van-pull-refresh>
     </div>
-    <slot name="pageSection" />
-    <!-- 右键菜单 -->
-    <anji-contextMenu
-      :visible.sync="isShowRowContextMenu"
-      :style-obj="contextMenuConfigStyle"
-    >
-      <div
-        v-for="(item, index) in option.contextMenu"
-        :key="index"
-        class="contextMenu"
-      >
-        <el-button
-          type="text"
-          :disabled="item.disabled"
-          class="contextMenuItem"
-          @click="handleContextMenuItem(item)"
-          >{{ item.label }}</el-button
-        >
+    <div v-else>
+      <div v-if="hasTreeFieldInQueryForm" class="left-container">
+        <!-- <AnjiTree
+          ref="queryFormTree"
+          v-model.trim="queryParams[queryFormTreeField.field]"
+          :is-open="queryFormTreeField.anjiTreeOption.isOpen"
+          :enable-filter="queryFormTreeField.anjiTreeOption.enableFilter"
+          :label-name="queryFormTreeField.label"
+          :url="queryFormTreeField.anjiTreeOption.url"
+          @node-click="handleTreeNodeCheck"
+        /> -->
       </div>
-    </anji-contextMenu>
+      <div class="right-container">
+        <div class="top_part">
+       
+          <!-- 查询表单开始 -->
+          <el-form
+            v-if="queryFormTreeHide"
+            ref="formSearch"
+            :model="queryParams"
+            label-width="100px"
+          >
+           
+                <el-row :span="24">
+                  <template v-for="(item, index) in queryFormFieldExcludeTree">
+                    <el-col
+                      v-if="index < 9999 || showMoreSearch"
+                      :key="item.field"
+                      :span="6"
+                    >
+                      <el-form-item
+                        :label="item.label"
+                        :rules="item.rules"
+                        :prop="item.field"
+                      >
+                        <!-- 输入框 -->
+                        <el-input
+                          v-if="
+                            item.inputType == 'input' ||
+                              item.inputType == 'number'
+                              ||item.inputType=='textarea'
+                              ||item.inputType=='user-choose'
+                              ||item.inputType=='group-choose'
+                          "
+                          v-model.trim="queryParams[item.field]"
+                          :placeholder="item.placeholder || '请输入'"
+                          :clearable="item.clearable !== false"
+                          :disabled="item.disabled"
+                          @change="value => queryFormChange(item.field, value)"
+                        />
+                        <!-- 开关 -->
+                        <!-- <el-switch
+                          v-else-if="item.inputType == 'switch'"
+                          v-model.trim="queryParams[item.field]"
+                          :disabled="item.disabled"
+                          :active-value="item.disableValue"
+                          :inactive-value="item.enableValue"
+                          active-color="#5887fb"
+                          inactive-color="#ccc"
+                          @change="value => queryFormChange(item.field, value)"
+                        /> -->
+                        <!-- 下拉框 -->
+                        <Select 
+                            v-else-if="item.inputType == 'select'||item.inputType == 'radio'||item.inputType == 'switch'||item.inputType == 'checkbox'"         
+                            v-model.trim="queryParams[item.field]"
+                            :disabled="item.disabled"
+                            :multiple="false" 
+                            :multiple-limit="item.inputType == 'checkbox'?9999:item.anjiSelectOption.multipleLimit"
+                            @change="value => queryFormChange(item.field, value)"
+                            >
+                            <Option
+                              v-for="item1 in item.anjiSelectOption.option"
+                              :key="item1.value"
+                              :label="item1.label"
+                              :value="item1.value"
+                            ></Option>
+                        </Select>
+                        <!-- <el-checkbox-group
+                          v-else-if="item.inputType == 'checkbox'" 
+                          :disabled="item.disabled" 
+                          v-model="queryParams[item.field]"
+                          @change="value => queryFormChange(item.field, value)"
+                        >
+                          <template>
+                            <el-checkbox v-for="(item1,index) in item.anjiSelectOption.option" 
+                            :key="index" :label="item1.value"  :disabled="item.disabled"                     
+                                          >{{item1.label}}</el-checkbox>
+                          </template>
+                        </el-checkbox-group> -->
+                        <!-- <anji-select
+                          v-else-if="item.inputType == 'anji-select'"
+                          v-model.trim="queryParams[item.field]"
+                          :multiple="item.anjiSelectOption.multiple"
+                          :dict-code="item.anjiSelectOption.dictCode"
+                          :url="item.anjiSelectOption.url"
+                          :method="item.anjiSelectOption.method"
+                          :query-param="item.anjiSelectOption.queryParam"
+                          :option="item.anjiSelectOption.option"
+                          :label="item.anjiSelectOption.label"
+                          :disabled-options="
+                            item.anjiSelectOption.disabledOptions
+                          "
+                          :disabled="item.disabled"
+                          :merge-label="item.anjiSelectOption.mergeLabel"
+                          :local-options="item.anjiSelectOption.localOptions"
+                          @change="value => queryFormChange(item.field, value)"
+                        /> -->
+                        <!-- 日期时间框  -->
+                        <el-date-picker
+                          v-else-if="item.inputType == 'date---'"
+                          v-model="queryParams[item.field]"
+                          style="width: 100%"
+                          :placeholder="item.placeholder || '请选择'"
+                          :type="item.inputType"
+                          :format="item.format"
+                          :value-format="item.valueFormat"
+                          :clearable="item.clearable !== false"
+                          @change="value => queryFormChange(item.field, value)"
+                        />
+                        <el-date-picker
+                          v-else-if="item.inputType == 'date-range'||item.inputType == 'date'"
+                          v-model="queryParams[item.field]"
+                          style="width: 100%"
+                          :placeholder="item.placeholder || '请选择'"
+                          type="daterange"
+                          :format="item.format"
+                          :value-format="item.valueFormat"
+                          :clearable="item.clearable !== false"
+                          range-separator="-"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          @change="value => queryFormChange(item.field, value)"
+                        ></el-date-picker>
+                        <el-time-picker
+                          v-else-if="item.inputType == 'time---'"
+                          v-model="queryParams[item.field]"
+                          style="width: 100%"                       
+                          :placeholder="item.placeholder || '请选择'"
+                          :format="item.format" 
+                          :value-format="item.valueFormat"
+                          :clearable="item.clearable !== false"
+                          @change="value => queryFormChange(item.field, value)"
+                        />
+                        <el-time-picker 
+                          v-else-if="item.inputType == 'time-range'||item.inputType == 'time'"
+                          v-model="queryParams[item.field]"
+                          style="width: 100%"                       
+                          :placeholder="item.placeholder || '请选择'"
+                          is-range
+                          :format="item.format" 
+                          :value-format="item.valueFormat"
+                          :clearable="item.clearable !== false"
+                          range-separator="-"
+                          start-placeholder="开始时间"
+                          end-placeholder="结束时间"
+                          @change="value => queryFormChange(item.field, value)"
+                          />
+                        <anji-cascader
+                          v-else-if="item.inputType == 'anji-cascader'"
+                          v-model.trim="queryParams[item.field]"
+                          :disabled="item.disabled"
+                          :single-display="item.anjiCascader.singleDisplay"
+                          :url="item.anjiCascader.url"
+                          @change="
+                            value => queryFormChange(item.field, value, null)
+                          "
+                        />
+                        <!-- 待扩展的表单类型，请自行扩展 -->
+                        <el-input
+                          v-else
+                          placeholder="组件不支持此类型表单请至组件内部自行扩展"
+                          disabled
+                        />
+                      </el-form-item>
+                    </el-col>
+  
+                    <!-- <el-button
+                    
+                    v-if="queryFormFieldExcludeTree.length > 3"
+                    class="button"
+                    size="mini"
+                    plain
+                    @click="handleToggleMoreSearch"
+                  >
+                    <i
+                      :class="
+                        queryParams.showMoreSearch
+                          ? 'el-icon-arrow-up'
+                          : 'el-icon-arrow-down'
+                      "
+                    />
+                    {{ queryParams.showMoreSearch == true ? "展开" : "收起" }}
+                  </el-button> -->
+                  </template>
+                  <ElCol :span="2"  v-if="queryFormFieldExcludeTree.length > 9999"> 
+                    <div style="height:1px;"></div>                 
+                  </ElCol>
+                  <ElCol :span="3"  v-if="queryFormFieldExcludeTree.length > 9999">
+                      <el-button size="medium" type="text" :icon=" showMoreSearch?'':'el-icon-search'" @click="handleToggleMoreSearch">
+                          {{ showMoreSearch == true ? "收起": "高级查询" }}
+                            </el-button>
+                  </ElCol>
+                  <ElCol :span="6" style="margin-top: 1px;" >
+                    <el-button style="float:right;margin-right: 15px;height: 32px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
+                    <el-button style="float:right;margin-right: 15px;height: 32px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
+                  </ElCol>
+                </el-row>
+                <!-- <el-row :span="24">
+                    <el-button style="float:right;margin-right: 15px;" icon="el-icon-refresh" size="mini" @click="handleResetForm()">重置</el-button>
+                    <el-button style="float:right;margin-right: 15px;" type="primary" icon="el-icon-search" size="mini" @click="handleQueryForm('query')">搜索</el-button>
+                </el-row> -->
+          </el-form>
+        
+          <!-- 查询表单结束 -->
+          
+        </div>
+        <!-- 表格开始 -->
+        <div class="main_part">
+          <div class="page_main">
+            <!-- 批量操作 -->
+          <div style="padding-bottom: 8px">
+              <slot name="tableButtons" :selection="checkRecords" />
+              <el-button
+                v-for="(item, index) in option.tableButtons"
+                :key="index"
+                :plain="item.plain"
+                :icon="item.icon"
+                :type="item.type"
+                :disabled="isDisabledButton(item, checkRecords)"
+                @click="item.click('',item)"
+                style="font-size: 12px;height: 32px"
+                :size="item.size"
+                >{{ getLabel(checkRecords, item.label) }}
+              </el-button>
+            </div>
+            
+            <Table
+              ref="tables"
+              class="elTable"
+              :stripe="showStripe"
+              align="center"
+              :data="records"
+              :row-class-name="tableRowClassName"
+              :border="layoutType !=='H5' && showBorder"
+              @selection-change="handleSelectionChange"
+              @sort-change="handleSortChange"
+              @row-dblclick="handleSelectionDblclick"
+              @row-click="handRowClick"
+              @row-contextmenu="rowContextMenu"
+              :show-header="layoutType !=='H5'"
+            >
+              <el-table-column label="序号" v-if="!!option.showRowNumber" :header-align="center" align="center" class-name="small-padding fixed-width"  width="80">
+                <template slot-scope="scope">
+                  {{scope.$index + 1}}
+                </template>
+              </el-table-column>  
+              <template v-for="(item, index) in option.columns">   
+                        <el-table-column
+                          v-if="item.tableHide != true && item.columnType != 'expand'"
+                          :key="index"
+                          :prop="item.field"
+                          :label="fieldLabel(item)"
+                          :min-width="item.minWidth"
+                          :width="item.width"
+                          :sortable="item.sortable"
+                          show-overflow-tooltip
+                          :align="item.contentAlign"
+                          :header-align="item.headerAlign"
+                        >
+                          <template slot-scope="scope">
+                            <div v-if="item.inputType == 'custom'" >
+                              <component :is="'custom-slot-' + item.field" :item="item" :scope="scope" :row="scope.row" :data="scope.row[item.field]"></component>
+                            </div>
+                            <div v-else-if="item.columnType == 'imgPreview'||item.inputType == 'imgPreview'">
+                              <!-- 图片缩略图-->
+                              <el-image
+                                style="width: 25%; height: 50%"
+                                fit="contain"
+                                :src="scope.row[item.field]"
+                                :preview-src-list="[scope.row[item.field]]"
+                              />
+                            </div>
+                            <div v-else-if="item.inputType == 'color'" >
+                              <div :style="{width:'100%',height:'22px','background-color':scope.row[item.field]}"></div>
+                            </div>
+                            <!-- <div v-else-if="item.inputType == 'rate'" >
+                              <el-rate  v-model="scope.row[item.field]"
+                                disabled="true"
+                                :max="item.option.max"
+                                :low-threshold="item.option.lowThreshold" :high-threshold="item.option.highThreshold"
+                                :allow-half="item.option.allowHalf"
+                                :show-text="item.option.showText" :show-score="item.option.showScore">
+                              </el-rate>
+                            </div> -->
+                            <div v-else :style="getDataStyle(scope.row,item)" >
+                            {{ getDataName(scope.row,item)}} 
+                              <!-- <div v-else :style="getDataStyle(scope.row,item)"  v-html="`<div style=''>${scope.row[item.field]||''} <div style='width:14px;height:14px;'><svg viewBox='0 0 100 100'><path d='
+                                M 50 50
+                                m 0 -39
+                                a 39 39 0 1 1 0 78
+                                a 39 39 0 1 1 0 -78
+                                ' stroke='#e5e9f2' stroke-width='21.4' fill='none' class='el-progress-circle__track' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px;'></path><path d='
+                                M 50 50
+                                m 0 -39
+                                a 39 39 0 1 1 0 78
+                                a 39 39 0 1 1 0 -78
+                                ' stroke='#20a0ff' fill='none' stroke-linecap='round' stroke-width='21.4' class='el-progress-circle__path' style='stroke-dasharray: 245.044px, 245.044px; stroke-dashoffset: 0px; transition: stroke-dasharray 0.6s ease 0s, stroke 0.6s ease 0s;'></path></svg>
+                              </div> </div>`">
+                              </div> -->
+                              <!-- <span v-if="item.inputType == 'switch' && !item.colorStyle">
+                                <el-switch
+                                  v-model.trim="scope.row[item.field]"
+                                  :active-value="1"
+                                  :inactive-value="0"
+                                  active-color="#5887fb"
+                                  inactive-color="#ccc"
+                                  @change="switchChange(scope.row, item.switchOption)"
+                                />
+                              </span>
+    
+                              <span v-else-if="item.mergeColumn"
+                                >{{ scope.row[item.field] }}({{
+                                  scope.row[item.mergeColumn]
+                                }})</span
+                              >
+    
+                              <span
+                                v-else-if="item.colorStyle"
+                                :class="item.colorStyle[scope.row[item.editField]]"
+                                >{{ fieldValueByRowRenderer(scope.row, item) }}</span
+                              >
+                              <span v-else>{{
+                                fieldValueByRowRenderer(scope.row, item)
+                              }}</span> -->
+                            </div>
+                          </template>
+                        </el-table-column>
+              </template>
+              <!--多选-->
+              <el-table-column fixed v-if="selectionChange" type="selection" width="50" align="center" />
+              <!--隐藏列-->
+              <!-- <el-table-column v-if="tableExpandColumns.length > 0" type="expand">
+                <template slot-scope="scope">
+                  <p
+                    v-for="item in tableExpandColumns"
+                    :key="item.field"
+                    class="table-expand-item"
+                  >
+                    <span class="titel"> {{ item.label }}: </span>
+                    <span>{{ scope.row[item.field] }}</span>
+                  </p>
+                </template>
+              </el-table-column> -->
+              <!--序号-->
+              <!-- <el-table-column label="序号" min-width="50" align="center">
+                <template slot-scope="scope">
+                  {{
+                    queryParams.pageSize * (queryParams.currentPage - 1) +
+                      scope.$index +
+                      1
+                  }}
+                </template>
+              </el-table-column> -->
+              <!-- <TableColumn type="index" header-align="center" align="center" min-width="50" label="序号" width="80"></TableColumn> -->
+  
+              <!--操作栏-->
+              <el-table-column
+                align="center"
+                fixed="right"
+                label="操作"
+                :width="option.buttons.rowButtonsWidth || 100"
+                v-if="option.rowButtons.length>0"
+              >
+                <template slot-scope="scope">
+                  <div >
+                    <template v-for="(item, index) in option.rowButtons">
+                      <el-button
+                        v-if="isHide(item, scope.row)"
+                        :key="index"
+                        :icon="item.icon || ''"
+                        :disabled="isDisabledButton(item, scope.row)"
+                        :type="item.type || 'text'"
+                        size="small"
+                        @click.native.stop="itemClick(item, scope.row, scope.$index)"
+                      >{{ getLabel(scope.row, item.label) }}</el-button
+                      >
+                    </template>
+                  </div>
+                </template>
+              </el-table-column>
+            </Table>
+            <!-- <el-col :span="24" style="margin-left: 0px;"> -->
+              <!-- 分页标签 -->
+            <!-- <div class="page_bottom">
+              <div class="pagination"> -->
+                <!-- <div>
+                  <slot name="tableSelectionBtn" :selection="checkRecords" />
+                </div> -->
+                <el-pagination
+                  v-if="layoutType!='H5'"
+                  v-show="pageQueryDataFlag"
+                  :current-page.sync="params.pageQueryData.currentPage"
+                  :page-sizes="[10, 15, 20]"
+                  :page-size="params.pageQueryData.pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="params.pageQueryData.total"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                >
+               </el-pagination>
+               <el-pagination
+                  v-if="layoutType =='H5' && params.pageQueryData.total>0"
+                  v-show="pageQueryDataFlag"
+                  :current-page.sync="params.pageQueryData.currentPage"
+                  :page-sizes="[10, 15, 20]"
+                  :page-size="params.pageQueryData.pageSize"
+                  layout="total, prev, pager, next, jumper"
+                  :total="params.pageQueryData.total"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                >
+               </el-pagination>
+              <!-- </div>
+            </div> -->
+          <!-- </el-col> -->
+          </div>
+        </div>
+        <!-- 表格结束 -->
+  
+        <EditDialog
+          ref="edit"
+          :submit-detail-data="option.submitDetailData"
+          :handle-detail-data="option.handleDetailData"
+          :option="option"
+          :model-type="editDialogModelType"
+          :visible="editDialogOpen"
+          :row-data="editDialogRowData"
+          :itemId="itemId"
+          @closeEvent="editDialogClosedEvent"
+        >
+          <template v-slot:customCard>
+            <slot name="cardInEditPage" />
+          </template>
+          <template slot="editBtn" slot-scope="scope">
+            <slot name="editBtnPage" :rowData="scope" />
+          </template>
+        </EditDialog>
+      </div>
+      <slot name="pageSection" />
+      <!-- 右键菜单 -->
+      <anji-contextMenu
+        :visible.sync="isShowRowContextMenu"
+        :style-obj="contextMenuConfigStyle"
+      >
+        <div
+          v-for="(item, index) in option.contextMenu"
+          :key="index"
+          class="contextMenu"
+        >
+          <el-button
+            type="text"
+            :disabled="item.disabled"
+            class="contextMenuItem"
+            @click="handleContextMenuItem(item)"
+            >{{ item.label }}</el-button
+          >
+        </div>
+      </anji-contextMenu>
+    </div>
+    
   </div>
 
 </template>
@@ -464,7 +571,7 @@ import queryform from './mixins/queryform'
 import Vue from 'vue'
 
 export default {
-  inject: ['listVformPages','addRedirect','editRedirect','setFunction','dataHandling','request','router'],
+  inject: ['listVformPages','addRedirect','editRedirect','setFunction','dataHandling','request','router','back'],
   mixins: [
     common,
     queryform,
@@ -484,6 +591,14 @@ export default {
     ...FieldComponents,
   },
   props: {
+    layoutType: {
+        type: String,
+        default: ''
+    },
+    title: {
+        type: String,
+        default: ''
+    },
     formId:{
 
     },
@@ -516,6 +631,12 @@ export default {
   },
   data() {
     return {
+      //加载标识
+      loading:false,
+      //数据全部加载完标识
+      finished:false,
+      //下拉刷新标识
+      refreshing:false,
       // 查询表单提交的值
       showMoreSearch:false,
       queryParams: {
@@ -546,12 +667,15 @@ export default {
       contextMenuConfigStyle: {},
       contextMenuRow: {},
       pageQueryDataFlag:true,
+      showStripe:false,
+      showBorder:true,
+      checkbox:true
     };
   },
   watch: {
     option: {
       handler(val) {
-        // console.log(111111)
+        console.log(val,111111)
       },
       deep: true
     },
@@ -581,18 +705,37 @@ export default {
       handler(val) {
         this.handleResetForm()
       },
+    },
+    'option.showStripe':{
+      handler(val) {
+        this.showStripe=this.option.showStripe
+        this.handleResetForm()
+      },
+    },
+    'option.showBorder':{
+      handler(val) {
+        this.showBorder=this.option.showBorder
+        this.handleResetForm()
+      },
+    },
+    'option.checkbox':{
+      handler(val) {
+        this.checkbox=this.option.checkbox
+        //this.handleResetForm()
+      },
     }
   },
   computed: {
     //多选列控制
     selectionChange(){
-      console.log('dads',this.option.tableButtons);
-      
       for (let index = 0; index < this.option.tableButtons.length; index++) {
         if(this.option.tableButtons[index].id=='delete'){
           return true
           break;
         }        
+      }
+      if(this.checkbox){
+        return true
       }
       return false
     },
@@ -669,6 +812,9 @@ export default {
   },
   created() {
     this.pageQueryDataFlag=this.option.pageQueryDataFlag
+    this.showStripe=this.option.showStripe
+    this.showBorder=this.option.showBorder
+    this.checkbox = this.option.checkbox
     this.itemId=this.option.itemId
     // 为查询框中所有input加上默认值   
     this.option.queryFormFields.forEach(item => {
@@ -697,6 +843,20 @@ export default {
     }
   },
   methods: {
+    //上拉加载更多
+    loadMore(){
+      this.params.pageQueryData.currentPage = this.params.pageQueryData.currentPage + 1
+      this.handleQueryPageList()
+    },
+    //下拉刷新
+    onRefresh(){
+      this.records = []
+      this.refreshing = false
+      this.finished = false
+      this.loading = true
+      this.params.pageQueryData.currentPage = 1
+      this.handleQueryPageList()
+    },
     queryFormFieldSpan(item) {
       if (item.span != null) {
         return item.span;
@@ -725,6 +885,11 @@ export default {
     },
     // 查询按钮
     handleQueryForm(from) {
+      if(this.layoutType == 'H5'){
+        this.records = []
+        this.loading = true
+        this.finished = false
+      }
       // 如果是点查询按钮，把树的查询属性去掉
       if (from == "query") {
         if (this.hasTreeFieldInQueryForm) {
@@ -769,6 +934,7 @@ export default {
     },
     // 列表查询
     async handleQueryPageList() {
+      
       // 将特殊参数值urlcode处理
       // let params = this.urlEncodeObject(this.queryParams, "order,sort");
       let object=this.deepClone(this.queryParams)
@@ -776,7 +942,7 @@ export default {
       let params= this.getNewParams(object)
       console.log(params);
       //绑定formid后默认查询||vform查询   
-      if(!!this.formId&&(this.option.cuatomQuery.setting==='0'||!this.option.cuatomQuery.setting)){
+      if(!!this.formId&&(this.option.cuatomQuery.setting==='0'||this.option.cuatomQuery.setting==='3'||this.option.cuatomQuery.setting==='4'||!this.option.cuatomQuery.setting)){
         // this.setFunction.queryListCond(this.formId,{pageQueryData:this.params.pageQueryData,queryParams:params}).then(response => {
         //   if (response.data.code != "200") return;
         //   this.records = response.data.rows;
@@ -784,28 +950,49 @@ export default {
         // }); 
         let api={} 
         api['method']= 'post'
-        if(this.pageQueryDataFlag){
-          api['url']='/dyn/vf/queryListCond/'+ this.formId,
+        if(this.option.cuatomQuery.setting==='0'){
+          if(this.pageQueryDataFlag){
+            api['url']='/dyn/vf/queryListCond/'+ this.formId,
+            api['data']={queryParams:params,pageQueryData:this.params.pageQueryData}
+          }else{
+            api['url']='/dyn/vf/queryListAll/'+ this.formId,
+            api['data']={queryParams:params}
+          } 
+        }else if(this.option.cuatomQuery.setting==='3'){
+          api['url']='/dyn/vf/getApplyList/'+ this.formId,
           api['data']={queryParams:params,pageQueryData:this.params.pageQueryData}
-        }else{
-          api['url']='/dyn/vf/queryListAll/'+ this.formId,
-          api['data']={queryParams:params}
-        }     
-         this.request(api).then(response => {
-          // if (response.data.code != "200") return;
-          this.records = response.data.rows;
-          this.params.pageQueryData.total = response.data.total;
+        }else if(this.option.cuatomQuery.setting==='4'){
+          api['url']='/dyn/vf/getApproveList/'+ this.formId,
+          api['data']={queryParams:params,pageQueryData:this.params.pageQueryData}
+        }  
+        this.request(api).then(response => {
+          if(this.layoutType == 'H5'){
+            this.loading = false
+            //this.refreshing = false
+            this.records = this.records.concat(response.data.rows);
+            this.params.pageQueryData.total = response.data.total;
+            if(this.records.length == this.params.pageQueryData.total){
+              this.finished = true
+            }
+            console.log(this.loading)
+          }else{
+            this.records = response.data.rows;
+            this.params.pageQueryData.total = response.data.total;
+          }
         });
       }else{
         //自定义查询
         let query={}
         let url={}
-        let apiData=this.option.cuatomQuery.apiData
+        
+        let apiData={}
         let urlData={}
-
         //转为对象
         if(!!this.option.cuatomQuery.apiData){
-          apiData= eval("("+apiData+")")  
+          let data=this.deepClone(this.option.cuatomQuery.apiData)
+          // let newFunction =  new Function(data)              
+          // data= newFunction()
+          apiData= eval("("+data+")")  
           console.log('apiData',apiData);   
           // this.router.push(apiData)   
         }
@@ -813,9 +1000,16 @@ export default {
           urlData= eval("("+this.option.cuatomQuery.urlData+")")      
           console.log('urlData',urlData);          
         }  
-        let routeQuery=this.deepClone(this.$route.query)
-        let{routeData,routeParams}=this.replaceParamsObject(apiData,routeQuery,'query')
-        params={...params,...routeData}
+        let rQuery={}
+        let routeQuery={}
+        if(this.$route&&(!!this.$route.query||!!this.$route.params)){
+          let data=this.deepClone(apiData)
+          rQuery=this.$route.query
+          routeQuery=this.deepClone(rQuery)
+          let{routeData,routeParams}=this.replaceParamsObject(data,routeQuery,'query')
+          params={...params,...routeData}
+        }
+
         //对参数进行处理
         query=  this.getNewData(apiData,params,'query')
        
@@ -870,30 +1064,40 @@ export default {
           }   
           console.log('api最终的值',api);               
           this.request(api).then(response => {
-            // if (response.data.code != "200") return;
-            console.log(this.option.cuatomQuery.dataConversion);
-            if(!!this.option.cuatomQuery.dataConversion){
-              let mountFunc = new Function('response',this.option.cuatomQuery.dataConversion)
-              this.records= mountFunc(response)
-              console.log(this.records);
-              
+            if(this.layoutType == 'H5'){
+              this.loading = false
+              //this.refreshing = false
+              this.records = this.records.concat(response.data.rows);
+              if(!!this.option.cuatomQuery.dataConversion){
+                let mountFunc = new Function('response',this.option.cuatomQuery.dataConversion)
+                this.records = this.records.concat(mountFunc(response));
+              }else{
+                this.records = this.records.concat(response.data.rows);
+              }                        
+              this.params.pageQueryData.total = response.data.total;
+              if(this.records.length == this.params.pageQueryData.total){
+                this.finished = true
+              }
             }else{
-              this.records = response.data.rows;
-            }                        
-            this.params.pageQueryData.total = response.data.total;  
+              console.log(this.option.cuatomQuery.dataConversion);
+              if(!!this.option.cuatomQuery.dataConversion){
+                let mountFunc = new Function('response',this.option.cuatomQuery.dataConversion)
+                this.records= mountFunc(response)
+              }else{
+                this.records = response.data.rows;
+              }                        
+              this.params.pageQueryData.total = response.data.total;
+            }
+            
           });
         // }
       }
-      // const { data } = await this.option.buttons.query.api({ pageQueryData: JSON.stringify(this.params.pageQueryData),condition: JSON.stringify(this.queryParams),});
-      // if (code != "200") return;
-      // this.records = data.list;
-      // this.params.pageQueryData.total = data.total;
     },
     getNewParams(object){
       let params ={}
       let types=['date','time','date-range','time-range']
       if(this.option.queryFormHide){
-        if(this.option.cuatomQuery.setting==='0'||!this.option.cuatomQuery.setting){
+        if(this.option.cuatomQuery.setting==='0'||this.option.cuatomQuery.setting==='3'||this.option.cuatomQuery.setting==='4'||!this.option.cuatomQuery.setting){
           for (const key in object) {
             if (object.hasOwnProperty(key)&&!!key) {
               let type=''
@@ -911,7 +1115,7 @@ export default {
                 name:key,
                 type:type,
                 query:query||object[key],
-              }         
+              }
             }
           }
         }else{
@@ -939,6 +1143,22 @@ export default {
             }  
           }
         }           
+      }
+      if(this.option.cuatomQuery.setting==='0'){
+        var queryRange = this.option.cuatomQuery.queryRange
+        if(queryRange == "user"){
+          params["create_by"]={
+            name:"create_by",
+            type:"queryRange",
+            query:window.$vm.$store.state.d2admin.user.info.id,
+          }
+        }else if(queryRange == "group"){
+          params["group_id"]={
+            name:"group_id",
+            type:"queryRange",
+            query:window.$vm.$store.state.d2admin.user.info.groupId,
+          }
+        }
       }
       return params
     },
@@ -1004,7 +1224,7 @@ export default {
     },
     replaceParams (str, replacements) {
       const regex = /\$\{([^}]+)\}/g       
-        // console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
+         console.log('[replaceParams]', str, replacements, str.replace(regex, (_, match) => match))  
         if(str==str.replace(regex, (_, match) => match) ){
           return str 
         }else{
@@ -1114,7 +1334,35 @@ export default {
       };
       this.$emit("handleCustomValue", obj);
     },
-    handlegetLable(item, label) {
+    //行点击事件
+    handRowClick(row){
+      if(this.option.rowClick){
+        let customFuncInst = new Function(
+            "row",
+            this.option.rowClick
+          );
+          customFuncInst.call(this,row);
+      }
+    },
+    itemClick(item, row, index) {
+      if (item.id == "edit") {
+        return this.handleOpenEditView("edit",row,item)
+        // return this.operateDataset("edit", row);
+      } else if (item.id == "delete") {
+        return this.handleDeleteBatch(row);
+      } else {
+        if (!!item.customFunc) {
+          let customFuncInst = new Function(
+            "item",
+            "row",
+            "index",
+            item.customFunc
+          );
+          customFuncInst.call(this, item, row, index);
+        }
+      }
+    },
+    getLabel(item, label) {
       if (typeof label == "function") {
         return label(item);
       } else {
@@ -1409,18 +1657,18 @@ export default {
       }
     },
     // 给表格某行改变颜色
-    tableRowClassName({ row, rowIndex }) {
-      if ((row.urgentFlag || row.tableRow) && !row.bgColor) {
-        return "warning-row";
-      } else if ((row.urgentFlag || row.tableRow) && row.bgColor) {
-        return "warning-row bgColor";
-      } else if ((!row.urgentFlag || !row.tableRow) && row.bgColor) {
-        return "bgColor";
-      }
-      if ((rowIndex + 1) % 2 === 0) {
-        return "success-row";
-      }
-    },
+    // tableRowClassName({ row, rowIndex }) {
+    //   if ((row.urgentFlag || row.tableRow) && !row.bgColor) {
+    //     return "warning-row";
+    //   } else if ((row.urgentFlag || row.tableRow) && row.bgColor) {
+    //     return "warning-row bgColor";
+    //   } else if ((!row.urgentFlag || !row.tableRow) && row.bgColor) {
+    //     return "bgColor";
+    //   }
+    //   if ((rowIndex + 1) % 2 === 0) {
+    //     return "success-row";
+    //   }
+    // },
     checkContainerMove(evt) {
         return this.designer.checkWidgetMove(evt)
       },
@@ -1499,6 +1747,10 @@ export default {
           type: Object,
           default: () => {}
         },
+        row: {
+          type: Object,
+          default: () => {}
+        },
         data: {
           type: String,
           default: () => {}
@@ -1517,9 +1769,19 @@ export default {
  /deep/.el-tooltip>div{
     text-overflow: ellipsis;
     overflow: hidden;
+    display:inline;
  }
+
  .top_part /deep/.el-form-item__label{
    text-align: right;
+ }
+ /deep/.van-nav-bar{
+    background-color: #d5def7;
+ }
+</style>
+<style>
+.el-tooltip__popper{
+   max-width: 50% !important;
  }
 </style>
 <!-- <style scoped lang="scss">

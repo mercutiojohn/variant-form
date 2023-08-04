@@ -70,7 +70,7 @@
     components: {
       FormItemWrapper,
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel','request'],
+    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel','request','down'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值
@@ -125,31 +125,35 @@
       //附件下载
       // 下载
       downloadFile(fileName, fileUrl, fileUid) {
-        this.request({
-          method:"GET",
-          url:fileUrl,
-          responseType: 'blob'
-        }).then(res => {
-          this.download(res, fileName)
-        }).catch(error => {
-          this.$message.error('下载失败:' + err)
-        })
+        this.down(fileName, fileUrl, fileUid)
       },
-      download(data, fileName) {
-        if (!data) {
-          return this.$message.warning('文件为空')
-        }
-        let url = window.URL.createObjectURL(new Blob([data]))
-        let link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        // 获取文件名
-        // download 属性定义了下载链接的地址而不是跳转路径
-        link.setAttribute('download', fileName)
-        document.body.appendChild(link)
-        link.click()
-        link.remove()
-      },
+      // downloadFile(fileName, fileUrl, fileUid) {
+      //   this.down(fileName, fileUrl, fileUid)
+      //   this.request({
+      //     method:"GET",
+      //     url:fileUrl,
+      //     responseType: 'arraybuffer'//blob
+      //   }).then(res => {
+      //     this.download(res, fileName)
+      //   }).catch(error => {
+      //     this.$message.error('下载失败:' + err)
+      //   })
+      // },
+      // download(data, fileName) {
+      //   if (!data) {
+      //     return this.$message.warning('文件为空')
+      //   }
+      //   let url = window.URL.createObjectURL(new Blob([data]))
+      //   let link = document.createElement('a')
+      //   link.style.display = 'none'
+      //   link.href = url
+      //   // 获取文件名
+      //   // download 属性定义了下载链接的地址而不是跳转路径
+      //   link.setAttribute('download', fileName)
+      //   document.body.appendChild(link)
+      //   link.click()
+      //   link.remove()
+      // },
       handleFileExceed() {
         let uploadLimit = this.field.options.limit
         this.$message.warning( this.i18nt('render.hint.uploadExceed').replace('${uploadLimit}', uploadLimit) )

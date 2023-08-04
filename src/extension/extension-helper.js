@@ -16,7 +16,6 @@ export default {
   addBasicFieldSchema,
   addAdvancedFieldSchema,
   addCustomWidgetSchema,
-
   registerCommonProperty,
   registerAdvancedProperty,
   registerEventProperty,

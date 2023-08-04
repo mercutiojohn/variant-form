@@ -407,6 +407,55 @@ export function getDefaultFormConfig() {
       params: [],
       dataHandlerCode: 'return response.data',
     },
+    showActionBar: false,
+    actionBarPosition: 'top',
+    actionBarAlign: 'left',
+    actionBarButtons: [
+      {
+        label: '新增',
+        icon: 'el-icon-plus',
+        type: 'primary',
+        action: 'add',
+        customFunc: '',
+        tableHide: false,
+        tableHideCustom: false,
+        isHide: '',
+        settingData:''
+      },
+      {
+        label: '删除',
+        icon: 'el-icon-delete',
+        type: 'normal',
+        action: 'delete',
+        customFunc: '',
+        tableHide: false,
+        tableHideCustom: false,
+        isHide: '',
+        settingData: ''
+      },
+      {
+        label: '保存',
+        icon: 'el-icon-folder-checked',
+        type: 'primary',
+        action: 'save',
+        customFunc: '',
+        tableHide: true,
+        tableHideCustom: false,
+        isHide: true,
+        settingData:''
+      },
+      {
+        label: '提交',
+        icon: 'el-icon-upload2',
+        type: 'primary',
+        action: 'submit',
+        customFunc: '',
+        tableHide: true,
+        tableHideCustom: false,
+        isHide: true,
+        settingData: ''
+      }
+    ],
 
     onFormCreated: '',
     onFormMounted: '',

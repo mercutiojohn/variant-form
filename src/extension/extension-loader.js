@@ -25,7 +25,7 @@ import FlexBoxWidget from '@/extension/samples/flexBox/flex-box-widget'
 import FlexBoxItem from '@/extension/samples/flexBox/flex-box-item'
 // import {cardTemplateGenerator} from '@/extension/samples/extension-sfc-generator'
 
-// Grid Box Grid布局
+// Grid Box 自动栅格布局
 import { gridBoxSchema } from "@/extension/samples/extension-schema"
 import GridBoxWidget from '@/extension/samples/gridBox/grid-box-widget'
 import GridBoxItem from '@/extension/samples/gridBox/grid-box-item'
@@ -86,6 +86,7 @@ import elRowButtonEditEditor from '@/extension/samples/el-table/setting-editor/e
 import elQueryFormFieldsEditor from '@/extension/samples/el-table/setting-editor/el-table-queryFormFields-editor'
 import elTableFormIdEditor from '@/extension/samples/el-table/setting-editor/el-table-formId-editor'
 import elTableCuatomQueryEditor from '@/extension/samples/el-table/setting-editor/el-table-cuatomQuery-editor'
+import elTableRowClickEditor from '@/extension/samples/el-table/setting-editor/el-table-rowClick-editor'
 //柱状图编辑
 import barChartAttributeEditor from '@/extension/samples/barChart/setting-editor/bar-chart-attribute-editor'
 //折线图编辑
@@ -212,7 +213,7 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   /* 弹性布局组件加载 end */
 
-  /* Grid布局组件加载 start */
+  /* 自动栅格布局组件加载 start */
   addContainerWidgetSchema(gridBoxSchema)  //加载组件Json Schema
   /* -------------------------------------------------- */
   Vue.component(GridBoxWidget.name, GridBoxWidget)  //注册设计期的容器组件
@@ -223,7 +224,7 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   // registerCWGenerator('card', cardTemplateGenerator)  //注册容器组件的代码生成器
   /* -------------------------------------------------- */
-  /* Grid布局组件加载 end */
+  /* 自动栅格布局组件加载 end */
 
   /* SubmitButton 组件加载 start */
   addBasicFieldSchema(submitButtonSchema)  //加载组件Json Schema
@@ -262,8 +263,15 @@ export const loadExtension = function () {
   /* -------------------------------------------------- */
   Vue.component(UserChooseWidget.name, UserChooseWidget)  //注册组件
   /* -------------------------------------------------- */
-  // PERegister.registerCPEditor('test-testName', 'test-testName-editor',
-  //     PEFactory.createInputTextEditor('testName', 'extension.setting.alertTitle'))
+  PERegister.registerCPEditor('user-choose-multiSelect', 'user-choose-multiSelect-editor',
+      PEFactory.createBooleanEditor('multiSelect', 'extension.setting.multiSelect'))
+  // let displayTypeOptions = [
+  //   {label: '多行', value: 'textarea'},
+  //   {label: '单行', value: 'normal'}
+  // ]
+  // PERegister.registerCPEditor('user-choose-displayType', 'user-choose-displayType-editor',
+  //     PEFactory.createSelectEditor('displayType', 'extension.setting.displayType',
+  //     {optionItems: displayTypeOptions}))
   /* -------------------------------------------------- */
   //  registerFWGenerator('userChoose', alertTemplateGenerator)  //注册字段组件的代码生成器
   /* -------------------------------------------------- */
@@ -271,6 +279,12 @@ export const loadExtension = function () {
 
   /* GroupChoose 组件加载 start */
   addBasicFieldSchema(groupChooseSchema)  //加载组件Json Schema
+  /* -------------------------------------------------- */
+  PERegister.registerCPEditor('group-choose-multiSelect', 'group-choose-multiSelect-editor',
+      PEFactory.createBooleanEditor('multiSelect', 'extension.setting.multiSelect'))
+  // PERegister.registerCPEditor('group-choose-displayType', 'group-choose-displayType-editor',
+  //     PEFactory.createSelectEditor('displayType', 'extension.setting.displayType',
+  //     {optionItems: displayTypeOptions}))
   /* -------------------------------------------------- */
   Vue.component(GroupChooseWidget.name, GroupChooseWidget)  //注册组件
   /* GroupChoose 组件加载完毕 end */
@@ -348,6 +362,7 @@ export const loadExtension = function () {
   Vue.component(elQueryFormFieldsEditor.name, elQueryFormFieldsEditor)
   Vue.component(elTableFormIdEditor.name, elTableFormIdEditor)  
   Vue.component(elTableCuatomQueryEditor.name, elTableCuatomQueryEditor) 
+  Vue.component(elTableRowClickEditor.name, elTableRowClickEditor) 
   Vue.component(barChartAttributeEditor.name, barChartAttributeEditor)
   Vue.component(lineChartAttributeEditor.name, lineChartAttributeEditor)   
   Vue.component(pieChartAttributeEditor.name, pieChartAttributeEditor)    
@@ -359,17 +374,25 @@ export const loadExtension = function () {
   PEFactory.createEventHandlerEditor('rowButtonEdit', [])) 
   PERegister.registerCPEditor('queryFormFields', 'queryFormFields-editor',
   PEFactory.createEventHandlerEditor('queryFormFields', [])) 
+  PERegister.registerCPEditor('rowClick', 'rowClick-editor',
+  PEFactory.createInputTextEditor('rowClick', 'extension.setting.rowClick'))  
   PERegister.registerCPEditor('formId', 'formId-editor',
   PEFactory.createInputTextEditor('formId', [])) 
-  PERegister.registerCPEditor('cuatomQuery', 'cuatomQuery-editor',
-  PEFactory.createInputTextEditor('cuatomQuery', []))   
+  PERegister.registerCPEditor('cuatomQuery', 'cuatomQuery-editor', 
+  PEFactory.createInputTextEditor('cuatomQuery', []))
   PERegister.registerCPEditor('attribute', 'attribute-editor',
   PEFactory.createInputTextEditor('attribute', [])) 
+  PERegister.registerCPEditor('checkbox', 'checkbox-editor',
+  PEFactory.createBooleanEditor('checkbox', 'extension.setting.checkbox'))
   PERegister.registerCPEditor('pageQueryDataFlag', 'pageQueryDataFlag-editor',
   PEFactory.createBooleanEditor('pageQueryDataFlag', 'extension.setting.pageQueryDataFlag'))
-  // PERegister.registerCPEditor('queryFormFieldsFlag', 'queryFormFieldsFlag-editor',
-  // PEFactory.createBooleanEditor('queryFormFieldsFlag', 'extension.setting.queryFormFieldsFlag'))
+  PERegister.registerCPEditor('showStripe', 'showStripe-editor',
+  PEFactory.createBooleanEditor('showStripe', 'extension.setting.showStripe'))
+  PERegister.registerCPEditor('showBorder', 'showBorder-editor',
+  PEFactory.createBooleanEditor('showBorder', 'extension.setting.showBorder'))
   PERegister.registerCPEditor('queryFormHide', 'queryFormHide-editor',
   PEFactory.createBooleanEditor('queryFormHide', 'extension.setting.queryFormHide'))
+  PERegister.registerCPEditor('showInput', 'showInput-editor',
+  PEFactory.createBooleanEditor('showInput', 'extension.setting.showInput'))
    /* 表格组件加载 end */
 }

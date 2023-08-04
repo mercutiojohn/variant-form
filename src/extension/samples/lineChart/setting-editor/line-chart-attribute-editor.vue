@@ -7,6 +7,23 @@
         size="mini"
       />
     </el-form-item>
+    <el-form-item label="点击事件" label-width="110px">
+      <el-button type="info" icon="el-icon-edit" plain round @click="editData">
+        编辑内容</el-button>
+    </el-form-item>
+    <el-dialog title="自定义配置" :visible.sync="showDataFlag"
+      v-if="showDataFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
+        :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
+        <el-alert type="info" :closable="false" title="(item) => { // 选中区域属性"></el-alert>
+        <code-editor :mode="'javascript'" :readonly="false" v-model="setData" ref="ecEditor"></code-editor>
+        <el-alert type="info" :closable="false" title="}"></el-alert>
+        <div slot="footer" class="dialog-footer">
+        <el-button @click="showDataFlag = false">
+        取消</el-button>
+        <el-button type="primary" @click="saveDataConversion">
+        确定</el-button>
+        </div>
+    </el-dialog>
     <el-form-item label="折线图高度" label-width="110px">
       <el-input-number
             size="mini"
@@ -654,7 +671,9 @@
         // },
         staticData: '',
         chartType: 'widget-linechart',
-        dictKey: 'LINE_PROPERTIES'
+        dictKey: 'LINE_PROPERTIES',
+        showDataFlag:false,
+        setData:''
       }
     },
     methods:{
@@ -694,7 +713,31 @@
         this.selectedWidget.options.data.dataType = 'staticData'
         this.selectedWidget.options.data.staticData = JSON.parse(this.staticData)
         this.showStaticDialogFlag=false
-      }
+      },
+      //自定义配置
+      editData(){
+        this.setData = this.selectedWidget.options.setup.clickEvent
+        this.showDataFlag=true
+      },
+      saveDataConversion(){
+        const codeHints = this.$refs.ecEditor.getEditorAnnotations()       
+        let syntaxErrorFlag = false
+        if (!!codeHints && (codeHints.length > 0)) {
+          codeHints.forEach((chItem) => {
+            if (chItem.type === 'error') {
+              syntaxErrorFlag = true
+            }
+          })
+
+          if (syntaxErrorFlag) {
+            this.$message.error(this.i18nt('designer.setting.syntaxCheckWarning'))
+            this.setData = ''
+            return
+          }
+        }  
+        this.selectedWidget.options.setup.clickEvent =this.setData
+        this.showDataFlag = false
+      },
     },
     created(){
       this.staticData = JSON.stringify(this.selectedWidget.options.data.staticData)

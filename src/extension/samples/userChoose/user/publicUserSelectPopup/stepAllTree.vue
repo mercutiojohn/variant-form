@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 490px; overflow-x: hidden; border: 1px solid #f2f2f2">
+  <div style="overflow-x: hidden; border: 1px solid #f2f2f2" :style="{'height':(layoutType==='H5')?'250px':'490px'}">
     <el-tree
       class="filter-tree"
       :data="data"
@@ -38,6 +38,10 @@ export default {
     };
   },
   props: {
+    layoutType: {
+      type: String,
+      default: ''
+    },
     selectMode: {
       type: Boolean,
       default: false,
@@ -108,10 +112,6 @@ export default {
       });
     },
     handleNodeClick(data, node, data1) {
-      console.log(data, 8888);
-      console.log(node, 9999);
-      console.log(data1, 7777);
-
       // if (checked && !indeterminate) {
       //   //判断状态，是否未单选模式
       //   if (this.selectMode && this.$refs.tree.getCheckedNodes(true).length > 1) {
@@ -142,9 +142,9 @@ export default {
     //节点选中状态发生变化时的回调
     handleCheckChange(data, checked, indeterminate) {
       // debugger
-      console.log(data, 111);
-      console.log(checked, 222);
-      console.log(indeterminate, 333);
+      // console.log(data, 111);
+      // console.log(checked, 222);
+      // console.log(indeterminate, 333);
       //console.log(data,'++++++++++')
       if (checked && !indeterminate) {
         //判断状态，是否未单选模式

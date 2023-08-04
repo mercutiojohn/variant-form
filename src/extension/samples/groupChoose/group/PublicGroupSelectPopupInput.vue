@@ -21,6 +21,8 @@
       :disabled="options.disabled" 
       :size="options.size" 
       class="hide-spin-button"
+      type="textarea"
+      :rows="options.rows"
       :show-password="options.showPassword"
       :prefix-icon="options.prefixIcon"
       :suffix-icon="options.suffixIcon"

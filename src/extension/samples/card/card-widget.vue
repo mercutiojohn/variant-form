@@ -5,7 +5,8 @@
              :shadow="widget.options.shadow" :style="{width: widget.options.cardWidth + '!important' || ''}"
              :class="[selected ? 'selected' : '', !!widget.options.folded ? 'folded' : '', customClass]">
       <div slot="header" class="clear-fix">
-        <span>{{widget.options.label}}</span>
+        <span style="display: inline-block;height: 20px;width: 4px;background-color: #bfa;position: relative; top: -2px;">&nbsp;</span>
+        <span style="display: inline-block;height: 20px;margin-left: 10px;">{{widget.options.label}}</span>
         <i v-if="widget.options.showFold" class="float-right"
            :class="[!widget.options.folded ? 'el-icon-arrow-down' : 'el-icon-arrow-up']"
            @click="toggleCard"></i>

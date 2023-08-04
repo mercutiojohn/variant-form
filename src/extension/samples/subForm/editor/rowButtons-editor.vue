@@ -61,9 +61,9 @@
     },
     data() {
       return {
-        editNumberVisible:false,
+        editNumberVisible: false,
         eventParams: [],
-        newSelectedWidget:{},
+        newSelectedWidget: {},
         btnList: []
       }
     },
@@ -78,10 +78,8 @@
         this.btnList = []
       }
     },
-    created(){
-      // this.newSelectedWidget=this.selectedWidget
-      console.log(this.selectedWidget,'1111111111');
-      
+    created (){
+      // this.newSelectedWidget = this.selectedWidget
     }
 
   }

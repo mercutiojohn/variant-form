@@ -96,7 +96,7 @@
       table-layout: fixed;
 
       ::v-deep td {
-        height: 48px;
+        min-height: 48px;
         border: 1px dashed #336699;
         padding: 3px;
         display: table-cell;

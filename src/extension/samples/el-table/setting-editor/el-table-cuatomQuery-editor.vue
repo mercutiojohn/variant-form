@@ -1,11 +1,14 @@
 <template>
   <div>
-    <el-form-item label="自定义查询" label-width="150px">
+    <el-form-item label="自定义接口" label-width="150px">
       <el-button type="info" icon="el-icon-edit" plain round @click="editData">
-        编辑字段</el-button>
+        编辑</el-button>
     </el-form-item>
-    <el-dialog title="自定义查询" :visible.sync="editNumberVisible" width="60%" :append-to-body="true">
-        <cuatomQuery
+    <el-form-item label-width="0">
+      <el-divider class="custom-divider"></el-divider>
+    </el-form-item>
+    <el-drawer title="头部操作按钮" :visible.sync="editNumberVisible" :append-to-body="true" size="700px">
+      <cuatomQuery
           v-if="editNumberVisible"
           @need-close="editNumberVisible=false"
           :list="list"
@@ -13,7 +16,7 @@
           @close="toClose"
           :formId="formId"
         ></cuatomQuery>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -72,7 +75,7 @@
     },
     created(){
       // this.newSelectedWidget=this.selectedWidget
-      console.log(this.selectedWidget,'1111111111');
+      console.log('selectedWidget:',this.selectedWidget);
       
     }
 

@@ -33,9 +33,30 @@
           :step="1"
         ></el-input-number>
       </el-form-item> -->
+      <el-form-item label="响应式布局">
+        <el-switch
+          v-model="optionModel.grid.responsive"
+        ></el-switch>
+      </el-form-item>
       <el-form-item label="列数">
         <el-input-number
           v-model="optionModel.grid.columns"
+          :min="1"
+          :max="24"
+          :step="1"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="列数（H5）" v-if="optionModel.grid.responsive">
+        <el-input-number
+          v-model="optionModel.grid.mobileColumns"
+          :min="1"
+          :max="24"
+          :step="1"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="列数（pad）" v-if="optionModel.grid.responsive">
+        <el-input-number
+          v-model="optionModel.grid.padColumns"
           :min="1"
           :max="24"
           :step="1"

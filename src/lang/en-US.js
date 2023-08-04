@@ -310,7 +310,7 @@ export default {
       customInitStatus: 'Init Status',
       customInitApi: 'Init URI',
       customInitApiEdit: 'URI Config',
-      customInitApiEditBtn: 'Toggle',
+      customToggleBtn: 'Toggle',
       labelPosition: 'Position Of Label',
       topPosition: 'Top',
       leftPosition: 'Left',

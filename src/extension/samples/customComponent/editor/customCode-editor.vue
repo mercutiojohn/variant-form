@@ -18,7 +18,7 @@
               </el-tooltip>
             </span>
             <el-autocomplete
-              popper-class="my-autocomplete"
+              popper-class="api-list"
               class="inline-input"
               v-model="customApiForm.uri"
               :fetch-suggestions="querySearch"
@@ -209,7 +209,7 @@
 .inline-input {
   width: 100%;
 }
-.my-autocomplete {
+.api-list {
   li {
     line-height: normal;
     padding: 7px;

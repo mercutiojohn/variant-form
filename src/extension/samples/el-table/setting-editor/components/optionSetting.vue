@@ -1,7 +1,6 @@
 <template>
     <div>
-      <Table :data="listData" ref="multipleTable" row-key="id" max-height="450"  
-                 style="margin-top: -20px" tooltip-effect="dark">
+      <Table :data="listData" ref="multipleTable" size="mini" max-height="600px">
         <!-- <TableColumn prop="name" header-align="center" align="left" label="机构" >
         </TableColumn>
         <TableColumn prop="sendamount" header-align="center" align="center" label="打印份数" >
@@ -9,19 +8,15 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn
-            align="center"
-            label="拖拽排序"
-            min-width="100"
-          >
-            <template slot-scope="scope">
-                <el-button
-                style="font-size:30px;"
-                type="text"
-                icon="el-icon-menu"
-                class="drag"
-              />
-            </template>
+        <TableColumn align="center" width="30">
+          <template slot-scope="scope">
+            <svg-icon
+              class="drag"
+              style="cursor: grab"
+              icon-class="drag-handle-dots-2"
+              class-name="color-svg-icon"
+            />
+          </template>
         </TableColumn>
         <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="label" >
             <template slot-scope="scope" >
@@ -84,6 +79,7 @@
    </div>
   </template>
   <script>
+  import SvgIcon from "@/components/svg-icon";
   import { Button, Table, TableColumn,Input } from 'element-ui'
   import {getAllFieldWidgets} from "@/utils/util"
   import sortable from '@/utils/Sortable.js'
@@ -97,6 +93,7 @@
       TableColumn,
       Button,
       ELInput: Input,
+      SvgIcon
     },
     mixins: [
       common

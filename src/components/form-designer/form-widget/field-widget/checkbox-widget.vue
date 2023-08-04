@@ -81,7 +81,6 @@
       fieldModel(val) {
         // this.checkboxFieldModel = val ? val.split(',') : []
         this.checkboxFieldModel = val.length ? JSON.parse(val) : []
-
       }
     },
     created() {

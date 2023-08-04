@@ -68,11 +68,13 @@ export const tableSchema = {
   icon: 'table',
   options: {
     name: '',
+    label:'',
     hidden: false,
     customClass: '',  //自定义css类名
     onCreated: '',
     onMounted: '',
     tableEdit:[],
+    showRowNumber: !0,
     crudOption: {
       //自定义表格列css样式
       columnsCss: "  // if(row.pageType=='form'&&item.field=='pageType'){\r\n  //         return {\r\n  //           color:'blue !important',\r\n  //           'background-color':'green',\r\n  //           padding:'5px 10px',\r\n  //         }\r\n  //       }",
@@ -122,6 +124,9 @@ export const tableSchema = {
           customCode: {
             template: '',
             methods: ''
+          },
+          option:{
+            optionItems:[]
           }
         },
         {
@@ -140,6 +145,9 @@ export const tableSchema = {
           customCode: {
             template: '',
             methods: ''
+          },
+          option:{
+            optionItems:[]
           }
         },
         {
@@ -158,6 +166,9 @@ export const tableSchema = {
           customCode: {
             template: '',
             methods: ''
+          },
+          option:{
+            optionItems:[]
           }
         },
         {
@@ -176,6 +187,9 @@ export const tableSchema = {
           customCode: {
             template: '',
             methods: ''
+          },
+          option:{
+            optionItems:[]
           }
         },
         {
@@ -194,6 +208,9 @@ export const tableSchema = {
           customCode: {
             template: '',
             methods: ''
+          },
+          option:{
+            optionItems:[]
           }
         },
         {
@@ -241,17 +258,16 @@ export const tableSchema = {
       //表格列按钮
       rowButtons: [
         {
-          id:'edit',
+          id: 'edit',
+          icon: "el-icon-edit",
           label: "编辑",
           permission: "resultsetManage:update",
-          click: row => {
-            return 'handleOpenEditView("edit")'
-            // return this.operateDataset("edit", row);
-          },
-          isHide:'',
-          tableHide:false,
-          setting:false,
-          settingData:'',
+          isHide: '',
+          tableHide: false,
+          tableHideCustom: false,
+          setting: false,
+          settingData: '',
+          customFunc: ''
         },
         // {
         //   label: "数据预览",
@@ -259,16 +275,16 @@ export const tableSchema = {
         //   click: this.dataView
         // },
         {
-          id:'delete',
+          id: 'delete',
+          icon: "el-icon-delete",
           label: "删除",
           permission: "resultsetManage:delete",
-          click: row => {
-            return this.$refs.listPage.handleDeleteBatch(row);
-          },
-          isHide:'',
-          tableHide:false,
-          setting:false,
-          settingData:'',
+          isHide: '',
+          tableHide: false,
+          tableHideCustom: false,
+          setting: false,
+          settingData: '',
+          customFunc: ''
         }
       ],
        // 表头按钮
@@ -339,6 +355,7 @@ export const tableSchema = {
     tableButtonEdit:[],
     rowButtonEdit:[],
     queryFormFields:[],
+    rowClick:'',
     cuatomQuery:{
       apiUrl:'',
       apiType:'',
@@ -347,12 +364,17 @@ export const tableSchema = {
       urlData:'',
       parameterType:'',
       dataConversion:'',
+      quaryRange:'user'
     },
+    
+    checkbox:true,
     pageQueryDataFlag:true,
     //查询条件控制（不包括查询重置按钮）
     queryFormFieldsFlag:true,
     //查询条件显隐
     queryFormHide:true,
+    showStripe:false,
+    showBorder:true
   },
 
 
@@ -436,7 +458,7 @@ export const gridBoxSchema = {
   widgetList: [],
   options: {
     name: '',
-    label: 'Grid容器',
+    label: '自动栅格容器',
     hidden: false,
     customClass: '',
     basic: {
@@ -470,7 +492,10 @@ export const gridBoxSchema = {
       gradient: ''
     },
     grid: {
-      columns: 12,
+      columns: 3,
+      mobileColumns: 1,
+      padColumns: 2,
+      responsive: true,
       rowHeight: 30,
       columnGap: 10,
       rowGap: 10
@@ -551,7 +576,7 @@ export const submitButtonSchema = {
     displayStyle: 'block',
     disabled: false,
     hidden: false,
-    type: '',
+    type: 'primary',
     plain: false,
     round: false,
     circle: false,
@@ -586,6 +611,7 @@ export const userChooseSchema = {
     name: '',
     label: '人员选择',
     labelAlign: '',
+    rows: 1,
     type: 'text',
     defaultValue: '',
     placeholder: '',
@@ -600,6 +626,8 @@ export const userChooseSchema = {
     requiredHint: '',
     validation: '',
     validationHint: '',
+    multiSelect: true,
+    displayType: 'textarea',
     //-------------------
     customClass: '',  //自定义css类名
     labelIconClass: null,
@@ -631,6 +659,7 @@ export const groupChooseSchema = {
     testName: '',
     label: '',
     labelAlign: '',
+    rows: 1,
     type: 'text',
     defaultValue: '',
     placeholder: '',
@@ -645,6 +674,8 @@ export const groupChooseSchema = {
     requiredHint: '',
     validation: '',
     validationHint: '',
+    multiSelect: true,
+    displayType: 'textarea',
     //-------------------
     customClass: '',  //自定义css类名
     labelIconClass: null,
@@ -685,6 +716,7 @@ export const barChartSchema = {
     // 配置
     setup: {
       background: "",
+      clickEvent:"",
       colorX: "#000",
       colorY: "#000",
       customColor: [
@@ -716,7 +748,7 @@ export const barChartSchema = {
       marginRight: 40,
       marginTop: 50,
       matchColours: "",
-      maxWidth: 10,
+      maxWidth: 1000,
       minHeight: 0,
       nameColorX: "#000",
       nameColorY: "#000",
@@ -724,7 +756,7 @@ export const barChartSchema = {
       nameFontSizeY: 14,
       nameX: "",
       nameY: "",
-      radius: 5,
+      radius: 0,
       reversalX: false,
       reversalY: false,
       scale: false,
@@ -746,7 +778,7 @@ export const barChartSchema = {
       textFontStyle: "normal",
       textFontWeight: "normal",
       textInterval: "",
-      tipsColor: "#00FEFF",
+      tipsColor: "#FFFFFF",
       tipsFontSize: 16,
       titleText: "",
       verticalShow: false,
@@ -808,6 +840,7 @@ export const lineChartSchema = {
       area: true,
       areaThickness: 5,
       background: "",
+      clickEvent:"",
       colorX: "#000",
       colorY: "#000",
       customColor: [
@@ -846,7 +879,7 @@ export const lineChartSchema = {
       nameX: "",
       nameY: "",
       pointSize: 10,
-      radius: 5,
+      radius: 0,
       reversalX: false,
       reversalY: false,
       scale: false,
@@ -870,7 +903,7 @@ export const lineChartSchema = {
       textFontStyle: "normal",
       textFontWeight: "normal",
       textInterval: 0,
-      tipsColor: "#00FEFF",
+      tipsColor: "#FFFFFF",
       tipsFontSize: 16,
       titleText: "",
       verticalShow: false,
@@ -932,6 +965,7 @@ export const pieChartSchema = {
       area: true,
       areaThickness: 5,
       background: "",
+      clickEvent:"",
       colorX: "#000",
       colorY: "#000",
       customColor: [
@@ -982,7 +1016,7 @@ export const pieChartSchema = {
       nameY: "",
       numberValue: true,
       percentage: false,
-      piechartStyle: "kongxin",
+      piechartStyle: "shixin",
       pointSize: 10,
       resourceUpload: "",
       reversalX: false,
@@ -1008,7 +1042,7 @@ export const pieChartSchema = {
       textFontStyle: "normal",
       textFontWeight: "normal",
       textInterval: 0,
-      tipsColor: "#00FEFF",
+      tipsColor: "#FFFFFF",
       tipsFontSize: 16,
       titleText: "",
     },

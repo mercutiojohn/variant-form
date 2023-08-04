@@ -1,6 +1,6 @@
 <template>
     <div :style="styleObj">
-      <v-chart :options="options" autoresize/>
+      <v-chart :options="options" @click="onClick"/>
     </div>
   </template>
   
@@ -92,6 +92,14 @@ import queryform from'@/extension/samples/el-table/anji/anji-crud/mixins/queryfo
       clearInterval(this.flagInter)
     },
     methods: {
+       //点击事件
+      onClick(item){
+        //console.log(item)
+        if(this.optionsSetup.clickEvent){
+          let newFunction =  new Function('item','_this',this.optionsSetup.clickEvent)              
+          newFunction(item,this)             
+        }
+      },
       // 修改图标options属性
       editorOptions() {
         this.setOptionsTitle();

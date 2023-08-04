@@ -105,7 +105,7 @@
       multiSelectFieldModel(val) {
         if (this.field.options.multiple) {
           // this.fieldModel = val.join(',')
-          this.fieldModel = JSON.stringify(val)
+          this.fieldModel = val ? JSON.stringify(val) : ''
         }
       },
       fieldModel(val) {

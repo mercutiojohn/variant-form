@@ -1,7 +1,6 @@
 <template>
     <div>
-      <Table :data="listData" ref="multipleTable" row-key="id" max-height="450"  
-                 style="margin-top: -20px" tooltip-effect="dark">
+      <Table :data="listData" ref="multipleTable" size="mini" max-height="600px">
         <!-- <TableColumn prop="name" header-align="center" align="left" label="机构" >
         </TableColumn>
         <TableColumn prop="sendamount" header-align="center" align="center" label="打印份数" >
@@ -9,128 +8,159 @@
                 <el-input :maxlength="2" @change="checkNum(scope.$index)" v-model="scope.row.sendamount" ></el-input>
             </template>
         </TableColumn> -->
-        <TableColumn
-            align="center"
-            label="拖拽排序"
-            min-width="100"
-          >
-            <template slot-scope="scope">
-                <el-button
-                style="font-size:30px;"
-                type="text"
-                icon="el-icon-menu"
-                class="drag"
-              />
+        <TableColumn align="center" width="30">
+          <template slot-scope="scope">
+            <svg-icon
+              class="drag"
+              style="cursor: grab"
+              icon-class="drag-handle-dots-2"
+              class-name="color-svg-icon"
+            />
+          </template>
+        </TableColumn>
+        <TableColumn  prop="field" header-align="center" align="left" width="120" label="字段名" >
+            <template slot-scope="scope"  >
+                <el-input size="small"  v-model="scope.row.field" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="label" header-align="center" align="left" min-width="120" label="字段名称" >
+        <TableColumn  prop="label" header-align="center" align="left" width="120" label="字段注释" >
             <template slot-scope="scope" >
-                <el-input  v-model="scope.row.label" ></el-input>
+                <el-input size="small"  v-model="scope.row.label" ></el-input>
             </template>
         </TableColumn>
-        <TableColumn  prop="inputType" header-align="center" align="left" min-width="180" label="类型" >
+        <TableColumn  prop="inputType" header-align="center" align="left" width="180" label="类型" >
             <template slot-scope="scope">
               <div style="display: flex; gap:5px; align-items:center">
-                <el-select v-model="scope.row.inputType" placeholder="请选择">
+                <el-select size="small" v-model="scope.row.inputType" placeholder="请选择">
                   <el-option
-                    v-for="dict in inputType"
-                    :key="dict.label"
-                    :label="dict.label"
-                    :value="dict.value"
-                 ></el-option>
+                      v-for="dict in inputType"
+                      :key="dict.label"
+                      :label="dict.label"
+                      :value="dict.value"
+                  ></el-option>
                 </el-select>
                 <el-button
                   type="info"
                   icon="el-icon-edit"
                   plain
-                  size="mini"
+                  size="small"
                   @click="editCustomCodeData(scope.row.customCode,scope.$index)"
                   v-if="scope.row.inputType == 'custom'"
+                >
+                </el-button>
+                <el-button
+                  type="info"
+                  icon="el-icon-edit"
+                  plain
+                  size="small"
+                  @click="editOption(scope.row,scope.$index)"
+                  v-else-if="scope.row.inputType == 'checkbox' || scope.row.inputType == 'radio' || scope.row.inputType == 'select'"
                 >
                 </el-button>
               </div>
             </template>
         </TableColumn>
-        <TableColumn  prop="field" header-align="center" align="left" min-width="120" label="字段" >
-            <template slot-scope="scope"  >
-                <el-input  v-model="scope.row.field" ></el-input>
-            </template>
-        </TableColumn>
-        <TableColumn  prop="headerAlign" header-align="center" align="left" min-width="160" label="表头对齐方式" >
+        <TableColumn  prop="headerAlign" align="center" width="120" label="表头对齐" >
           <template slot-scope="scope"  >
-              <el-select v-model="scope.row.headerAlign" placeholder="请选择">
+              <!-- <el-select v-model="scope.row.headerAlign" placeholder="请选择">
                 <el-option label="左对齐" value='left'></el-option>
                 <el-option label="居中对齐" value='center'></el-option>
                 <el-option label="右对齐" value='right'></el-option>
-              </el-select>
+              </el-select> -->
+              <el-radio-group size="small" v-model="scope.row.headerAlign" class="align">
+                <el-radio-button label="left">
+                  <el-tooltip :content="`左对齐`" placement="top">
+                    <svg-icon :icon-class="`align-left`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+                <el-radio-button label="center">
+                  <el-tooltip content="中心对齐" placement="top">
+                    <svg-icon :icon-class="`align-center-horizontally`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+                <el-radio-button label="right">
+                  <el-tooltip :content="`右对齐`" placement="top">
+                    <svg-icon :icon-class="`align-right`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+              </el-radio-group>
           </template>
         </TableColumn>
-        <TableColumn  prop="contentAlign" header-align="center" align="left" min-width="120" label="对齐方式" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.contentAlign" placeholder="请选择">
+        <TableColumn prop="contentAlign" align="center" width="140" label="内容对齐" >
+          <template slot-scope="scope">
+              <!-- <el-select v-model="scope.row.contentAlign" placeholder="请选择">
                   <el-option label="左对齐" value='left'></el-option>
                   <el-option label="居中对齐" value='center'></el-option>
                   <el-option label="右对齐" value='right'></el-option>
-              </el-select>
+              </el-select> -->
+              <el-radio-group size="small" v-model="scope.row.contentAlign" class="align">
+                <el-radio-button label="left">
+                  <el-tooltip :content="`左对齐`" placement="top">
+                    <svg-icon :icon-class="`text-align-left`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+                <el-radio-button label="center">
+                  <el-tooltip content="中心对齐" placement="top">
+                    <svg-icon :icon-class="`text-align-center`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+                <el-radio-button label="right">
+                  <el-tooltip :content="`右对齐`" placement="top">
+                    <svg-icon :icon-class="`text-align-right`" class-name="color-svg-icon" />
+                  </el-tooltip>
+                </el-radio-button>
+              </el-radio-group>
           </template>
         </TableColumn>
-        <TableColumn  prop="minWidth" header-align="center" align="left" min-width="80" label="最小宽度" >
+        <TableColumn  prop="minWidth" align="center" width="160" label="最小宽度" >
           <template slot-scope="scope"  >
-              <el-input  v-model="scope.row.minWidth" ></el-input>
+              <el-input-number size="small" :step="10"  v-model="scope.row.minWidth" ></el-input-number>
           </template>
         </TableColumn>
-        <TableColumn  prop="sortable" header-align="center" align="left" min-width="120" label="是否可排序" >
+        <TableColumn  prop="width" align="center" width="160" label="宽度" >
           <template slot-scope="scope"  >
-              <el-select v-model="scope.row.sortable" placeholder="请选择">
+              <el-input-number size="small" :step="10"  v-model="scope.row.width" ></el-input-number>
+          </template>
+        </TableColumn>
+        <TableColumn  prop="sortable" align="center" label="是否可排序" >
+          <template slot-scope="scope"  >
+              <!-- <el-select v-model="scope.row.sortable" placeholder="请选择">
                   <el-option label="是" :value='true'></el-option>
                   <el-option label="否" :value='false'></el-option>
-              </el-select>
+              </el-select> -->
+              <el-switch
+                v-model="scope.row.sortable"
+              ></el-switch>
           </template>
         </TableColumn>
-        <TableColumn  prop="tableHide" header-align="center" align="left" min-width="160" label="是否在列表中显示" >
-          <template slot-scope="scope"  >
-              <el-select v-model="scope.row.tableHide" placeholder="请选择">
-                  <el-option label="隐藏" :value='true'></el-option>
-                  <el-option label="显示" :value='false'></el-option>
-              </el-select>
-          </template>
-        </TableColumn>
-        <TableColumn
-          label="操作"
-          width="180px"
-          align="center"
-          fixed="right"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="success"
-              circle
-              plain
-              icon="el-icon-plus"
-              @click="
-                addDict(scope.$index,listData)
-              "
-            />
+        <TableColumn label="" align="center" fixed="right">
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            plain
+            icon="el-icon-plus"
+            @click="addDict(scope.$index, listData)"
+          />
 
-            <el-button
-              type="danger"
-              circle
-              plain
-              icon="el-icon-delete"
-              @click="
-                delDict(scope.$index,listData)
-              "
-            />
-            <el-button
-              v-if="scope.row.option"
-              type="info"
-              icon="el-icon-edit"
-              circle
-              plain
-              @click="editOption(scope.row,scope.$index)" 
-            />
-          </template>
-        </TableColumn>
+          <el-button
+            type="text"
+            plain
+            icon="el-icon-delete"
+            @click="delDict(scope.$index, listData)"
+          />
+        </template>
+      </TableColumn>
+      <TableColumn  prop="tableHide" align="center" label="隐藏" >
+        <template slot-scope="scope"  >
+            <!-- <el-select v-model="scope.row.tableHide" placeholder="请选择">
+                <el-option label="隐藏" :value='true'></el-option>
+                <el-option label="显示" :value='false'></el-option>
+            </el-select> -->
+            <el-switch
+              v-model="scope.row.tableHide"
+            ></el-switch>
+        </template>
+      </TableColumn>
         <!-- <TableColumn  prop="editField" header-align="center" align="left" label="编辑字段" >
             <template slot-scope="scope"  >
                 <el-input  v-model="scope.row.editField" ></el-input>
@@ -145,7 +175,7 @@
             </template>
         </TableColumn> -->
       </Table>
-      <div v-if="lodding" style="width: 100%;
+      <div v-if="loading" style="width: 100%;
                   height: calc(100% - 60px);
                   background-color: rgb(244, 244, 244);
                   position: absolute;
@@ -163,8 +193,8 @@
         <Button  size="medium" type="primary" @click="getLatestData">
           更新字段
         </Button>
-        <el-button  size="medium" type="primary" @click="editData">
-          自定义css样式</el-button>
+        <!-- <el-button  size="medium" type="primary" @click="editData">
+          自定义css样式</el-button> -->
       </div>
       <el-dialog title="自定义样式" :visible.sync="showWidgetEventDialogFlag"
               v-if="showWidgetEventDialogFlag" :show-close="true" class="small-padding-dialog" append-to-body v-dialog-drag
@@ -191,7 +221,7 @@
         :close-on-press-escape="false"
         :destroy-on-close="true"
       >
-        <el-divider content-position="left">可使用<code>data</code>, <code>scope</code>, <code>item</code>属性</el-divider>
+        <el-divider content-position="left">可使用<code>data</code>, <code>row</code>, <code>item</code>属性</el-divider>
         <el-alert type="info" :closable="false" title="<template>"></el-alert>
         <code-editor :mode="'html'" :readonly="false" v-model="customCodeEditing.template" ref="customCodeEditor"></code-editor>
         <el-alert type="info" :closable="false" title="</template>"></el-alert>
@@ -218,6 +248,7 @@
     </div>
   </template>
   <script>
+  import SvgIcon from "@/components/svg-icon";
   import CodeEditor from '@/components/code-editor/index'
   import optionSetting from "./optionSetting.vue"
   import { Button, Table, TableColumn,Input } from 'element-ui'
@@ -234,7 +265,8 @@
       Button,
       ELInput: Input,
       CodeEditor,
-      optionSetting
+      optionSetting,
+      SvgIcon
     },
     mixins: [
       common
@@ -254,7 +286,7 @@
       return {
         listData: [],
         num: 1,
-        lodding:false,
+        loading:false,
         optionVisible:false,
         optionData:[],
         inputType:[
@@ -368,8 +400,8 @@
       },
       editCustomCodeData(data, index) {
         this.customCodeEditing = data ? this.deepClone(data) : {
-          template: "<div>\n  {{ getData(data, scope) }}\n</div>",
-          methods: "{\n  getData(data, scope){\n    return scope.$index + ' - ' + data;\n  }\n}\n        "
+          template: "<div>\n  {{ getData(data, row) }}\n</div>",
+          methods: "{\n  getData(data, row){\n    return data;\n  }\n}\n"
         }
         this.customCodeIndex = index
         this.showTableCustomCodeFlag = true
@@ -395,7 +427,7 @@
         this.optionVisible=false
       },
       async getLatestData(){
-        this.lodding=true
+        this.loading=true
         const {data} = await this.setFunction.getVformPagesByPageId(this.formId);
         const pageJsonObj=  JSON.parse(data.pageJson)
         let widgetList=pageJsonObj.widgetList
@@ -430,7 +462,7 @@
         })
         console.log(newTable);
         this.listData=newTable
-        this.lodding=false
+        this.loading=false
       },
       getFieldWidgets(widgetList = null) {
         return !!widgetList ? getAllFieldWidgets(widgetList) : getAllFieldWidgets(this.formJson.widgetList)
@@ -497,7 +529,6 @@
                 }
             })
         },
-       
     },
     // 页面初始化调用方法
     mounted: function () {
@@ -516,4 +547,8 @@
   }
   
   </script>
-  
+<style scoped>
+::v-deep .align .el-radio-button .el-radio-button__inner {
+  padding: 7px 5px;
+}
+</style>

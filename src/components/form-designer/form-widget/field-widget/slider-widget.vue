@@ -5,7 +5,7 @@
     <el-slider ref="fieldEditor" v-model="fieldModel"
                :disabled="field.options.disabled" :show-stops="field.options.showStops"
                :min="field.options.min" :max="field.options.max" :step="field.options.step"
-               :range="field.options.range" :vertical="field.options.vertical"
+               :range="field.options.range" :vertical="field.options.vertical" :show-input="field.options.showInput"
                @change="handleChangeEvent">
     </el-slider>
   </form-item-wrapper>
